@@ -9,7 +9,7 @@ const Cart = () => {
         <FiShoppingCart className="text-3xl"/>
       </div>
       
-      <div className="text-sm hidden lg:flex border-l border-zinc-500 px-2">
+      <div className="text-sm hidden lg:flex flex-col border-l border-zinc-500 px-2">
         <p>NGN N0.00</p>
         <p>0 <span>Item(s)</span></p>
       </div>
