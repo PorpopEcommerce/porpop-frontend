@@ -8,7 +8,11 @@ import classNames from 'classnames';
 import SearchBar from './components/SearchBar';
 import Cart from './components/Cart';
 
-const NavBar = () => {
+interface NavBarProps {
+    toggleMenu: () => void
+}
+
+const NavBar: React.FC<NavBarProps> = ({ toggleMenu }) => {
     const currentPath = usePathname();
 
     const ctaLinks = [
@@ -37,7 +41,7 @@ const NavBar = () => {
 
 
     return (
-        <nav className='px-5 mb-5'>
+        <nav className='relative px-3 lg:px-5 mb-5'>
             {/* Top navigation routes */}
             <div className='hidden lg:flex lg:justify-between border-b h-10 items-center text-[10px] font-light'>
                 <div className='flex space-x-3'>
@@ -124,7 +128,9 @@ const NavBar = () => {
             {/* small size view */}
             <div className='lg:hidden w-full py-2'>
                 <div className='flex justify-between items-center mb-3'>
-                    <div className='cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500'>
+                    <div className='cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500'
+                    onClick={toggleMenu}
+                    >
                         <CiMenuBurger />
                         <span className='text-lg'>Menu</span>
                     </div>
@@ -140,3 +146,5 @@ const NavBar = () => {
 }
 
 export default NavBar
+
+

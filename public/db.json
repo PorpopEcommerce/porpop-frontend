@@ -1,0 +1,44 @@
+
+
+{
+    "productData": [
+      {
+        "id": 1,
+        "title": "Fashion",
+        "href": "/",
+        "category": [
+          { "subtitle": "Bag", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Clothings", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Jewelry", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Shoes", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Watches", "subcategory": ["Men", "Women"] }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Agriculture & Food",
+        "href": "/",
+        "category": [
+          { "subtitle": "Bag", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Clothings", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Jewelry", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Shoes", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Watches", "subcategory": ["Men", "Women"] }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Health & Beauty",
+        "href": "/",
+        "category": [
+          { "subtitle": "Bag", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Clothings", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Jewelry", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Shoes", "subcategory": ["Men", "Women", "Unisex"] },
+          { "subtitle": "Watches", "subcategory": ["Men", "Women"] }
+        ]
+      }
+      
+    ]
+  }
+  
