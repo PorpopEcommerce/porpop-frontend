@@ -9,10 +9,12 @@ import SearchBar from './components/SearchBar';
 import Cart from './components/Cart';
 
 interface NavBarProps {
-    toggleMenu: () => void
+    toggleMenu: () => void,
+    toggleCart: () => void,
+    toggleSignIn: () => void
 }
 
-const NavBar: React.FC<NavBarProps> = ({ toggleMenu }) => {
+const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn }) => {
     const currentPath = usePathname();
 
     const ctaLinks = [
@@ -61,14 +63,23 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu }) => {
                 </div>
                 <div>
                     <ul className='flex space-x-3'>
-                        {links.map(link =>
-                            <Link
-                                key={link.href}
-                                className='text-zinc-500 hover:text-zinc-800 transition-colors'
-                                href={link.href}>
-                                {link.label}
-                            </Link>)
-                        }
+                        {links.map((link, index) => (
+                            <div key={index}>
+                                {index === links.length - 1 ? (
+                                    <button
+                                        onClick={toggleSignIn}
+                                        className="text-zinc-500 hover:text-zinc-800 transition-colors">
+                                        {link.label}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        className='text-zinc-500 hover:text-zinc-800 transition-colors'
+                                        href={link.href}>
+                                        {link.label}
+                                    </Link>
+                                )}
+                            </div>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -122,14 +133,14 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu }) => {
             {/* Search and Cart control component */}
             <div className='hidden py-3 lg:flex lg:justify-between'>
                 <SearchBar />
-                <Cart />
+                <Cart toggleCart={toggleCart} />
             </div>
 
             {/* small size view */}
             <div className='lg:hidden w-full py-2'>
                 <div className='flex justify-between items-center mb-3'>
                     <div className='cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500'
-                    onClick={toggleMenu}
+                        onClick={toggleMenu}
                     >
                         <CiMenuBurger />
                         <span className='text-lg'>Menu</span>
@@ -137,7 +148,7 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu }) => {
                     <div>
                         <Link className='text-5xl font-bold' href='/'>Logo</Link>
                     </div>
-                    <Cart />
+                    <Cart toggleCart={toggleCart} />
                 </div>
                 <SearchBar />
             </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import classNames from 'classnames';
 import SearchBar from './SearchBar';
 
 
@@ -71,11 +72,21 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => 
                     <SearchBar />
                 </div>
                 <div className="grid grid-cols-2 h-16">
-                    <button className='flex justify-center items-center cursor-pointer'
+                    <button
+                        className={classNames({
+                            'border-b-2 border-green-500 bg-zinc-300': showMenu === true,
+                            'font-semibold': showMenu !== true,
+                            'hover:text-zinc-500 flex justify-center items-center cursor-pointer': true,
+                        })}
                         onClick={() => setShowMenu(true)}>
                         Menu
                     </button>
-                    <button className='flex justify-center items-center cursor-pointer'
+                    <button
+                        className={classNames({
+                            'border-b-2 border-green-500 bg-zinc-300': showMenu !== true,
+                            'font-semibold': showMenu === true,
+                            'hover:text-zinc-500 flex justify-center items-center cursor-pointer': true,
+                        })}
                         onClick={() => setShowMenu(false)}>
                         Category
                     </button>
