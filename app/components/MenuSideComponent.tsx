@@ -1,56 +1,50 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import SearchBar from './SearchBar';
 
-
 type MenuNavLink = {
     label: string;
     href: string;
 };
 
-
-interface category {
+interface Category {
     subtitle: string;
     subcategory: string[];
 }
 
-interface product {
+interface Product {
     id: number;
     title: string;
     href: string;
-    category: category[]
+    category: Category[];
 }
 
 interface ProductDataResponse {
-    productData: product[];
+    productData: Product[];
 }
-
-
-
-
 
 const menuNavLink = [
     { label: 'HOME', href: '/' },
     { label: 'ABOUT US', href: '/contact_us' },
-    { label: 'AFFLITION DASHBOARD', href: '/faqs' },
+    { label: 'AFFILIATION DASHBOARD', href: '/faqs' },
     { label: 'BLOG', href: '/faqs' },
     { label: 'CONTACT US', href: '/faqs' },
     { label: 'TRACK ORDER', href: '/faqs' },
     { label: 'WISHLIST', href: '/faqs' },
     { label: 'COMPARE', href: '/faqs' },
     { label: 'LOGIN / REGISTER', href: '/faqs' }
-]
+];
 
 interface MenuSideComponentProps {
-    toggleMenu: () => void
+    toggleMenu: () => void;
 }
 
 const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => {
-    const [categoryMenu, setCategoryMenu] = useState<product[]>([]);
-    const [showMenu, setShowMenu] = useState(true)
+    const [categoryMenu, setCategoryMenu] = useState<Product[]>([]);
+    const [showMenu, setShowMenu] = useState(true);
 
     useEffect(() => {
         fetch('/db.json')
@@ -58,19 +52,18 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => 
                 if (!response.ok) throw new Error("Network response was not ok");
                 return response.json();
             })
-            .then((data: ProductDataResponse) => setCategoryMenu(data.productData)) // Access the productData array
+            .then((data: ProductDataResponse) => setCategoryMenu(data.productData))
             .catch((error) => console.error('Error fetching data:', error));
     }, []);
 
     return (
-        <div className='lg:hidden fixed inset-0 bg-black bg-opacity-50'
-            onClick={toggleMenu}>
-            <div className='w-[300px] h-full bg-white'
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className=" h-16 flex justify-center items-center px-2">
+        <div className='lg:hidden fixed inset-0 bg-black bg-opacity-50' onClick={toggleMenu}>
+            <div className='w-[300px] h-full bg-white' onClick={(e) => e.stopPropagation()}>
+                
+                <div className="h-16 flex justify-center items-center px-2">
                     <SearchBar />
                 </div>
+                
                 <div className="grid grid-cols-2 h-16">
                     <button
                         className={classNames({
@@ -91,32 +84,39 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => 
                         Category
                     </button>
                 </div>
-                <ul className="flex flex-col space-y-3">
+
+                <ul className="flex flex-col mt-4 space-y-2">
                     {showMenu
                         ? menuNavLink.map((item: MenuNavLink, index) => (
-                            <Link
-                                key={index}
-                                className='text-zinc-500 hover:text-zinc-800 transition-colors'
-                                href={item.href}
-                                onClick={toggleMenu}>
-                                {item.label}
-                            </Link>
+                            <li key={index} className="relative">
+                                <Link
+                                    className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm"
+                                    href={item.href}
+                                    onClick={toggleMenu}
+                                >
+                                    {item.label}
+                                </Link>
+                                
+                                <hr className="w-full border-t border-gray-300 absolute left-0" />
+                            </li>
                         ))
                         : categoryMenu.map((item, index) => (
-                            <Link
-                                key={index}
-                                className='text-zinc-500 hover:text-zinc-800 transition-colors'
-                                href={item.href}
-                                onClick={toggleMenu}>
-                                {item.title}
-                            </Link>
+                            <li key={index} className="relative">
+                                <Link
+                                    className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm"
+                                    href={item.href}
+                                    onClick={toggleMenu}
+                                >
+                                    {item.title}
+                                </Link>
+                                
+                                <hr className="w-full border-t border-gray-300 absolute left-0" />
+                            </li>
                         ))}
                 </ul>
             </div>
-
-
         </div>
-    )
-}
+    );
+};
 
-export default MenuSideComponent
+export default MenuSideComponent;
