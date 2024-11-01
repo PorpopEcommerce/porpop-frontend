@@ -40,9 +40,10 @@ const menuNavLink = [
 
 interface MenuSideComponentProps {
     toggleMenu: () => void;
+    toggleSignIn: () => void;
 }
 
-const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => {
+const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggleSignIn }) => {
     const [categoryMenu, setCategoryMenu] = useState<Product[]>([]);
     const [showMenu, setShowMenu] = useState(true);
 
@@ -88,14 +89,20 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu }) => 
                 <ul className="flex flex-col mt-4 space-y-2">
                     {showMenu
                         ? menuNavLink.map((item: MenuNavLink, index) => (
-                            <li key={index} className="relative">
-                                <Link
-                                    className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm"
-                                    href={item.href}
-                                    onClick={toggleMenu}
-                                >
-                                    {item.label}
-                                </Link>
+                            <li key={index} className="relative" onClick={toggleMenu}>
+                                {index === menuNavLink.length - 1 ? (
+                                    <button
+                                        onClick={toggleSignIn}
+                                        className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm">
+                                        {item.label}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        className='text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm'
+                                        href={item.href}>
+                                        {item.label}
+                                    </Link>
+                                )}
                                 
                                 <hr className="w-full border-t border-gray-300 absolute left-0" />
                             </li>
