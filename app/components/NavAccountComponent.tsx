@@ -18,7 +18,7 @@ const NavAccountComponent = () => {
             >
                 <VscAccount />
             </div>
-            <div className='absolute h-fit  bg-white rounded-lg shadow-md inset-0 top-8 py-8'>
+            <div className='absolute h-fit  bg-white rounded-lg shadow-md inset-0 top-8 py-4'>
                 <div className='flex items-center flex-col mb-3'>
                     <div
                         className="text-7xl text-zinc-500"
@@ -29,10 +29,10 @@ const NavAccountComponent = () => {
                 </div>
                 <ul className='p-0'>
                     <li className='flex items-center justify-around gap-2 p-3 text-xs hover:bg-zinc-300 hover:font-semibold'><IoPersonOutline /> <span>Profile</span></li>
-                    <li>
+                    <li className='flex'>
                         <button
                             onClick={logout}
-                            className='flex items-center justify-around gap-2 p-3 text-xs hover:bg-zinc-300 hover:font-semibold'>
+                            className='w-full flex items-center justify-around gap-2 p-3 text-xs hover:bg-zinc-300 hover:font-semibold'>
                             <LuLogOut /> Sign Out
                         </button>
                     </li>
