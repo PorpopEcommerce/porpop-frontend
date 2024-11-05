@@ -1,6 +1,8 @@
 // useLoginForm.ts
 
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from 'next/router';
 import { z } from "zod";
 
 // Define Zod schema for form validation
@@ -10,6 +12,11 @@ const schema = z.object({
 });
 
 export const useLoginForm = () => {
+
+  const { login } = useAuth();
+  // const router = useRouter();
+
+
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [errors, setErrors] = useState<{
     username?: string;
@@ -48,6 +55,8 @@ export const useLoginForm = () => {
     if (userExists) {
         setIsAuthenticated(true);
         setTimer(); // Reset authentication status after a delay
+        login();
+        // router.push('/'); // Redirect to homepage after login
         setErrors({}); // Clear errors if login is successful
         setFormData({ username: "", password: "" });
     } else {
