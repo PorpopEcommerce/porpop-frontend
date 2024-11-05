@@ -30,7 +30,7 @@ const Login_RegistrationSideComponent: React.FC<SignInSideComponentProps> = ({ t
 
                 <div className="mt-auto text-center text-xs md:text-sm pt-6">
                     <p className="mb-2">No account yet?</p>
-                    <Link href="/login_register">
+                    <Link href="/my_account">
                         <button className="text-black text-lg font-semibold underline-offset-4 hover:underline">
                             <span className="border-b-2 border-green-500">Create an account</span>
                         </button>
