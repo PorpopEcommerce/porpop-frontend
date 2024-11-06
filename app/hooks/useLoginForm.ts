@@ -14,7 +14,7 @@ const schema = z.object({
 export const useLoginForm = () => {
 
   const { login } = useAuth();
-  // const router = useRouter();
+  
 
 
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -55,8 +55,7 @@ export const useLoginForm = () => {
     if (userExists) {
         setIsAuthenticated(true);
         setTimer(); // Reset authentication status after a delay
-        login();
-        // router.push('/'); // Redirect to homepage after login
+        login(formData.username,  formData.password);
         setErrors({}); // Clear errors if login is successful
         setFormData({ username: "", password: "" });
     } else {
