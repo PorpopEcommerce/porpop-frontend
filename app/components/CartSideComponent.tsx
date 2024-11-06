@@ -1,3 +1,5 @@
+'use client'
+
 import { FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 

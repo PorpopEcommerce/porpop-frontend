@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Sidebar from './components/Sidebar';
 import ClientLayout from './ClientLayout';
+import { AuthProvider } from './context/AuthContext';
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -22,17 +23,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <section className='flex'>
-          <aside>
-            <Sidebar />
-          </aside>
-          <main className='flex-1 lg:ml-14 relative'>
-            <ClientLayout>
-              {children}
-            </ClientLayout>
-          </main>
+        <AuthProvider>
+          <section className='flex'>
+            <aside>
+              <Sidebar />
+            </aside>
+            <main className='flex-1 lg:ml-14 relative'>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+            </main>
+          </section>
+        </AuthProvider>
 
-        </section>
       </body>
     </html>
   )

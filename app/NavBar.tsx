@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from './context/AuthContext';
 import { FaXTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa6";
 import { CiMenuBurger } from "react-icons/ci";
 import classNames from 'classnames';
 import SearchBar from './components/SearchBar';
 import Cart from './components/Cart';
+import NavAccountComponent from './components/NavAccountComponent';
+
 
 interface NavBarProps {
     toggleMenu: () => void,
@@ -16,6 +19,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn }) => {
     const currentPath = usePathname();
+    const { userAuthenticated } = useAuth();
 
     const ctaLinks = [
         { label: 'NEWSLETTER', href: '/newsletter' },
@@ -61,16 +65,25 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn })
                         <p className='text-zinc-500'>24/7 WhatsApp +4474501...</p>
                     </div>
                 </div>
-                <div>
-                    <ul className='flex space-x-3'>
+                <div className='relative'>
+                    <ul className='flex space-x-3 items-center'>
                         {links.map((link, index) => (
                             <div key={index}>
                                 {index === links.length - 1 ? (
-                                    <button
-                                        onClick={toggleSignIn}
-                                        className="text-zinc-500 hover:text-zinc-800 transition-colors">
-                                        {link.label}
-                                    </button>
+
+                                    userAuthenticated ? (
+                                        <>
+                                            <NavAccountComponent />
+                                        </>
+
+                                    ) : (
+                                        <button
+                                            onClick={toggleSignIn}
+                                            className="text-zinc-500 hover:text-zinc-800 transition-colors"
+                                        >
+                                            {link.label}
+                                        </button>
+                                    )
                                 ) : (
                                     <Link
                                         className='text-zinc-500 hover:text-zinc-800 transition-colors'
@@ -82,10 +95,10 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn })
                         ))}
                     </ul>
                 </div>
-            </div>
+            </div >
 
             {/* Page and Social Links Navigation routes */}
-            <div className='hidden lg:flex lg:justify-between py-5 items-center'>
+            < div className='hidden lg:flex lg:justify-between py-5 items-center' >
                 <div className='flex space-x-6'>
                     <div>
                         <Link className='text-5xl font-bold' href='/'>Logo</Link>
@@ -128,16 +141,16 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn })
                 </div>
 
 
-            </div>
+            </div >
 
             {/* Search and Cart control component */}
-            <div className='hidden py-3 lg:flex lg:justify-between'>
+            < div className='hidden py-3 lg:flex lg:justify-between' >
                 <SearchBar />
                 <Cart toggleCart={toggleCart} />
-            </div>
+            </div >
 
             {/* small size view */}
-            <div className='lg:hidden w-full py-2'>
+            < div className='lg:hidden w-full py-2' >
                 <div className='flex justify-between items-center mb-3'>
                     <div className='cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500'
                         onClick={toggleMenu}
@@ -151,8 +164,8 @@ const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn })
                     <Cart toggleCart={toggleCart} />
                 </div>
                 <SearchBar />
-            </div>
-        </nav>
+            </div >
+        </nav >
     )
 }
 

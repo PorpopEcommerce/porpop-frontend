@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import Link from 'next/link';
 import classNames from 'classnames';
 import SearchBar from './SearchBar';
@@ -47,6 +48,8 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
     const [categoryMenu, setCategoryMenu] = useState<Product[]>([]);
     const [showMenu, setShowMenu] = useState(true);
 
+    const { userAuthenticated } = useAuth();
+
     useEffect(() => {
         fetch('/db.json')
             .then((response) => {
@@ -60,11 +63,11 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
     return (
         <div className='lg:hidden fixed inset-0 bg-black bg-opacity-50' onClick={toggleMenu}>
             <div className='w-[300px] h-full bg-white' onClick={(e) => e.stopPropagation()}>
-                
+
                 <div className="h-16 flex justify-center items-center px-2">
                     <SearchBar />
                 </div>
-                
+
                 <div className="grid grid-cols-2 h-16">
                     <button
                         className={classNames({
@@ -91,11 +94,21 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
                         ? menuNavLink.map((item: MenuNavLink, index) => (
                             <li key={index} className="relative" onClick={toggleMenu}>
                                 {index === menuNavLink.length - 1 ? (
-                                    <button
-                                        onClick={toggleSignIn}
-                                        className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm">
-                                        {item.label}
-                                    </button>
+                                    userAuthenticated ? (
+                                        <Link
+                                            className='text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm'
+                                            href='/profile'>
+                                            MY ACCOUNT
+                                        </Link>
+
+                                    ) : (
+                                        <button
+                                            onClick={toggleSignIn}
+                                            className="text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm">
+                                            {item.label}
+                                        </button>
+                                    )
+
                                 ) : (
                                     <Link
                                         className='text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm'
@@ -103,7 +116,7 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
                                         {item.label}
                                     </Link>
                                 )}
-                                
+
                                 <hr className="w-full border-t border-gray-300 absolute left-0" />
                             </li>
                         ))
@@ -116,7 +129,7 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
                                 >
                                     {item.title}
                                 </Link>
-                                
+
                                 <hr className="w-full border-t border-gray-300 absolute left-0" />
                             </li>
                         ))}
