@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
 import classNames from 'classnames';
 import SearchBar from './SearchBar';
@@ -97,7 +97,7 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
                                     userAuthenticated ? (
                                         <Link
                                             className='text-zinc-700 font-bold hover:text-zinc-800 transition-colors block py-2 px-4 text-sm'
-                                            href='/profile'>
+                                            href='/my_account'>
                                             MY ACCOUNT
                                         </Link>
 

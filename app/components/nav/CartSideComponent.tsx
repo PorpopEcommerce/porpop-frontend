@@ -2,6 +2,7 @@
 
 import { FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
+import Link from 'next/link';
 
 interface CartSideComponentProps {
     toggleCart: () => void;
@@ -14,7 +15,7 @@ const CartSideComponent: React.FC<CartSideComponentProps> = ({ toggleCart }) => 
                 className='w-full md:w-[350px] h-full bg-white shadow-lg flex flex-col relative'
                 onClick={(e) => e.stopPropagation()}
             >
-        
+
                 <div className="h-16 flex justify-between items-center px-4">
                     <h2 className="text-lg font-semibold">Shopping Cart</h2>
                     <button className="flex items-center text-gray-500" onClick={toggleCart}>
@@ -27,9 +28,12 @@ const CartSideComponent: React.FC<CartSideComponentProps> = ({ toggleCart }) => 
                 <div className="flex flex-col items-center text-center space-y-4 mt-8 p-6">
                     <FiShoppingCart className="text-8xl text-gray-400" />
                     <p className="font-medium text-base">No shopping product</p>
-                    <button className="bg-green-700 text-white py-2 px-4 rounded">
-                        Return to Shop
-                    </button>
+                    <Link href='/shop'>
+                        <button className="bg-green-700 text-white py-2 px-4 rounded" onClick={toggleCart}>
+                            Return to Shop
+                        </button>
+                    </Link>
+
                 </div>
             </div>
         </div>

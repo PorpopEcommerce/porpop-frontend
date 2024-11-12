@@ -1,6 +1,6 @@
 "use client";
 
-import { useRegisterForm } from "../hooks/useRegisterForm";
+import { useRegisterForm } from "../../hooks/useRegisterForm";
 
 const RegisterForm: React.FC = () => {
     const {

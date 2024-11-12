@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import NavBar from './NavBar'
-import MenuSideComponent from './components/MenuSideComponent'
-import CartSideComponent from './components/CartSideComponent'
-import Login_RegistrationSideComponent from './components/Login_RegistrationSideComponent'
+import MenuSideComponent from './components/nav/MenuSideComponent'
+import CartSideComponent from './components/nav/CartSideComponent'
+import Login_RegistrationSideComponent from './components/nav/Login_RegistrationSideComponent'
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
     const [menuDisplay, setMenuDisplay] = useState(false);

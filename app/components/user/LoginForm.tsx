@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { useLoginForm } from "../hooks/useLoginForm";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
 const LoginForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
