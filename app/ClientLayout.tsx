@@ -5,6 +5,7 @@ import NavBar from './NavBar'
 import MenuSideComponent from './components/MenuSideComponent'
 import CartSideComponent from './components/CartSideComponent'
 import Login_RegistrationSideComponent from './components/Login_RegistrationSideComponent'
+import LandingPage from './LandingPage'
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
     const [menuDisplay, setMenuDisplay] = useState(false);
@@ -28,6 +29,9 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
             {menuDisplay && <MenuSideComponent toggleMenu={toggleMenu} toggleSignIn={toggleSignIn}/>}
             {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
             {signInDisplay && <Login_RegistrationSideComponent toggleSignIn={toggleSignIn} />}
+
+            <LandingPage />
+
             {children}
         </div>
     )

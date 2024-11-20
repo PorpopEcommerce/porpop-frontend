@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <section className='flex'>
+          <section className='flex max-w-screen overflow-hidden'>
             <aside>
               <Sidebar />
             </aside>
