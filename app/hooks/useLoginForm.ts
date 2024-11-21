@@ -7,7 +7,7 @@ import { z } from "zod";
 
 // Define Zod schema for form validation
 const schema = z.object({
-  username: z.string().min(1, "Username is required"),
+  email: z.string().min(1, "Email is required"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -17,9 +17,9 @@ export const useLoginForm = () => {
   
 
 
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{
-    username?: string;
+    email?: string;
     password?: string;
   }>({});
   const [errMsg, setErrMsg] = useState("");
@@ -36,7 +36,7 @@ export const useLoginForm = () => {
     if (!result.success) {
         const fieldErrors = result.error.flatten().fieldErrors;
         setErrors({
-            username: fieldErrors.username?.[0],
+            email: fieldErrors.email?.[0],
             password: fieldErrors.password?.[0],
         });
         return;
@@ -48,18 +48,18 @@ export const useLoginForm = () => {
 
     // Check if there's a match in the stored users
     const userExists = storedUsers.some(
-        (user: { username: string; password: string }) =>
-            user.username === formData.username && user.password === formData.password
+        (user: { email: string; password: string }) =>
+            user.email === formData.email && user.password === formData.password
     );
 
     if (userExists) {
         setIsAuthenticated(true);
         setTimer(); // Reset authentication status after a delay
-        login(formData.username,  formData.password);
+        login(formData.email,  formData.password);
         setErrors({}); // Clear errors if login is successful
-        setFormData({ username: "", password: "" });
+        setFormData({ email: "", password: "" });
     } else {
-        setErrMsg("Invalid username or password");
+        setErrMsg("Invalid email or password");
         setIsAuthenticated(false);
     }
 };

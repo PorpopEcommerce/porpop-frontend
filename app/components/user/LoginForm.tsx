@@ -4,7 +4,8 @@
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { useLoginForm } from "../hooks/useLoginForm";
+import { useLoginForm } from "../../hooks/useLoginForm";
+import Button from "../product/Button";
 
 const LoginForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -21,16 +22,16 @@ const LoginForm = () => {
 
             <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
                 <div>
-                    <label className="block mb-1 text-sm md:text-base">Username</label>
+                    <label className="block mb-1 text-sm md:text-base">Email</label>
                     <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
+                        type="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        className="w-full border p-2 rounded"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                     />
-                    {errors.username && (
-                        <p className="text-red-500 text-sm">{errors.username}</p>
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email}</p>
                     )}
                 </div>
 
@@ -42,7 +43,7 @@ const LoginForm = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full border p-2 rounded"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                         />
                         <button
                             type="button"
@@ -55,19 +56,10 @@ const LoginForm = () => {
                     {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                 </div>
 
-                {isAuthenticated ? (
-                    <button
-                        type="button"
-                        className="w-full bg-green-500 text-white p-2 rounded font-bold"
-                        disabled
-                    >
-                        Logged in successfully!
-                    </button>
-                ) : (
-                    <button type="submit" className="w-full bg-green-500 text-white p-2 rounded font-bold">
-                        Login
-                    </button>
-                )}
+                <Button
+                    label={isAuthenticated ? "Logged in successfully" : "Login"}
+                    onClick={() => { handleSubmit }}
+                />
             </form>
 
 

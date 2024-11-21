@@ -5,16 +5,45 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 
 interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  role: string;
   username: string;
-  password: string;
   email: string;
-  isAuthenticated: boolean;
+  password: string;
+  address: string;
+  city: string;
+  postalcode: string;
+  country: string;
+  vendor: VendorType;
+  isAuthenticated: boolean
+  createdAt: string;
+  updatedAt: string;
 }
+
+interface VendorType {
+  id: string;
+  product: ProductType;
+  accountNumber: string;
+  bankName: string;
+  companyId: string;
+  phone: string;
+  shopName: string;
+  shopUrl: string;
+  vatId: string; 
+}
+
+interface ProductType {
+  id: string;
+
+}
+
 
 interface AuthContextType {
   userAuthenticated: boolean;
   activeUser: User | null;
-  login: (username: string, password: string) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 }
 
@@ -39,16 +68,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
-  const login = (username: string, password: string) => {
+  const login = (email: string, password: string) => {
     try {
       const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
       const updatedUsers = storedUsers.map((user: User) =>
-        user.username === username && user.password === password
+        user.email === email && user.password === password
           ? { ...user, isAuthenticated: true }
           : { ...user, isAuthenticated: false }
       );
       localStorage.setItem('users', JSON.stringify(updatedUsers));
-      const user = updatedUsers.find((user: User) => user.username === username && user.password === password);
+      const user = updatedUsers.find((user: User) => user.email === email && user.password === password);
 
       if (user) {
         setUserAuthenticated(true);

@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { FaTimes } from "react-icons/fa";
-import LoginForm from './LoginForm';
+import LoginForm from '../user/LoginForm';
 
 interface SignInSideComponentProps {
     toggleSignIn: () => void;

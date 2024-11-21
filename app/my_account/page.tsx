@@ -1,6 +1,6 @@
 'use client'
 
-import ProtectedRoute from "../routeProtect/ProtectedRoute";
+import ProtectedRoute from "../provider/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import AccountPage from "./profile/page";
 import LoginRegisterPage from "./login_signin/page";

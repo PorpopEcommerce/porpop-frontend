@@ -6,15 +6,15 @@ import { useAuth } from './context/AuthContext';
 import { FaXTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa6";
 import { CiMenuBurger } from "react-icons/ci";
 import classNames from 'classnames';
-import SearchBar from './components/SearchBar';
-import Cart from './components/Cart';
-import NavAccountComponent from './components/NavAccountComponent';
+import SearchBar from './components/nav/SearchBar';
+import Cart from './components/nav/Cart';
+import NavAccountComponent from './components/nav/NavAccountComponent';
 
 
 interface NavBarProps {
-    toggleMenu: () => void,
-    toggleCart: () => void,
-    toggleSignIn: () => void
+    toggleMenu: () => void;
+    toggleCart: () => void;
+    toggleSignIn: () => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn }) => {
