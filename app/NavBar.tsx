@@ -12,9 +12,9 @@ import NavAccountComponent from './components/nav/NavAccountComponent';
 
 
 interface NavBarProps {
-    toggleMenu: () => void,
-    toggleCart: () => void,
-    toggleSignIn: () => void
+    toggleMenu: () => void;
+    toggleCart: () => void;
+    toggleSignIn: () => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ toggleMenu, toggleCart, toggleSignIn }) => {

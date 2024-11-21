@@ -1,9 +1,8 @@
-// useRegisterForm.ts
 import { useState, useCallback, useMemo } from "react";
 import { registerSchema, validateField } from "./validation"; // Ensure these imports are correct
 import * as z from "zod";
 
-type FormType = "user" | "vendor";
+type Role = "user";
 
 interface FormData {
   firstName: string;
@@ -11,62 +10,66 @@ interface FormData {
   username: string;
   email: string;
   password: string;
-  shopName?: string;
-  shopDescription?: string;
-  city?: string;
-  zipCode?: string;
+  address: string;
+  city: string;
+  postalcode: string;
+  country: string;
+  phone: string;
 }
 
 export const useRegisterForm = () => {
-  const [formType, setFormType] = useState<FormType>("user");
+  const [role, setRole] = useState<Role>("user");
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     username: "",
     email: "",
     password: "",
+    address: "",
+    city: "",
+    postalcode: "",
+    country: "",
+    phone: "",
   });
+
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
 
+  const generateUniqueId = () => {
+    return `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+  };
+
+  const getCurrentTimestamp = () => {
+    return new Date().toISOString();
+  };
+
   const handleInputChange = useCallback(
     (fieldName: keyof FormData, value: string) => {
-      // Use keyof FormData here
       setFormData((prev) => ({ ...prev, [fieldName]: value }));
       setFormErrors((prev) => ({
         ...prev,
-        [fieldName]: validateField(fieldName, value), // Ensure fieldName is correctly typed
+        [fieldName]: validateField(fieldName, value),
       }));
     },
     []
   );
 
-  const handleFormTypeChange = useCallback(
-    (type: FormType) => setFormType(type),
-    []
-  );
-
   const isFormValid = useMemo(() => {
-    const requiredFields =
-      formType === "vendor"
-        ? [
-            "firstName",
-            "lastName",
-            "username",
-            "email",
-            "password",
-            "shopName",
-            "shopDescription",
-          ] // Ensure these are the exact keys
-        : ["firstName", "lastName", "username", "email", "password"];
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "username",
+      "email",
+      "password",
+    ];
 
     return (
       requiredFields.every((field) => formData[field as keyof FormData]) &&
       agreeToTerms
     );
-  }, [formData, formType, agreeToTerms]);
+  }, [formData, role, agreeToTerms]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -74,14 +77,13 @@ export const useRegisterForm = () => {
       setIsSubmitting(true);
   
       try {
-        // Check entire form validity using Zod schema
+        // Validate the form data
         registerSchema.parse(formData);
         setFormErrors({});
   
-        // Retrieve existing users from localStorage, or use an empty array if it doesn't exist
+        // Retrieve existing users from localStorage
         const users = JSON.parse(localStorage.getItem("users") || "[]");
   
-        // Check if users is an array before proceeding
         if (!Array.isArray(users)) {
           console.error("Error: 'users' in localStorage is not an array");
           setSubmitSuccess(false);
@@ -89,27 +91,37 @@ export const useRegisterForm = () => {
           return;
         }
   
-        // Add new user data to the array
-        users.push({ ...formData, formType });
+        // Generate a unique ID and timestamps for the new user
+        const newUser = {
+          ...formData,
+          role,
+          id: generateUniqueId(),
+          createdAt: getCurrentTimestamp(),
+          updatedAt: getCurrentTimestamp(),
+        };
   
-        // Save updated array back to localStorage
-        localStorage.setItem("users", JSON.stringify(users));
+        // Debugging: Log the new user before adding
+        console.log("New User:", newUser);
   
-        console.log({ ...formData, formType });
+        // Add the new user to the array
+        const updatedUsers = [...users, newUser];
   
-        // Indicate success
+        // Save updated users array to localStorage
+        localStorage.setItem("users", JSON.stringify(updatedUsers));
+  
+        // Indicate success and reset the form
         setSubmitSuccess(true);
-        // Reset form data
         setFormData({
           firstName: "",
           lastName: "",
           username: "",
           email: "",
           password: "",
-          shopName: "",
-          shopDescription: "",
+          address: "",
           city: "",
-          zipCode: "",
+          postalcode: "",
+          country: "",
+          phone: "",
         });
         setAgreeToTerms(false);
       } catch (error) {
@@ -127,12 +139,13 @@ export const useRegisterForm = () => {
         setIsSubmitting(false);
       }
     },
-    [formData]
+    [formData, agreeToTerms, role]
   );
   
+
   return {
-    formType,
-    setFormType,
+    role,
+    setRole,
     formData,
     formErrors,
     agreeToTerms,
@@ -141,7 +154,6 @@ export const useRegisterForm = () => {
     submitSuccess,
     setAgreeToTerms,
     handleInputChange,
-    handleFormTypeChange,
     handleSubmit,
   };
 };

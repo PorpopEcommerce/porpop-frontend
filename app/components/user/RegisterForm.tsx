@@ -4,7 +4,6 @@ import { useRegisterForm } from "../../hooks/useRegisterForm";
 
 const RegisterForm: React.FC = () => {
     const {
-        formType,
         formData,
         formErrors,
         agreeToTerms,
@@ -12,12 +11,11 @@ const RegisterForm: React.FC = () => {
         isSubmitting,
         submitSuccess,
         handleInputChange,
-        handleFormTypeChange,
         setAgreeToTerms,
         handleSubmit,
     } = useRegisterForm();
 
-    return (  
+    return (
         <div className="w-full">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Register</h2>
             {submitSuccess !== null && (
@@ -25,6 +23,7 @@ const RegisterForm: React.FC = () => {
                     {submitSuccess ? "Registration successful!" : "Registration failed. Please check your input."}
                 </p>
             )}
+
             <form className="space-y-4 mb-8" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-10">
                     <div>
@@ -34,7 +33,7 @@ const RegisterForm: React.FC = () => {
                             placeholder="First Name"
                             value={formData.firstName}
                             onChange={(e) => handleInputChange("firstName", e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                         />
                         {formErrors.firstName && <p className="text-red-500 text-sm">{formErrors.firstName}</p>}
                     </div>
@@ -45,7 +44,7 @@ const RegisterForm: React.FC = () => {
                             placeholder="Last Name"
                             value={formData.lastName}
                             onChange={(e) => handleInputChange("lastName", e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                         />
                         {formErrors.lastName && <p className="text-red-500 text-sm">{formErrors.lastName}</p>}
                     </div>
@@ -58,7 +57,7 @@ const RegisterForm: React.FC = () => {
                         placeholder="Username"
                         value={formData.username}
                         onChange={(e) => handleInputChange("username", e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />
                     {formErrors.username && <p className="text-red-500 text-sm">{formErrors.username}</p>}
                 </div>
@@ -70,7 +69,7 @@ const RegisterForm: React.FC = () => {
                         placeholder="Email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />
                     {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
                 </div>
@@ -82,62 +81,67 @@ const RegisterForm: React.FC = () => {
                         placeholder="Password"
                         value={formData.password}
                         onChange={(e) => handleInputChange("password", e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />
                     {formErrors.password && <p className="text-red-500 text-sm">{formErrors.password}</p>}
                 </div>
-
-                {/* Vendor-specific Fields */}
-                {formType === "vendor" && (
-                    <>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Shop Name</label>
-                            <input
-                                type="text"
-                                placeholder="Shop Name"
-                                value={formData.shopName || ""}
-                                onChange={(e) => handleInputChange("shopName", e.target.value)}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            />
-                            {formErrors.shopName && <p className="text-red-500 text-sm">{formErrors.shopName}</p>}
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Shop Description</label>
-                            <textarea
-                                placeholder="Shop Description"
-                                value={formData.shopDescription || ""}
-                                onChange={(e) => handleInputChange("shopDescription", e.target.value)}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            />
-                            {formErrors.shopDescription && <p className="text-red-500 text-sm">{formErrors.shopDescription}</p>}
-                        </div>
-                        <div className="grid grid-cols-2 gap-10">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">City</label>
-                                <input
-                                    type="text"
-                                    placeholder="City"
-                                    value={formData.city || ""}
-                                    onChange={(e) => handleInputChange("city", e.target.value)}
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                                />
-                                {formErrors.city && <p className="text-red-500 text-sm">{formErrors.city}</p>}
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Zip Code</label>
-                                <input
-                                    type="text"
-                                    placeholder="Zip Code"
-                                    value={formData.zipCode || ""}
-                                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                                />
-                                {formErrors.zipCode && <p className="text-red-500 text-sm">{formErrors.zipCode}</p>}
-                            </div>
-                        </div>
-                    </>
-                )}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Address</label>
+                    <input
+                        type="text"
+                        placeholder="Address"
+                        value={formData.address}
+                        onChange={(e) => handleInputChange("address", e.target.value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                    />
+                    {formErrors.address && <p className="text-red-500 text-sm">{formErrors.address}</p>}
+                </div>
+                <div className="grid grid-cols-2 gap-10">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">City</label>
+                        <input
+                            type="text"
+                            placeholder="City"
+                            value={formData.city}
+                            onChange={(e) => handleInputChange("city", e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                        />
+                        {formErrors.city && <p className="text-red-500 text-sm">{formErrors.city}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Postal Code</label>
+                        <input
+                            type="number"
+                            placeholder="Postal code"
+                            value={formData.postalcode}
+                            onChange={(e) => handleInputChange("postalcode", e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                        />
+                        {formErrors.postalcode && <p className="text-red-500 text-sm">{formErrors.postalcode}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Country</label>
+                        <input
+                            type="text"
+                            placeholder="Country"
+                            value={formData.country}
+                            onChange={(e) => handleInputChange("country", e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                        />
+                        {formErrors.country && <p className="text-red-500 text-sm">{formErrors.country}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input
+                            type="tel"
+                            placeholder="Phone Number"
+                            value={formData.phone}
+                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                        />
+                        {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
+                    </div>
+                </div>
 
 
             </form>
@@ -151,28 +155,6 @@ const RegisterForm: React.FC = () => {
                         className="mr-2"
                     />
                     I have read and agree to the Terms and Condition.
-                </label>
-                <label className="flex items-center">
-                    <input
-                        type="radio"
-                        name="formType"
-                        value="user"
-                        checked={formType === "user"}
-                        onChange={() => handleFormTypeChange("user")}
-                        className="mr-2"
-                    />
-                    I am a Customer
-                </label>
-                <label className="flex items-center">
-                    <input
-                        type="radio"
-                        name="formType"
-                        value="vendor"
-                        checked={formType === "vendor"}
-                        onChange={() => handleFormTypeChange("vendor")}
-                        className="mr-2"
-                    />
-                    I am a Vendor
                 </label>
             </div>
 
