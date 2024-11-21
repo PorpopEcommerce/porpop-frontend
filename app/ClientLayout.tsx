@@ -28,9 +28,6 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
             {menuDisplay && <MenuSideComponent toggleMenu={toggleMenu} toggleSignIn={toggleSignIn}/>}
             {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
             {signInDisplay && <Login_RegistrationSideComponent toggleSignIn={toggleSignIn} />}
-
-            
-
             {children}
         </div>
     )
