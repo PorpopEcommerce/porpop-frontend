@@ -11,7 +11,6 @@ interface SignInSideComponentProps {
 
 const Login_RegistrationSideComponent: React.FC<SignInSideComponentProps> = ({ toggleSignIn }) => {
     
-
     return (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-end z-40' onClick={toggleSignIn}>
             <div

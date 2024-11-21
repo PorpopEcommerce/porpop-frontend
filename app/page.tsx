@@ -1,9 +1,10 @@
 import Image from 'next/image'
+import LandingPage from './LandingPage'
 
 export default function Home() {
   return (
     <main>
-      <h1></h1>
+      <LandingPage />
     </main>
   )
 }
