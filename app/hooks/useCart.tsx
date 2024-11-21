@@ -23,8 +23,6 @@ export const CartContextProvider = (props: Props) => {
     const [cartTotalAmount, setCartTotalAmount] = useState(0);
     const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(null);
 
-    console.log('qty:', cartTotalQty)
-    console.log('amount:', cartTotalAmount)
 
     useEffect(() => {
         const cartItems: any = localStorage.getItem('shopCartItems')
@@ -140,9 +138,47 @@ export const CartContextProvider = (props: Props) => {
 
         setCartProducts(null);
         setCartTotalQty(0);
+        setCartTotalAmount(0);
         localStorage.setItem('shopCartItems', JSON.stringify(null))
 
     }, [cartProducts])
+
+    const handleAddToUserProfile = useCallback((product: CartProductType) => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+
+    if (!loggedInUser) {
+        alert("You need to log in to add items to your profile cart.");
+        return;
+    }
+
+    // Retrieve authenticated user's data
+    const { username } = loggedInUser;
+
+    // Key for storing the user's cart
+    const userCartKey = `cart_${username}`;
+
+    // Fetch current cart data for the user
+    const currentCart = JSON.parse(localStorage.getItem(userCartKey) || "[]");
+
+    // Check if the product already exists in the cart
+    const existingIndex = currentCart.findIndex(
+        (item: CartProductType) => item.id === product.id
+    );
+
+    if (existingIndex !== -1) {
+        // Increment quantity if the product exists
+        currentCart[existingIndex].quantity += product.quantity || 1;
+    } else {
+        // Add new product to the cart
+        currentCart.push({ ...product, quantity: product.quantity || 1 });
+    }
+
+    // Save updated cart back to localStorage
+    localStorage.setItem(userCartKey, JSON.stringify(currentCart));
+    alert("Product successfully added to your profile cart!");
+}, []);
+
+    
 
     const value = {
         cartTotalQty,
@@ -152,7 +188,7 @@ export const CartContextProvider = (props: Props) => {
         handleRemoveProductFromCart,
         handleQtyProductIncrease,
         handleQtyProductDecrease,
-        handleClearCart
+        handleClearCart,
     }
 
     return <CartContext.Provider value={value} {...props} />
