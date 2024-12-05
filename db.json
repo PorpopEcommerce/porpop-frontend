@@ -1,0 +1,70 @@
+{
+  "users": [
+    {
+      "id": "1733327476676",
+      "firstName": "Alfred",
+      "lastName": "Annie",
+      "username": "Ahlfyred",
+      "email": "fredileader@gmail.com",
+      "password": "deborah",
+      "address": "25 Ben Iyah Street off osongama estate, Uyo Akwa Ibom State.",
+      "city": "Uyo",
+      "postalcode": "520231",
+      "country": "Nigeria",
+      "phone": "08140633765",
+      "role": [
+        "user",
+        "vendor"
+      ],
+      "createdAt": "2024-12-04T15:51:16.676Z",
+      "updatedAt": "2024-12-04T15:51:16.676Z",
+      "isAuthenticated": true,
+      "vendorData": {
+        "shopName": "dviani",
+        "shopUrl": "dvianiStore",
+        "phone": "08140633765",
+        "companyId": "12345",
+        "vatId": "54321",
+        "bankName": "Access Bank",
+        "accountNumber": "0012006292",
+        "id": "1733406256663",
+        "createdAt": "2024-12-05T13:44:16.663Z",
+        "updatedAt": "2024-12-05T13:44:16.663Z",
+        "products": [
+          {
+            "id": "1733406927530",
+            "createdAt": "2024-12-05T13:55:27.530Z",
+            "updatedAt": "2024-12-05T13:55:27.530Z",
+            "title": "bags for women and men and childrean and clothes",
+            "productType": "Simple",
+            "price": "2345",
+            "discountedPrice": "2133",
+            "scheduleDate": false,
+            "scheduledFrom": "",
+            "scheduledTo": "",
+            "categories": [
+              {
+                "id": 1733406612802,
+                "value": "Fashion > Bag > Unisex"
+              }
+            ],
+            "tags": [
+              "shoe",
+              "bag",
+              "money",
+              "unisex"
+            ],
+            "shortDescription": "<p>wwwwwwwwwwwwwwwwwwwweee</p>",
+            "productDescription": "<p>wadfsagfbgfdhgh</p>",
+            "SKU": "PROD-7286",
+            "stockType": "In Stock",
+            "allowType": false,
+            "isStockManagementEnabled": false,
+            "stockQuantity": 0,
+            "lowStockThreshold": 0
+          }
+        ]
+      }
+    }
+  ]
+}

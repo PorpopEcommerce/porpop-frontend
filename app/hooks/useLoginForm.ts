@@ -1,81 +1,66 @@
-// useLoginForm.ts
-
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useRouter } from 'next/router';
-import { z } from "zod";
-
-// Define Zod schema for form validation
-const schema = z.object({
-  email: z.string().min(1, "Email is required"),
-  password: z.string().min(1, "Password is required"),
-});
+import { useState } from "react";
+import { useDispatch } from "react-redux"; // Import custom Redux hook
+import { setLoginStatus, loginUser, setError } from "@/app/redux/features/users/userSlice";
+import { useRouter } from "next/navigation";
+import { useAuth} from '@/app/context/AuthContext'
 
 export const useLoginForm = () => {
+    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const [errMsg, setErrMsg] = useState<string>("");
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const {login} = useAuth();
 
-  const { login } = useAuth();
+    const validateForm = () => {
+        const newErrors: typeof errors = {};
+        if (!formData.email) newErrors.email = "Email is required";
+        if (!formData.password) newErrors.password = "Password is required";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+        setErrors({
+            ...errors,
+            [e.target.name]: "",
+        });
+        setErrMsg("");
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+      if (!validateForm()) return;
+  
+      try {
+          dispatch(setLoginStatus("loading")); // Start login process
+  
+          // Call the login function from AuthContext
+          await login(formData.email, formData.password);
+  
+          // If login is successful, navigate to the account page
+          dispatch(setLoginStatus("succeeded"));
+          setFormData({ email: "", password: "" })
+          router.push("/my_account"); // Navigate to home or account dashboard
+      } catch (error: any) {
+          // Handle errors during login
+          dispatch(setLoginStatus("failed"));
+          dispatch(setError(error.message || "An error occurred"));
+          setErrMsg(error.message || "Invalid email or password");
+      }
+  };
   
 
-
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<{
-    email?: string;
-    password?: string;
-  }>({});
-  const [errMsg, setErrMsg] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const result = schema.safeParse(formData);
-    if (!result.success) {
-        const fieldErrors = result.error.flatten().fieldErrors;
-        setErrors({
-            email: fieldErrors.email?.[0],
-            password: fieldErrors.password?.[0],
-        });
-        return;
-    }
-
-    // Parse stored users from localStorage
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
-    console.log("Parsed storedUsers:", storedUsers); // Debugging line
-
-    // Check if there's a match in the stored users
-    const userExists = storedUsers.some(
-        (user: { email: string; password: string }) =>
-            user.email === formData.email && user.password === formData.password
-    );
-
-    if (userExists) {
-        setIsAuthenticated(true);
-        setTimer(); // Reset authentication status after a delay
-        login(formData.email,  formData.password);
-        setErrors({}); // Clear errors if login is successful
-        setFormData({ email: "", password: "" });
-    } else {
-        setErrMsg("Invalid email or password");
-        setIsAuthenticated(false);
-    }
-};
-
-
-  const setTimer = () => {
-    setTimeout(() => setIsAuthenticated(false), 3000); // Reset after 3 seconds
-    setTimeout(() => setErrMsg(""), 3000); // Reset after 3 seconds
-  };
-
-  return {
-    formData,
-    errors,
-    errMsg,
-    isAuthenticated,
-    handleChange,
-    handleSubmit,
-  };
+    return {
+        formData,
+        errors,
+        errMsg,
+        handleChange,
+        handleSubmit,
+    };
 };

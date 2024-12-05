@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { CartProductType } from "../components/product/ProductDetails";
-import { formatPrice } from "../utils/formatPrice";
+import { formatPrice } from "../utils/formatter";
 import { truncateText } from "../utils/truncateText";
 import Image from "next/image";
 import SetQuantity from "../components/product/SetQuantity";

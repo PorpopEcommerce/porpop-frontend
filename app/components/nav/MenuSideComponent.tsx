@@ -51,7 +51,7 @@ const MenuSideComponent: React.FC<MenuSideComponentProps> = ({ toggleMenu, toggl
     const { userAuthenticated } = useAuth();
 
     useEffect(() => {
-        fetch('/db.json')
+        fetch('/category.json')
             .then((response) => {
                 if (!response.ok) throw new Error("Network response was not ok");
                 return response.json();

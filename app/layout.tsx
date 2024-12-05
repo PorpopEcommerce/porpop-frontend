@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import Sidebar from './components/Sidebar';
 import ClientLayout from './ClientLayout';
 import { AuthProvider } from './context/AuthContext';
+import { store } from './redux/store';
+import { Provider } from 'react-redux';
 import CartProvider from './provider/CartProvider';
 
 
@@ -24,21 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-          <CartProvider>
-            <section className='flex'>
-              <aside>
-                <Sidebar />
-              </aside>
-              <main className='flex-1 lg:ml-14 relative'>
-                <ClientLayout>
-                  {children}
-                </ClientLayout>
-              </main>
-            </section>
-          </CartProvider>
-        </AuthProvider>
-
+        <ClientLayout >
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )

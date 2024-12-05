@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { IconType } from "react-icons"; // Import IconType to type icons
+import ManageProduct from "@/app/dashboard/vendor/components/product/ManageProduct";
+
 
 
 interface DashboardOption {
@@ -41,9 +43,9 @@ export const useAccountNavigation = () => {
       case "pof":
         return <p>POF Layout</p>;
       case "product":
-        return <p>Product Layout</p>;
+        return <ManageProduct />;
       default:
-        return <p>Dashboard Overview</p>;
+        return <p>Parent</p>;
     }
   };
 
