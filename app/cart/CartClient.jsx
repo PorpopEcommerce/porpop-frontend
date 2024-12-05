@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Heading from '../components/product/Heading';
 import Button from '../components/product/Button';
 import ItemContent from './ItemContent';
-import { formatPrice } from '../utils/formatPrice';
+import { formatPrice } from '../utils/formatter';
 import { useAuth } from '../context/AuthContext';
 
 const CartClient = () => {

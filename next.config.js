@@ -3,7 +3,8 @@ const nextConfig = {
     images: {
         domains: [
             'm.media-amazon.com',
-            'lh3.googleusercontent.com'
+            'lh3.googleusercontent.com',
+            'porpop.com'
         ],
     },
 }; 

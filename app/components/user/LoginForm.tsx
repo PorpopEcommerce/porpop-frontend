@@ -1,4 +1,3 @@
-// LoginForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -9,7 +8,7 @@ import Button from "../product/Button";
 
 const LoginForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const { formData, errors, errMsg, isAuthenticated, handleChange, handleSubmit, } = useLoginForm();
+    const { formData, errors, errMsg, handleChange, handleSubmit } = useLoginForm();
 
     const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
@@ -17,10 +16,9 @@ const LoginForm = () => {
         <div className="w-full">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Login</h2>
 
-            <p className="text-red-500 text-sm">{errMsg}</p>
+            {errMsg && <p className="text-red-500 text-sm">{errMsg}</p>}
 
-
-            <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+            <form className="flex flex-col space-y-4">
                 <div>
                     <label className="block mb-1 text-sm md:text-base">Email</label>
                     <input
@@ -30,9 +28,7 @@ const LoginForm = () => {
                         onChange={handleChange}
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                     />
-                    {errors.email && (
-                        <p className="text-red-500 text-sm">{errors.email}</p>
-                    )}
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                 </div>
 
                 <div>
@@ -56,12 +52,8 @@ const LoginForm = () => {
                     {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                 </div>
 
-                <Button
-                    label={isAuthenticated ? "Logged in successfully" : "Login"}
-                    onClick={() => { handleSubmit }}
-                />
+                <Button label="Login" onClick={handleSubmit} />
             </form>
-
 
             <div className="flex items-center mt-6 mb-4">
                 <div className="flex-grow border-t border-gray-300"></div>

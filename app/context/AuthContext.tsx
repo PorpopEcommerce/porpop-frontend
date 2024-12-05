@@ -1,50 +1,16 @@
 "use client";
 
 // context/AuthContext.tsx
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  username: string;
-  email: string;
-  password: string;
-  address: string;
-  city: string;
-  postalcode: string;
-  country: string;
-  vendor: VendorType;
-  isAuthenticated: boolean
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface VendorType {
-  id: string;
-  product: ProductType;
-  accountNumber: string;
-  bankName: string;
-  companyId: string;
-  phone: string;
-  shopName: string;
-  shopUrl: string;
-  vatId: string; 
-}
-
-interface ProductType {
-  id: string;
-
-}
-
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useDispatch } from "react-redux";
+import { loginUser, logoutUser, setLoginStatus, setError } from "@/app/redux/features/users/userSlice";
+import { User } from "../types/user";
 
 interface AuthContextType {
   userAuthenticated: boolean;
   activeUser: User | null;
-  login: (email: string, password: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,52 +18,83 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userAuthenticated, setUserAuthenticated] = useState(false);
   const [activeUser, setActiveUser] = useState<User | null>(null);
+  const dispatch = useDispatch();  // Redux dispatch
 
   useEffect(() => {
-    // Initialize authentication state and active user from localStorage
-    try {
-      const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      const activeUser = storedUsers.find((user: User) => user.isAuthenticated);
+    const fetchAuthenticatedUser = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/users");
+        if (!response.ok) throw new Error("Failed to fetch users");
 
-      if (activeUser) {
-        setUserAuthenticated(true);
-        setActiveUser(activeUser);
+        const users: User[] = await response.json();
+        const authenticatedUser = users.find((user) => user.isAuthenticated);
+
+        if (authenticatedUser) {
+          setUserAuthenticated(true);
+          setActiveUser(authenticatedUser);
+          dispatch(loginUser(authenticatedUser));  // Dispatch to Redux
+        }
+      } catch (error) {
+        console.error("Error fetching authenticated user:", error);
       }
-    } catch (error) {
-      console.error('Failed to parse users from localStorage:', error);
-    }
-  }, []);
+    };
 
-  const login = (email: string, password: string) => {
+    fetchAuthenticatedUser();
+  }, [dispatch]);
+
+  const login = async (email: string, password: string) => {
     try {
-      const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      const updatedUsers = storedUsers.map((user: User) =>
-        user.email === email && user.password === password
-          ? { ...user, isAuthenticated: true }
-          : { ...user, isAuthenticated: false }
+      dispatch(setLoginStatus("loading"));
+      const response = await fetch("http://localhost:3001/users");
+      if (!response.ok) throw new Error("Failed to fetch users");
+
+      const users: User[] = await response.json();
+      const user = users.find(
+        (user) => user.email === email && user.password === password
       );
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-      const user = updatedUsers.find((user: User) => user.email === email && user.password === password);
 
       if (user) {
+        const updatedUser = { ...user, isAuthenticated: true };
+
+        // Update the user in the backend
+        await fetch(`http://localhost:3001/users/${user.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedUser),
+        });
+
         setUserAuthenticated(true);
-        setActiveUser(user);
+        setActiveUser(updatedUser);
+        dispatch(loginUser(updatedUser));  // Dispatch user to Redux
+        dispatch(setLoginStatus("succeeded"));
+      } else {
+        throw new Error("Invalid email or password");
       }
-    } catch (error) {
-      console.error('Failed to log in user:', error);
+    } catch (error: any) {
+      dispatch(setLoginStatus("failed"));
+      dispatch(setError(error.message));  // Set error in Redux
+      console.error("Error during login:", error);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     try {
-      const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      const updatedUsers = storedUsers.map((user: User) => ({ ...user, isAuthenticated: false }));
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
+      if (!activeUser) return;
+
+      const updatedUser = { ...activeUser, isAuthenticated: false };
+
+      // Update the user in the backend
+      await fetch(`http://localhost:3001/users/${activeUser.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedUser),
+      });
 
       setUserAuthenticated(false);
       setActiveUser(null);
+      dispatch(logoutUser());  // Dispatch logout to Redux
     } catch (error) {
-      console.error('Failed to log out user:', error);
+      console.error("Error during logout:", error);
     }
   };
 
@@ -111,7 +108,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

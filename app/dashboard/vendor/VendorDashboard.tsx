@@ -20,7 +20,7 @@ const VendorDashboard = () => {
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
-            <aside className="w-64 bg-white shadow-md border-r">
+            <aside className="w-56 bg-white shadow-md border-r">
                 <div className='py-5'>
                     <SubHeading title='Vendor Dashboard' center />
                 </div>

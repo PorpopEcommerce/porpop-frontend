@@ -31,11 +31,6 @@ export const useAccountNavigation = () => {
     { label: "Logout", key: "logout", icon: FaSignOutAlt },
   ];
 
-  // Define user dashboard options with icons
-  const vendorDashboardOptions: DashboardOption[] = [
-    { label: "Dashboard", key: "vendorDashboard", icon: FaShoppingCart },
-    { label: "Product", key: "product", icon: FaShoppingCart },
-  ];
 
   const handleOptionClick = (key: string) => {
     if (key === "logout") {
@@ -84,7 +79,6 @@ export const useAccountNavigation = () => {
 
   return {
     dashboardOptions,
-    vendorDashboardOptions,
     selectedOption,
     vendorSelectedOption,
     handleOptionClick,
