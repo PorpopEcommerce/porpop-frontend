@@ -25,7 +25,7 @@ export const fetchProducts = createAsyncThunk<Product[], void, { state: RootStat
     if (!userId) throw new Error("Vendor ID not found");
 
     const response = await axios.get(`http://localhost:3001/users/${userId}`);
-    return response.data.vendorData?.products || [];
+    return response.data.vendor_product?.products || [];
   }
 );
 
