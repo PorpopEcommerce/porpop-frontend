@@ -7,8 +7,7 @@ import FeaturesOverviewSection from './LandingPage/FeaturesOverviewSection';
 import ProductHighlightSection from './LandingPage/ProductHighlightSection'
 import CallToActionSection from './LandingPage/CallToActionSection';
 import ThreeStepProcessSection from './LandingPage/ThreeStepProcessSection';
-import ReviewsSection from './LandingPage/ReviewsSection';
-import FooterSection from './LandingPage/FooterSection';
+
 
 const LandingPage = () => {
     return (
@@ -21,7 +20,6 @@ const LandingPage = () => {
             <ProductHighlightSection />
             <CallToActionSection />
             <ThreeStepProcessSection />
-            <FooterSection />
         </main>
     );
 };

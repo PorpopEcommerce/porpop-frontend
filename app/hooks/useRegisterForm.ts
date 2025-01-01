@@ -3,38 +3,27 @@ import { registerSchema, validateField } from "./validation";
 import * as z from "zod";
 import { useDispatch } from "react-redux";
 import { addUser, setRegistrationStatus, setError } from "@/app/redux/features/users/userSlice";
-import { User } from "../types/user";
 
-type Role = "user";
+type Role = "buyer";
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   username: string;
   email: string;
   password: string;
-  address: string;
-  city: string;
-  postalcode: string;
-  country: string;
-  phone: string;
 }
 
 export const useRegisterForm = () => {
   const dispatch = useDispatch();
   
-  const [role, setRole] = useState<Role>("user");
+  const [role, setRole] = useState<Role>("buyer");
   const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     username: "",
     email: "",
-    password: "",
-    address: "",
-    city: "",
-    postalcode: "",
-    country: "",
-    phone: "",
+    password: ""
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -42,13 +31,6 @@ export const useRegisterForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
 
-  const generateUniqueId = () => {   
-    return Date.now().toString();
-  };
-
-  const getCurrentTimestamp = () => {
-    return new Date().toISOString();
-  };
 
   const handleInputChange = useCallback(
     (fieldName: keyof FormData, value: string) => {
@@ -63,8 +45,8 @@ export const useRegisterForm = () => {
 
   const isFormValid = useMemo(() => {
     const requiredFields = [
-      "firstName",
-      "lastName",
+      "first_name",
+      "last_name",
       "username",
       "email",
       "password",
@@ -81,60 +63,56 @@ export const useRegisterForm = () => {
       e.preventDefault();
       setIsSubmitting(true);
       dispatch(setRegistrationStatus("loading"));
-
+  
       try {
         // Validate the form data
         registerSchema.parse(formData);
         setFormErrors({});
-
+  
         // Create a new user object
-        const newUser: User = {
-          ...formData,
-          role: [role],
-          id: generateUniqueId(),
-          createdAt: getCurrentTimestamp(),
-          updatedAt: getCurrentTimestamp(),
-          isAuthenticated: false
-        };
-
+        const newUser = { user: { ...formData, role } };
+  
         // Debugging: Log the new user before sending the request
         console.log("New User:", newUser);
-
-        // Send the new user data to the API endpoint
-        const response = await fetch("http://localhost:3001/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newUser),
-        });
-
+  
+        // Send the new user data to the API endpoint using fetch
+        const response = await fetch(
+          "https://backend-porpop.onrender.com/api/v1/user/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              
+            },
+            body: JSON.stringify(newUser), // Ensure proper payload structure
+          }
+        );
+  
+        // Check if the response is successful
         if (!response.ok) {
-          throw new Error("Failed to submit user data");
+          const errorData = await response.json();
+          console.error("Error response from backend:", errorData);
+          throw new Error(errorData.message || "Failed to submit user data");
         }
-
+  
+        const result = await response.json();
+        console.log("User successfully registered:", result);
+  
         // Dispatch to Redux store
-        dispatch(addUser(newUser));
-
+        dispatch(addUser(newUser.user));
+  
         // Indicate success and reset the form
         setSubmitSuccess(true);
         setFormData({
-          firstName: "",
-          lastName: "",
+          first_name: "",
+          last_name: "",
           username: "",
           email: "",
           password: "",
-          address: "",
-          city: "",
-          postalcode: "",
-          country: "",
-          phone: "",
         });
         setAgreeToTerms(false);
-
-        console.log("User successfully added to the database.");
         dispatch(setRegistrationStatus("succeeded"));
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof z.ZodError) {
           const errors: Record<string, string> = {};
           error.errors.forEach((err) => {
@@ -143,7 +121,7 @@ export const useRegisterForm = () => {
           setFormErrors(errors);
         } else {
           console.error("Unexpected error:", error);
-          dispatch(setError("An error occurred during registration"));
+          dispatch(setError(error.message || "An error occurred during registration"));
         }
         setSubmitSuccess(false);
         dispatch(setRegistrationStatus("failed"));
@@ -153,6 +131,8 @@ export const useRegisterForm = () => {
     },
     [formData, agreeToTerms, role, dispatch]
   );
+  
+  
 
   return {
     role,

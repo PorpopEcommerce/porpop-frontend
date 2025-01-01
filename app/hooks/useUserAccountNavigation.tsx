@@ -6,6 +6,11 @@ import { FaShoppingCart, FaUser, FaLock, FaComments, FaHeadset, FaSignOutAlt } f
 import { MdPayment } from "react-icons/md";
 import Dashboard from "../my_account/profile/userDashboard/components/Dashboard";
 import VendorForm from "@/app/components/user/VendorRegisterationForm";
+import CVListing from "../my_account/profile/userDashboard/components/CVListing";
+import RequestQuotes from "../my_account/profile/userDashboard/components/RequestQuotes";
+import Orders from "../my_account/profile/userDashboard/components/Orders";
+import ReturnAndRefund from "../my_account/profile/userDashboard/components/ReturnAndRefund";
+import PaymentMethod from "../my_account/profile/userDashboard/components/PaymentMethod";
 
 interface DashboardOption {
   label: string;
@@ -22,12 +27,17 @@ export const useAccountNavigation = () => {
   // Define user dashboard options with icons
   const dashboardOptions: DashboardOption[] = [
     { label: "Dashboard", key: "dashboard", icon: FaShoppingCart },
-    { label: "Order", key: "order", icon: FaShoppingCart },
-    { label: "Account Details", key: "account", icon: FaUser },
-    { label: "Payment", key: "payment", icon: MdPayment },
-    { label: "Login and Security", key: "security", icon: FaLock },
-    { label: "Chat", key: "chat", icon: FaComments },
-    { label: "Customer Service", key: "customer", icon: FaHeadset },
+    { label: "My CVs", key: "myCV", icon: FaShoppingCart },
+    { label: "Request Quotes", key: "request", icon: FaShoppingCart },
+    { label: "Create CV", key: "create", icon: FaShoppingCart },
+    { label: "Orders", key: "order", icon: FaShoppingCart },
+    { label: "Returns and Refunds", key: "ret&ref", icon: FaShoppingCart },
+    { label: "Payment methods", key: "paymentMethod", icon: FaUser },
+    { label: "My wallet", key: "myWallet", icon: MdPayment },
+    { label: "Account details", key: "account", icon: MdPayment },
+    { label: "Vendors", key: "vendors", icon: MdPayment },
+    { label: "Seller Support Tickets", key: "seller", icon: MdPayment },
+    { label: "Wishlist", key: "wishlist", icon: FaLock },
     { label: "Logout", key: "logout", icon: FaSignOutAlt },
   ];
 
@@ -55,14 +65,16 @@ export const useAccountNavigation = () => {
           handleVendorFormClick={handleVendorFormClick}
           
         />;
+      case "myCV":
+        return <CVListing />;
+      case "request":
+        return <RequestQuotes />;
       case "order":
-        return <p>Order History</p>;
-      case "account":
-        return <p>Account Details</p>;
-      case "payment":
-        return <p>Payment Options</p>;
-      case "security":
-        return <p>Login and Security Settings</p>;
+        return <Orders />;
+      case "ret&ref":
+        return <ReturnAndRefund />;
+      case "paymentMethod":
+        return <PaymentMethod />;
       case "chat":
         return <p>Chat Support</p>;
       case "customer":

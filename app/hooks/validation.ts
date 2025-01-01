@@ -1,35 +1,51 @@
-// validation.ts
 import { z } from "zod";
-
-// Define a type that includes all the keys of the form schema
-type FormFieldNames =
-  | "firstName"
-  | "lastName"
-  | "username"
-  | "email"
-  | "password"
-  | "address"
-  | "city"
-  | "country"
-  | "phone"
-  | "postalcode";
 
 // Define the registration schema
 export const registerSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
   username: z.string().min(1, "Username is required"),
   email: z.string().email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  address: z.string().min(1, "Please enter a valid address"),
-  city: z.string().min(1, "Please enter a valid city name"),
-  country: z.string().min(1, "Please select a country code"),
-  phone: z.string().min(6, "Phone number must be at least 6 characters"),
-  postalcode: z.string().min(4, "Postal code must be at least 4 characters"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must include at least one uppercase letter")
+    .regex(/[a-z]/, "Password must include at least one lowercase letter")
+    .regex(/[0-9]/, "Password must include at least one number")
+    .regex(/[@$!%*?&#]/, "Password must include at least one special character"),
 });
 
-// Validate a specific field
-export const validateField = (fieldName: FormFieldNames, value: string) => {
-  const result = registerSchema.shape[fieldName]?.safeParse(value);
-  return result && !result.success ? result.error.errors[0].message : "";
+
+// Define the vendor registration schema
+export const vendorRegisterSchema = z.object({
+  shop_name: z.string().min(1, "Shop name is required"),
+  shop_url: z.string().min(1, "Shop URL is required"),
+  shop_description: z.string().min(1, "Shop description is required"),
+  city: z.string().min(1, "City is required"),
+  street: z.string().min(1, "Street is required"),
+  country: z.string().min(1, "Country is required"),
+});
+
+// Union of valid field names from both schemas
+type FormFieldNames = keyof z.infer<typeof registerSchema> | keyof z.infer<typeof vendorRegisterSchema>;
+
+// Validate a specific field using the appropriate schema
+export const validateField = (
+  fieldName: FormFieldNames,
+  value: string,
+  schemaType: "register" | "vendor" = "register" // Default to "register"
+): string => {
+  // Select the schema based on type
+  const schema = schemaType === "vendor" ? vendorRegisterSchema : registerSchema;
+
+  // Type guard to ensure the fieldName exists in the schema's shape
+  if (!Object.prototype.hasOwnProperty.call(schema.shape, fieldName)) {
+    throw new Error(`Field "${fieldName}" is not defined in the selected schema`);
+  }
+
+  // Safely parse the value using the schema's field validator
+  const fieldValidator = schema.shape[fieldName as keyof typeof schema.shape];
+  const result = (fieldValidator as z.ZodTypeAny).safeParse(value);
+
+  return result.success ? "" : result.error.errors[0].message;
 };

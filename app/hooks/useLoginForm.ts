@@ -1,66 +1,81 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux"; // Import custom Redux hook
-import { setLoginStatus, loginUser, setError } from "@/app/redux/features/users/userSlice";
+import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAuth} from '@/app/context/AuthContext'
+import { useAuth } from "../context/AuthContext";
 
 export const useLoginForm = () => {
-    const [formData, setFormData] = useState({ email: "", password: "" });
-    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const [errMsg, setErrMsg] = useState<string>("");
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const {login} = useAuth();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
+  const [errMsg, setErrMsg] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccessfull, setIsSuccessfull] = useState("");
+  const router = useRouter();
+  const { login } = useAuth();
 
-    const validateForm = () => {
-        const newErrors: typeof errors = {};
-        if (!formData.email) newErrors.email = "Email is required";
-        if (!formData.password) newErrors.password = "Password is required";
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setErrors({
-            ...errors,
-            [e.target.name]: "",
-        });
-        setErrMsg("");
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-  
-      if (!validateForm()) return;
-  
-      try {
-          dispatch(setLoginStatus("loading")); // Start login process
-  
-          // Call the login function from AuthContext
-          await login(formData.email, formData.password);
-  
-          // If login is successful, navigate to the account page
-          dispatch(setLoginStatus("succeeded"));
-          setFormData({ email: "", password: "" })
-          router.push("/my_account"); // Navigate to home or account dashboard
-      } catch (error: any) {
-          // Handle errors during login
-          dispatch(setLoginStatus("failed"));
-          dispatch(setError(error.message || "An error occurred"));
-          setErrMsg(error.message || "Invalid email or password");
-      }
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
-  
 
-    return {
-        formData,
-        errors,
-        errMsg,
-        handleChange,
-        handleSubmit,
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    setErrors({
+      ...errors,
+      [e.target.name]: "",
+    });
+    setErrMsg("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "https://backend-porpop.onrender.com/api/v1/user/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        { withCredentials: true }
+      );
+
+      console.log(response);
+
+      // Call login function from AuthContext
+      login(response.data);
+
+      setFormData({ email: "", password: "" });
+      setIsSuccessfull("Logged in successfully");
+      router.push("/");
+    } catch (err: any) {
+      setIsLoading(false);
+      if (err.response && err.response.status === 403) {
+        setErrMsg("Invalid email or password");
+      } else {
+        setErrMsg("An unexpected error occurred. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    formData,
+    errors,
+    errMsg,
+    isLoading,
+    isSuccessfull,
+    handleChange,
+    handleSubmit,
+  };
 };

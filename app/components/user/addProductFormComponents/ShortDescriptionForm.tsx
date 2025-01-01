@@ -1,9 +1,10 @@
 import { useState } from "react";
 import TextEditor from "../../TextEditor";
+import { Product } from "@/app/types/product";
 
 interface ShortDescriptionFormProps {
   shortDescription: string;
-  onChange: (field: string, value: string) => void;
+  onChange: (field: keyof Product, value: string) => void;
 }
 
 const ShortDescriptionForm: React.FC<ShortDescriptionFormProps> = ({

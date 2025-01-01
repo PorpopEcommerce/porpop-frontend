@@ -6,7 +6,12 @@ import { fetchProducts } from '@/app/redux/features/products/productSlice';
 import { RootState, AppDispatch } from '@/app/redux/store';
 import ProductContent from './ProductContent';
 
-const ProductList: React.FC = () => {
+
+interface ProductListProps {
+  handleEditClick: (productId: string) => void;
+
+}
+const ProductList: React.FC<ProductListProps> = ({ handleEditClick }) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: RootState) => state.products.products);
   const status = useSelector((state: RootState) => state.products.status);
@@ -45,7 +50,7 @@ const ProductList: React.FC = () => {
       </div>
       <div>
         {products && products.map((item) => {
-          return <ProductContent key={item.id} item={item} />
+          return <ProductContent key={item.id} item={item} handleEditClick={handleEditClick}/>
         })}
       </div>
     </div>

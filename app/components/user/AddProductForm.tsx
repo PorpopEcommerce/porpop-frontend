@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect } from "react";
 import ShortDescriptionForm from "./addProductFormComponents/ShortDescriptionForm";
 import DescriptionForm from "./addProductFormComponents/DescriptionForm";
 import InventoryForm from "./addProductFormComponents/InventoryForm";
@@ -13,15 +13,39 @@ import LinkedProductForm from "./addProductFormComponents/LinkedProductForm";
 import ImageUploadField from "./addProductFormComponents/ImageUploadField";
 import TitleField from "./addProductFormComponents/TitleField";
 import TagField from "./addProductFormComponents/TagField";
-import { useAuth } from "@/app/context/AuthContext";
 import { useAddProductForm } from "@/app/hooks/useAddProductForm";
+import WholesaleForm from "./addProductFormComponents/WholesaleForm";
+import MinMaxForm from "./addProductFormComponents/MinMaxForm";
+import ProductOption from "./addProductFormComponents/ProductOption";
+import CatalgoForm from "./addProductFormComponents/CatalgoForm";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { fetchProducts } from "@/app/redux/features/products/productSlice";
+
+interface AddProductFormProp {
+  productId: string | null;
+}
 
 
+const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
 
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.products.products);
 
-const AddProductForm = () => {
+  const { formData, setFormData, handleChange, handleToggle, handleTagsChange, handleUpdateCategories, handleSubmit, handleImagesChange } = useAddProductForm();
 
-  const { formData, handleChange, handleToggle, handleTagsChange, handleUpdateCategories, handleSubmit, } = useAddProductForm();
+  useEffect(() => {
+    if (productId) {
+      const product = products.find((prod) => prod.id === productId);
+      if (product) {
+        setFormData(product); // Pre-fill form with product data
+      }
+    }
+  }, [productId, products]);
+
+  useEffect(() => {
+    dispatch(fetchProducts()); // Ensure products are loaded
+  }, [dispatch]);
 
   return (
     <div className="add-product-form">
@@ -49,7 +73,8 @@ const AddProductForm = () => {
             />
             <TagField tags={formData.tags} onTagsChange={handleTagsChange} />
           </div>
-          <ImageUploadField />
+          <ImageUploadField onImageUpload={(imageUrl) => handleImagesChange(imageUrl)} />
+
         </div>
 
         {/* Description Fields */}
@@ -80,18 +105,55 @@ const AddProductForm = () => {
 
 
         {/* Other Fields */}
-        <GeolocationForm />
-        <LinkedProductForm />
-        <DeliveryForm />
-        <ShippingForm />
-        <DiscountForm />
+        {/* <GeolocationForm />
+        <LinkedProductForm /> */}
+        <DeliveryForm
+          deliveryTime={formData.deliveryTime}
+          backorderDeliveryTime={formData.backorderDeliveryTime}
+          outOfStockDeliveryTime={formData.outOfStockDeliveryTime}
+          onChange={handleChange}
+        />
+        <ShippingForm
+          dimensions={formData.dimensions}
+          shippingClass={formData.shippingClass}
+          taxStatus={formData.taxStatus}
+          taxClass={formData.taxClass}
+          isShippingManagementEnabled={formData.isShippingManagementEnabled}
+          onChange={handleChange}
+        />
+
+        <DiscountForm
+          minQuantityForDiscount={formData.minQuantityForDiscount}
+          discountPercentage={formData.discountPercentage}
+          onChange={handleChange}
+        />
+
+        <WholesaleForm
+          minQuantityForWholesale={formData.minQuantityForWholesale}
+          wholesalePrice={formData.wholesalePrice}
+          onChange={handleChange} />
+
+        <MinMaxForm />
+
+        <ProductOption
+          productStatusType={formData.productStatusType}
+          visibilityType={formData.visibilityType}
+          onProductStatusTypeChange={(value) => handleChange("productStatusType", value)}
+          onVisibilityTypeChange={(value) => handleChange("visibilityType", value)}
+          productNote={formData.productNote}
+          reviewType={formData.reviewType}
+          onReviewTypeChange={(value) => handleChange("reviewType", value)}
+          onChange={handleChange}
+        />
+
+        <CatalgoForm />
 
         {/* Submit Button */}
         <button
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
-          Submit
+          {productId ? "Update Product" : "Add Product"}
         </button>
       </form>
     </div>

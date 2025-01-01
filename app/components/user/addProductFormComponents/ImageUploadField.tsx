@@ -1,6 +1,10 @@
 import { useState, useRef } from "react";
 
-const ImageUploadField = () => {
+interface ImageUploadFieldProps {
+  onImageUpload: (imageUrl: string) => void;
+}
+
+const ImageUploadField: React.FC<ImageUploadFieldProps> = ({ onImageUpload }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -10,6 +14,9 @@ const ImageUploadField = () => {
     if (file) {
       const imagePreviewUrl = URL.createObjectURL(file);
       setPreview(imagePreviewUrl);
+
+      // Send image URL to parent
+      onImageUpload(imagePreviewUrl);
     }
   };
 
@@ -20,8 +27,7 @@ const ImageUploadField = () => {
 
   return (
     <div className="mb-3 flex w-full max-h-[300px]">
-
-      {/* Image Container (acts as input field) */}
+      {/* Image Container */}
       <div
         onClick={triggerFileInput}
         className="w-full h-full border-2 border-dashed border-gray-300 flex items-center justify-center rounded-md cursor-pointer transition"
