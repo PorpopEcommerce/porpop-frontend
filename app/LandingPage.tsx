@@ -1,7 +1,8 @@
 import React from 'react';
 import HeroSection from './LandingPage/Herosection';
-import GlobalReachSection from './LandingPage/GlobalReachSection';
-import KeyFeaturesSection from './LandingPage/KeyFeaturesSection'
+import FeaturedStoresSection from './LandingPage/FeaturedStoresSection';
+import UpdatesSection from './LandingPage/UpdatesSection';
+import KeyFeaturesSection from './LandingPage/KeyFeaturesSection';
 import FeaturesAndMockupSection from './LandingPage/FeaturesAndMockupSection';
 import FeaturesOverviewSection from './LandingPage/FeaturesOverviewSection';
 import ProductHighlightSection from './LandingPage/ProductHighlightSection'
@@ -14,7 +15,9 @@ const LandingPage = () => {
     return (
         <main className="">
             <HeroSection />
-            <GlobalReachSection />
+            <FeaturedStoresSection />
+            <ReviewsSection />
+            <UpdatesSection />
             <KeyFeaturesSection />
             <FeaturesAndMockupSection />
             <FeaturesOverviewSection />
