@@ -1,32 +1,14 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-
-interface FormData {
-  title: string;
-  productType: string;
-  price: string;
-  discountedPrice: string;
-  scheduleDate: boolean;
-  scheduledFrom: string;
-  scheduledTo: string;
-  categories: { id: number; value: string }[];
-  tags: string[];
-  shortDescription: string;
-  productDescription: string;
-  SKU: string;
-  stockType: string;
-  allowType: boolean;
-  isStockManagementEnabled: boolean;
-  stockQuantity: number;
-  lowStockThreshold: number;
-}
+import { Product } from "../types/product";
 
 export const useAddProductForm = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const initialProduct: Product = {
+    id: "",
     title: "",
     productType: "Simple",
-    price: "",
-    discountedPrice: "",
+    price: 0,
+    discountedPrice: 0,
     scheduleDate: false,
     scheduledFrom: "",
     scheduledTo: "",
@@ -40,25 +22,60 @@ export const useAddProductForm = () => {
     isStockManagementEnabled: false,
     stockQuantity: 0,
     lowStockThreshold: 0,
-  });
+    shippingMethod: "Standard",
+    shippingCost: 0,
+    isFreeShippingEnabled: false,
+    latitude: "",
+    longitude: "",
+    linkedProducts: [],
+    deliveryOptions: [],
+    deliveryTime: "",
+    discountPercentage: 0,
+    discountStartDate: "",
+    discountEndDate: "",
+    images: "",
+    createdAt: "",
+    updatedAt: "",
+    backorderDeliveryTime: "",
+    outOfStockDeliveryTime: "",
+    isDiscountEnabled: false,
+    minQuantityForDiscount: 0,
+    minQuantityForWholesale: 0,
+    wholesalePrice: 0,
+    isWholesaleEnabled: false,
+    productStatusType: "Online",
+    visibilityType: "Visible",
+    reviewType: false,
+    productNote: "",
+    dimensions: {weight: 0, height: 0, length: 0, width: 0},
+    shippingClass: '',
+    taxStatus: '',
+    taxClass: '',
+    isShippingManagementEnabled: false,
+  };
 
+  const [formData, setFormData] = useState<Product>(initialProduct);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { activeUser } = useAuth();
 
   // Generalized change handler
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: keyof Product, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleToggle = (field: string) => {
-    setFormData((prev: any) => ({
+  const handleToggle = (field: keyof Product) => {
+    setFormData((prev) => ({
       ...prev,
       [field]: !prev[field],
     }));
+  };
+
+  const handleImagesChange = (images: string) => {
+    setFormData((prev) => ({ ...prev, images }));
   };
 
   const handleTagsChange = (tags: string[]) => handleChange("tags", tags);
@@ -67,21 +84,16 @@ export const useAddProductForm = () => {
     setFormData((prev) => ({ ...prev, categories: updatedCategories }));
   }, []);
 
-  const generateUniqueId = () => {
-    return `${Date.now()}`;
-  };
-
-  const getCurrentTimestamp = () => {
-    return new Date().toISOString();
-  };
+  const generateUniqueId = () => `${Date.now()}`;
+  const getCurrentTimestamp = () => new Date().toISOString();
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-
+  
       if (isSubmitting) return; // Prevent duplicate submissions
       setIsSubmitting(true);
-
+  
       try {
         if (
           !activeUser ||
@@ -90,24 +102,43 @@ export const useAddProductForm = () => {
         ) {
           throw new Error("No authenticated vendor user found");
         }
-
-        // Create a new product object with a unique ID
-        const newProduct = {
-          id: generateUniqueId(),
-          createdAt: getCurrentTimestamp(),
-          updatedAt: getCurrentTimestamp(),
-          ...formData,
-        };
-
+  
+        const currentTimestamp = getCurrentTimestamp();
+  
+        // Check if it's an edit or add operation
+        let updatedProducts = [...(activeUser.vendorData?.products || [])];
+        let updatedProduct;
+  
+        if (formData.id) {
+          // Editing an existing product
+          updatedProducts = updatedProducts.map((product) =>
+            product.id === formData.id
+              ? { ...formData, updatedAt: currentTimestamp } // Update product
+              : product
+          );
+          updatedProduct = formData;
+          console.log("Product successfully edited", updatedProduct);
+        } else {
+          // Adding a new product
+          updatedProduct = {
+            ...formData,
+            id: generateUniqueId(),
+            createdAt: currentTimestamp,
+            updatedAt: currentTimestamp,
+          };
+          updatedProducts.push(updatedProduct);
+          console.log("Product successfully added", updatedProduct);
+        }
+  
         // Update the vendor's product array
         const updatedVendorData = {
           ...activeUser.vendorData,
-          products: [...(activeUser.vendorData?.products || []), newProduct],
+          products: updatedProducts,
         };
-
-        // Update user data with the new product
+  
+        // Update user data with the updated product array
         const updatedUser = { ...activeUser, vendorData: updatedVendorData };
-
+  
         // Send the updated user data to the API
         const updateResponse = await fetch(
           `http://localhost:3001/users/${activeUser.id}`,
@@ -117,32 +148,17 @@ export const useAddProductForm = () => {
             body: JSON.stringify(updatedUser),
           }
         );
-
+  
         if (!updateResponse.ok) throw new Error("Failed to update vendor data");
-
-        console.log("Product successfully added", newProduct);
-        alert("Product added successfully");
-
-        // Reset form
-        setFormData({
-          title: "",
-          productType: "Simple",
-          price: "",
-          discountedPrice: "",
-          scheduleDate: false,
-          scheduledFrom: "",
-          scheduledTo: "",
-          categories: [],
-          tags: [],
-          shortDescription: "",
-          productDescription: "",
-          SKU: "",
-          stockType: "In Stock",
-          allowType: false,
-          isStockManagementEnabled: false,
-          stockQuantity: 0,
-          lowStockThreshold: 0,
-        });
+  
+        alert(
+          formData.id
+            ? "Product edited successfully"
+            : "Product added successfully"
+        );
+  
+        // Reset form to initial state if adding a new product
+        if (!formData.id) setFormData(initialProduct);
       } catch (error: any) {
         console.error("Error submitting form:", error.message);
         alert(error.message);
@@ -150,16 +166,19 @@ export const useAddProductForm = () => {
         setIsSubmitting(false);
       }
     },
-    [activeUser, formData, isSubmitting]
+    [activeUser, formData, isSubmitting, initialProduct]
   );
+  
 
   return {
     formData,
+    setFormData,
     isSubmitting,
     handleChange,
     handleToggle,
     handleTagsChange,
     handleUpdateCategories,
+    handleImagesChange,
     handleSubmit,
   };
 };

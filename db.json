@@ -18,7 +18,7 @@
       ],
       "createdAt": "2024-12-04T15:51:16.676Z",
       "updatedAt": "2024-12-04T15:51:16.676Z",
-      "isAuthenticated": true,
+      "isAuthenticated": false,
       "vendorData": {
         "shopName": "dviani",
         "shopUrl": "dvianiStore",
@@ -34,7 +34,7 @@
           {
             "id": "1733406927530",
             "createdAt": "2024-12-05T13:55:27.530Z",
-            "updatedAt": "2024-12-05T13:55:27.530Z",
+            "updatedAt": "2024-12-10T23:00:36.256Z",
             "title": "bags for women and men and childrean and clothes",
             "productType": "Simple",
             "price": "2345",
@@ -62,9 +62,237 @@
             "isStockManagementEnabled": false,
             "stockQuantity": 0,
             "lowStockThreshold": 0
+          },
+          {
+            "id": "1733788835657",
+            "title": "Fashion Men's Women's Hoodies Spring Autumn Winter Casual Hoodies Sweatshirts Men Tops Solid Color Hoodie Sweatshirt Male",
+            "productType": "Variable",
+            "price": "",
+            "discountedPrice": "",
+            "scheduleDate": false,
+            "scheduledFrom": "",
+            "scheduledTo": "",
+            "categories": [],
+            "tags": [],
+            "shortDescription": "",
+            "productDescription": "",
+            "SKU": "PROD-4760",
+            "stockType": "In Stock",
+            "allowType": false,
+            "isStockManagementEnabled": false,
+            "stockQuantity": 0,
+            "lowStockThreshold": 0,
+            "shippingMethod": "Standard",
+            "shippingCost": 0,
+            "isFreeShippingEnabled": false,
+            "latitude": "",
+            "longitude": "",
+            "linkedProducts": [],
+            "deliveryOptions": [],
+            "deliveryTime": "",
+            "discountPercentage": 0,
+            "discountStartDate": "",
+            "discountEndDate": "",
+            "images": [
+              "blob:http://localhost:3000/fda9ff7d-64f4-4b36-82f3-89d6b43df9eb"
+            ],
+            "createdAt": "2024-12-10T00:00:35.657Z",
+            "updatedAt": "2024-12-10T00:00:35.657Z",
+            "backorderDeliveryTime": "",
+            "outOfStockDeliveryTime": "",
+            "isDiscountEnabled": false,
+            "minQuantityForDiscount": 0,
+            "minQuantityForWholesale": 0,
+            "wholesalePrice": 0,
+            "isWholesaleEnabled": false,
+            "productStatusType": "Online",
+            "visibilityType": "Visible",
+            "reviewType": false,
+            "productNote": ""
+          },
+          {
+            "id": "1734435599726",
+            "title": "Fashion Men's Women's Hoodies Spring Autumn Winter Casual Hoodies Sweatshirts Men Tops Solid Color Hoodie Sweatshirt Male",
+            "productType": "Simple",
+            "price": 2111,
+            "discountedPrice": 2100,
+            "scheduleDate": false,
+            "scheduledFrom": "",
+            "scheduledTo": "",
+            "categories": [
+              {
+                "id": 1734435164599,
+                "value": "Fashion > Clothings > Unisex"
+              }
+            ],
+            "tags": [
+              "shoe",
+              "bag",
+              "men",
+              "women"
+            ],
+            "shortDescription": "<p>this should work</p>",
+            "productDescription": "<p>this should also work</p>",
+            "SKU": "PROD-5483",
+            "stockType": "In Stock",
+            "allowType": true,
+            "isStockManagementEnabled": true,
+            "stockQuantity": 15,
+            "lowStockThreshold": 0,
+            "shippingMethod": "Standard",
+            "shippingCost": 0,
+            "isFreeShippingEnabled": false,
+            "latitude": "",
+            "longitude": "",
+            "linkedProducts": [],
+            "deliveryOptions": [],
+            "deliveryTime": "",
+            "discountPercentage": 0,
+            "discountStartDate": "",
+            "discountEndDate": "",
+            "images": "",
+            "createdAt": "2024-12-17T11:39:59.726Z",
+            "updatedAt": "2024-12-17T11:39:59.726Z",
+            "backorderDeliveryTime": "",
+            "outOfStockDeliveryTime": "",
+            "isDiscountEnabled": false,
+            "minQuantityForDiscount": 0,
+            "minQuantityForWholesale": 0,
+            "wholesalePrice": 0,
+            "isWholesaleEnabled": false,
+            "productStatusType": "Online",
+            "visibilityType": "Visible",
+            "reviewType": false,
+            "productNote": "",
+            "dimensions": {
+              "weight": 0,
+              "height": 0,
+              "length": 0,
+              "width": 0
+            },
+            "shippingClass": "",
+            "taxStatus": "",
+            "taxClass": "",
+            "isShippingManagementEnabled": false
           }
         ]
       }
+    },
+    {
+      "id": "1733821169848",
+      "firstName": "Vivian",
+      "lastName": "Sunday",
+      "username": "viviSunday",
+      "email": "Alfredannie889@gmail.com",
+      "password": "vivsunday",
+      "address": "25 Ben Iyah Street off osongama estate, Uyo Akwa Ibom S",
+      "city": "Uyo",
+      "postalcode": "520231",
+      "country": "Nigeria",
+      "phone": "08140633765",
+      "role": [
+        "user",
+        "vendor"
+      ],
+      "createdAt": "2024-12-10T08:59:29.848Z",
+      "updatedAt": "2024-12-10T08:59:29.848Z",
+      "isAuthenticated": false,
+      "vendorData": {
+        "shopName": "viviStores",
+        "shopUrl": "vivistores",
+        "phone": "08140633765",
+        "companyId": "12345",
+        "vatId": "54321",
+        "bankName": "Opay",
+        "accountNumber": "0012001222",
+        "id": "1733821287207",
+        "createdAt": "2024-12-10T09:01:27.207Z",
+        "updatedAt": "2024-12-10T09:01:27.207Z",
+        "products": [
+          {
+            "id": "1733821749691",
+            "title": "2pcs LED DRL Car Daytime Running Light Flexible Waterproof Strip Auto Headlights White Turn Signal Yellow Brake Flow Lights 12V",
+            "productType": "Simple",
+            "price": 4333,
+            "discountedPrice": 3442,
+            "scheduleDate": false,
+            "scheduledFrom": "",
+            "scheduledTo": "",
+            "categories": [
+              {
+                "id": 1733821575394,
+                "value": "Fashion > Watches > Men"
+              }
+            ],
+            "tags": [],
+            "shortDescription": "",
+            "productDescription": "",
+            "SKU": "PROD-5209",
+            "stockType": "In Stock",
+            "allowType": false,
+            "isStockManagementEnabled": true,
+            "stockQuantity": 24,
+            "lowStockThreshold": 0,
+            "shippingMethod": "Standard",
+            "shippingCost": 0,
+            "isFreeShippingEnabled": false,
+            "latitude": "",
+            "longitude": "",
+            "linkedProducts": [],
+            "deliveryOptions": [],
+            "deliveryTime": "",
+            "discountPercentage": 0,
+            "discountStartDate": "",
+            "discountEndDate": "",
+            "images": "",
+            "createdAt": "2024-12-10T09:09:09.691Z",
+            "updatedAt": "2024-12-10T09:09:09.691Z",
+            "backorderDeliveryTime": "",
+            "outOfStockDeliveryTime": "",
+            "isDiscountEnabled": false,
+            "minQuantityForDiscount": 0,
+            "minQuantityForWholesale": 0,
+            "wholesalePrice": "2111",
+            "isWholesaleEnabled": false,
+            "productStatusType": "Draft",
+            "visibilityType": "Visible",
+            "reviewType": true,
+            "productNote": "Thank you for purchasing this item",
+            "dimensions": {
+              "weight": 0,
+              "height": 0,
+              "length": 0,
+              "width": 0
+            },
+            "shippingClass": "",
+            "taxStatus": "",
+            "taxClass": "",
+            "isShippingManagementEnabled": false
+          }
+        ]
+      }
+    }
+  ],
+  "vendorProduct": [
+    {
+      "vendor_id": "ed7c4b37-62ec-4bfb-906e-752cdd375455",
+      "products": [
+        {
+          "ProductID": "141455ff-3eb0-4b13-8cef-ee8242f14d79",
+          "Name": "Wireless Mouse",
+          "Description": "A high-quality wireless mouse with ergonomic design.",
+          "Category": "Electronics",
+          "Price": 8999.99,
+          "Quantity": 100,
+          "ImageURL": "https://example.com/images/wireless-mouse.jpg",
+          "CreatedAt": "2024-12-31T16:41:56.253396Z",
+          "UpdatedAt": "2024-12-31T16:41:56.253396Z"
+        }
+      ]
+    },
+    {
+      "vendor_id": "ed7c4b37-62ec-4bfb-906e-752cdd371324",
+      "products": []
     }
   ]
 }

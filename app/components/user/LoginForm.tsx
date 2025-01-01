@@ -8,7 +8,7 @@ import Button from "../product/Button";
 
 const LoginForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const { formData, errors, errMsg, handleChange, handleSubmit } = useLoginForm();
+    const { formData, errors, errMsg, handleChange, handleSubmit, isLoading, isSuccessfull } = useLoginForm();
 
     const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
@@ -16,7 +16,22 @@ const LoginForm = () => {
         <div className="w-full">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Login</h2>
 
-            {errMsg && <p className="text-red-500 text-sm">{errMsg}</p>}
+            {errMsg && (
+                <div className={`w-full p-5 mb-4 bg-red-600`}>
+                    <p className={`text-white`}>
+                        {errMsg}
+                    </p>
+                </div>
+            )}
+
+            {isSuccessfull && (
+                <div className={`w-full p-5 mb-4 bg-green-600`}>
+                    <p className={`text-white`}>
+                        {isSuccessfull}
+                    </p>
+                </div>
+            )}
+
 
             <form className="flex flex-col space-y-4">
                 <div>
@@ -52,19 +67,9 @@ const LoginForm = () => {
                     {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                 </div>
 
-                <Button label="Login" onClick={handleSubmit} />
+                <Button label={isLoading ? "Loading..." : "Login"} onClick={handleSubmit} disabled={isLoading} />
+
             </form>
-
-            <div className="flex items-center mt-6 mb-4">
-                <div className="flex-grow border-t border-gray-300"></div>
-                <h1 className="px-4 font-bold text-center text-sm md:text-base">OR LOGIN WITH</h1>
-                <div className="flex-grow border-t border-gray-300"></div>
-            </div>
-
-            <button className="w-full bg-blue-500 text-white p-2 rounded text-center flex items-center justify-center relative">
-                <FcGoogle className="absolute left-3 text-lg bg-white rounded-full" />
-                <span>Google</span>
-            </button>
         </div>
     );
 };

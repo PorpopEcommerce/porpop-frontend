@@ -10,9 +10,9 @@ const UserDashboard = () => {
 
     const { renderContent, handleOptionClick, dashboardOptions, selectedOption } = useAccountNavigation()
 
-    const { activeUser } = useAuth();
+    const { user } = useAuth();
 
-    if (!activeUser) {
+    if (!user) {
         return null;
     }
 
@@ -22,7 +22,7 @@ const UserDashboard = () => {
             {/* Sidebar */}
             <aside className="w-64 bg-white shadow-md border-r">
                 <div className='py-5'>
-                    <SubHeading title={`Welcome, ${activeUser.username}!`} center />
+                    <SubHeading title={`Welcome, ${user.username}!`} center />
                 </div>
 
 
@@ -44,9 +44,9 @@ const UserDashboard = () => {
 
             {/* Main Content */}
             {/* Toggle between the vendor form and the sidebar content. */}
-            <main className="flex-1 p-8">
+            <div className="flex-1 p-8 max-w-[100rem] mx-auto">
                 {renderContent()}
-            </main>
+            </div>
 
         </div>
     );

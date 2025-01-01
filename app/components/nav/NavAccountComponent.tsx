@@ -8,11 +8,11 @@ import { LuLogOut } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 
 const NavAccountComponent = () => {
-  const { logout, activeUser } = useAuth();
+  const { logout, user } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  if (!activeUser) {
+  if (!user) {
     return null;
   }
 
@@ -46,8 +46,8 @@ const NavAccountComponent = () => {
             <div className="text-7xl text-zinc-500">
               <VscAccount />
             </div>
-            <p className="text-xl font-semibold text-black">{activeUser.username}</p>
-            <p className="text-sm text-gray-500">{activeUser.email}</p>
+            <p className="text-xl font-semibold text-black">{user.username}</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
           </div>
 
           {/* Menu Links */}

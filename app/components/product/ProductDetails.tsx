@@ -7,6 +7,7 @@ import SetQuantity from "./SetQuantity";
 import Button from "./Button";
 import ProductImage from "./ProductImage";
 import { useCart } from "@/app/hooks/useCart";
+import { formatPrice } from "@/app/utils/formatter";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
@@ -16,11 +17,11 @@ interface ProductDetailsProps {
 
 export type CartProductType = {
     id: string,
-    name: string,
+    title: string,
     description: string,
     category: string,
-    brand: string,
-    selectedImg: SelectedImageType,
+    // brand: string,
+    selectedImg?: SelectedImageType,
     quantity: number,
     price: number
 }
@@ -44,11 +45,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
     const [cartProduct, setCartProduct] = useState<CartProductType>({
         id: product.id,
-        name: product.name,
+        title: product.name,
         description: product.description,
         category: product.category,
-        brand: product.brand,
-        selectedImg: { ...product.images[0] },
+        // brand: product.brand,
+        // selectedImg: { ...product.images[0] },
         quantity: 1,
         price: product.price,
     })
@@ -66,21 +67,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
     }, [cartProducts])
 
-    console.log(cartProduct)
+    // console.log(cartProduct)
 
     // getting the average reviews for our rating
-    const productRating =
-        product.reviews.reduce((acc: number, item: any) =>
-            item.rating + acc, 0) /
-        product.reviews.length;
+    // const productRating =
+    //     product.reviews.reduce((acc: number, item: any) =>
+    //         item.rating + acc, 0) /
+    //     product.reviews.length;
 
-    const handleColorSelect = useCallback(
-        (value: SelectedImageType) => {
-            setCartProduct((prev) => {
-                return { ...prev, selectedImg: value }
-            })
-        },
-        [cartProduct.selectedImg])
+    // const handleColorSelect = useCallback(
+    //     (value: SelectedImageType) => {
+    //         setCartProduct((prev) => {
+    //             return { ...prev, selectedImg: value }
+    //         })
+    //     },
+    //     [cartProduct.selectedImg])
 
     const handleQtyIncrease = useCallback(() => {
         setCartProduct((prev) => {
@@ -102,15 +103,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} />
+            <div></div>
+            {/* <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} /> */}
             <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
-                <div className="flex items-center gap-2">
+                <h1 className="text-4xl font-bold">{product.title}</h1>
+                <div><h2>{formatPrice(product.discountedPrice)} - {formatPrice(product.price)}</h2></div>
+                {/* <div className="flex items-center gap-2">
                     <Rating value={productRating} readOnly />
                     <div>
                         {product.reviews.length} reviews
                     </div>
-                </div>
+                </div> */}
 
                 <Horizontal />
 
@@ -120,19 +123,37 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
                 <Horizontal />
 
-                <div>
-                    <span className="font-semibold">CATEGORY: </span> {product.category}
-                </div>
-                <div>
-                    <span className="font-semibold">BRAND: </span> {product.brand}
-                </div>
-                <div className={product.inStock ? 'text-teal-400' : 'text-rose-400'}>
-                    {product.inStock ? 'In Stock' : 'Out of Stock'}
+                {/* <div>
+                    <span className="font-semibold">CATEGORY: </span> {product.categories}
+                </div> */}
+
+                <div className={product.stockType ? 'text-teal-400' : 'text-rose-400'}>
+                    {product.stockType ? 'In Stock' : 'Out of Stock'}
                 </div>
 
                 <Horizontal />
 
-                {isProductInCart ?
+                <div className="flex gap-2">
+                    <SetQuantity
+                        cartProduct={cartProduct}
+                        handleQtyIncrease={handleQtyIncrease}
+                        handleQtyDecrease={handleQtyDecrease}
+                    />
+                    <div className="max-w-[300px]">
+                        <Button
+                            label="Add To Cart"
+                            onClick={() => handleAddProductToCart(cartProduct)}
+                        />
+                    </div>
+                    <div className="max-w-[300px]">
+                        <Button
+                            label="Buy Now"
+                            onClick={() => {}}
+                        />
+                    </div>
+                </div>
+
+                {/* {isProductInCart ?
                     <>
                         <div>
                             <p className="mb-2 text-slate-500 flex items-center gap-1">
@@ -169,7 +190,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                                 onClick={() => handleAddProductToCart(cartProduct)}
                             />
                         </div>
-                    </>}
+                    </>} */}
             </div>
         </div>
     )

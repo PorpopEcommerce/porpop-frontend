@@ -1,20 +1,21 @@
-'use client'
-
-
-import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  const router = useRouter();
 
-const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-    const router = useRouter();
-    const { userAuthenticated } = useAuth();
+  useEffect(() => {
+    if (!user) {
+      router.push("/login_signin");
+    }
+  }, [user, router]);
 
-    useEffect(() => {
-        if (!userAuthenticated) {
-            router.push('/my_account'); // Redirect if user is not authenticated
-        }
-    }, [userAuthenticated, router]);
+  if (!user) {
+    // Prevent rendering protected content before redirect
+    return null;
+  }
 
   return <>{children}</>;
 };

@@ -1,113 +1,94 @@
-"use client";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import Cookies from "js-cookie"; // Import js-cookie
 
-// context/AuthContext.tsx
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser, logoutUser, setLoginStatus, setError } from "@/app/redux/features/users/userSlice";
-import { User } from "../types/user";
 
-interface AuthContextType {
-  userAuthenticated: boolean;
-  activeUser: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-}
+const AuthContext = createContext<any>(null);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [vendor, setVendor] = useState<any>(null);
+  const [subscribe, setSubscribe] = useState<any>(null);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [userAuthenticated, setUserAuthenticated] = useState(false);
-  const [activeUser, setActiveUser] = useState<User | null>(null);
-  const dispatch = useDispatch();  // Redux dispatch
-
+  // Retrieve stored data from cookies and sessionStorage on component mount
   useEffect(() => {
-    const fetchAuthenticatedUser = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/users");
-        if (!response.ok) throw new Error("Failed to fetch users");
+    // Retrieve JWT token from cookies
+    const token = Cookies.get("authToken"); // Accessing JWT token from cookies
+    
+    // If the token exists, set the authToken state
+    if (token) {
+      setAuthToken(token);
+    }
 
-        const users: User[] = await response.json();
-        const authenticatedUser = users.find((user) => user.isAuthenticated);
+    // Retrieve user, vendor, and subscribe data from sessionStorage (if set)
+    const storedUser = sessionStorage.getItem("user");
+    const storedVendor = sessionStorage.getItem("vendor");
+    const storedSubscribe = sessionStorage.getItem("subscribe");
 
-        if (authenticatedUser) {
-          setUserAuthenticated(true);
-          setActiveUser(authenticatedUser);
-          dispatch(loginUser(authenticatedUser));  // Dispatch to Redux
-        }
-      } catch (error) {
-        console.error("Error fetching authenticated user:", error);
-      }
-    };
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Parse stored user data
+    }
+    if (storedVendor) {
+      setVendor(JSON.parse(storedVendor)); // Parse stored vendor data
+    }
+    if (storedSubscribe) {
+      setSubscribe(JSON.parse(storedSubscribe)); // Parse stored subscribe data
+    }
+  }, []);
 
-    fetchAuthenticatedUser();
-  }, [dispatch]);
+  // Login function to set user, vendor, and token in state and store in sessionStorage and cookies
+  const login = (data: any) => {
+    const user = data?.user;
+    if (user) {
+      const { authToken, user, vendor, subscribe } = data;
 
-  const login = async (email: string, password: string) => {
-    try {
-      dispatch(setLoginStatus("loading"));
-      const response = await fetch("http://localhost:3001/users");
-      if (!response.ok) throw new Error("Failed to fetch users");
+      // Store the JWT token in cookies with a specific expiration (e.g., 1 day)
+      Cookies.set("authToken", authToken, { expires: 1 }); // JWT stored in cookies (expires in 1 day)
+      
+      // Optionally, store user, vendor, and subscribe in sessionStorage or localStorage
+      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("vendor", JSON.stringify(vendor || {}));
+      sessionStorage.setItem("subscribe", JSON.stringify(subscribe || {}));
 
-      const users: User[] = await response.json();
-      const user = users.find(
-        (user) => user.email === email && user.password === password
-      );
-
-      if (user) {
-        const updatedUser = { ...user, isAuthenticated: true };
-
-        // Update the user in the backend
-        await fetch(`http://localhost:3001/users/${user.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedUser),
-        });
-
-        setUserAuthenticated(true);
-        setActiveUser(updatedUser);
-        dispatch(loginUser(updatedUser));  // Dispatch user to Redux
-        dispatch(setLoginStatus("succeeded"));
-      } else {
-        throw new Error("Invalid email or password");
-      }
-    } catch (error: any) {
-      dispatch(setLoginStatus("failed"));
-      dispatch(setError(error.message));  // Set error in Redux
-      console.error("Error during login:", error);
+      // Set the state with the login data
+      setAuthToken(authToken);
+      setUser(user);
+      setVendor(vendor);
+      setSubscribe(subscribe);
     }
   };
 
-  const logout = async () => {
-    try {
-      if (!activeUser) return;
+  // Logout function to clear state and cookies
+  const logout = () => {
+    // Remove the JWT token from cookies
+    Cookies.remove("authToken");
 
-      const updatedUser = { ...activeUser, isAuthenticated: false };
+    // Remove data from sessionStorage
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("vendor");
+    sessionStorage.removeItem("subscribe");
 
-      // Update the user in the backend
-      await fetch(`http://localhost:3001/users/${activeUser.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedUser),
-      });
+    // Reset state
+    setAuthToken(null);
+    setUser(null);
+    setVendor(null);
+    setSubscribe(null);
 
-      setUserAuthenticated(false);
-      setActiveUser(null);
-      dispatch(logoutUser());  // Dispatch logout to Redux
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+    // Optionally, redirect to home or login page
+    window.location.href = "/"; // Redirect to home or login page
   };
 
   return (
-    <AuthContext.Provider value={{ userAuthenticated, activeUser, login, logout }}>
+    <AuthContext.Provider value={{ authToken, user, vendor, subscribe, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Hook to access the AuthContext in any component
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

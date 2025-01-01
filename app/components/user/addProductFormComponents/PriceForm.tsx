@@ -1,12 +1,13 @@
+import { Product } from "@/app/types/product";
 import React from "react";
 
 interface PriceFormProps {
-  price: string;
-  discountedPrice: string;
+  price: number;
+  discountedPrice: number;
   scheduleDate: boolean;
   scheduledFrom: string;
   scheduledTo: string;
-  onChange: (field: string, value: any) => void;
+  onChange: (field: keyof Product, value: any) => void;
   onScheduleToggle: () => void;
 }
 
@@ -31,8 +32,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
             <input
               type="text"
               placeholder="0.00"
-              value={price}
-              onChange={(e) => onChange("price", e.target.value)}
+              value={price.toString()} 
+              onChange={(e) => onChange("price", parseFloat(e.target.value) || 0)}
               className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
@@ -47,8 +48,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
             <input
               type="text"
               placeholder="0.00"
-              value={discountedPrice}
-              onChange={(e) => onChange("discountedPrice", e.target.value)}
+              value={discountedPrice.toString()}
+              onChange={(e) => onChange("discountedPrice", parseFloat(e.target.value) || 0)}
               className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
