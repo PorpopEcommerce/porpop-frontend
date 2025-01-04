@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 type ProductData = {
   id: number;
@@ -14,27 +14,27 @@ type ProductData = {
 const data: ProductData[] = [
   {
     id: 1,
-    imagePlaceholder: 'Product 1',
-    headingSmall: 'MATERIAL MATTERS',
-    headingLarge: 'GET QUALITY BAGS',
+    imagePlaceholder: "Product 1",
+    headingSmall: "MATERIAL MATTERS",
+    headingLarge: "GET QUALITY BAGS",
     description: (
       <>
         Bags made from durable material like leather, canvas high-quality
         synthetic fabric
       </>
     ),
-    buttonText: 'View More',
-    buttonLink: '/products/1',
+    buttonText: "View More",
+    buttonLink: "/products/1",
   },
   {
     id: 2,
-    imagePlaceholder: 'Product 2',
-    headingSmall: 'CHECKOUT',
-    headingLarge: 'PREMIUM T-SHIRTS',
+    imagePlaceholder: "Product 2",
+    headingSmall: "CHECKOUT",
+    headingLarge: "PREMIUM T-SHIRTS",
     description:
-      'Looking for T-shirts made from high-quality materials like 100%',
-    buttonText: 'SHOP NOW',
-    buttonLink: '/products/2',
+      "Looking for T-shirts made from high-quality materials like 100%",
+    buttonText: "SHOP NOW",
+    buttonLink: "/products/2",
   },
 ];
 
