@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 type CardData = {
   id: number;
@@ -11,34 +11,34 @@ type CardData = {
 const data: CardData[] = [
   {
     id: 1,
-    iconPlaceholder: 'Icon 1',
-    title: 'CREATE A STORE',
+    iconPlaceholder: "Icon 1",
+    title: "CREATE A STORE",
     description: `Create a standout mobile-friendly store effortlessly with our prebuilt
     solution. No stress, just results. Engage customers seamlessly on any
     device and boost your online presence in less than five minute!`,
-    buttonText: 'SIGN UP',
+    buttonText: "SIGN UP",
   },
   {
     id: 2,
-    iconPlaceholder: 'Icon 2',
-    title: 'GET FREE TRAFFIC',
+    iconPlaceholder: "Icon 2",
+    title: "GET FREE TRAFFIC",
     description: `Using SEO (Search Engine Optimization) features is crucial for
     reaching a wider audience online.Utilize the built-in SEO feature to
     expand your reach and connect with a broader audience. Optimize
     your product to enhance visibility and attract more visitors to your
     store effectively.`,
-    buttonText: 'CLICK ME',
+    buttonText: "CLICK ME",
   },
   {
     id: 3,
-    iconPlaceholder: 'Icon 3',
-    title: 'TARGET SALES',
+    iconPlaceholder: "Icon 3",
+    title: "TARGET SALES",
     description: `Select the specific geographic area where you want to focus your
     sales efforts and receive targeted customer engagement,
     maximizing engagementand conversion rates. Achieve focused
     sales growth by directing efforts towards regions with high
     potential, ensuring optimal return on investment.`,
-    buttonText: 'CLICK ME',
+    buttonText: "CLICK ME",
   },
 ];
 
@@ -72,7 +72,9 @@ export default function ThreeStepProcessSection() {
 
             {/* Content */}
             <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-            <p className="text-gray-700 text-center mb-4 text-sm">{item.description}</p>
+            <p className="text-gray-700 text-center mb-4 text-sm">
+              {item.description}
+            </p>
             <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
               {item.buttonText}
             </button>

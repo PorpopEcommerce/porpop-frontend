@@ -1,70 +1,94 @@
-'use client'; // Marking this as a client component
+"use client"; // Marking this as a client component
 
-import React from 'react';
+import Image from "next/image";
+import React from "react";
 
 const UpdatesSection: React.FC = () => {
   return (
-    <section className="bg-[#1E1E1E] py-16 px-6">
-      <div className="text-left text-white">
+    <section className="bg-black padding-x padding-y">
+      <div className="maxW text-left text-white">
         {/* Section Title */}
-        <h6 className="text-lg font-semibold mb-2">Latest news and insights</h6>
-        <h3 className="text-3xl font-bold mb-12">Stay up-to-date on the latest ecommerce trends</h3>
+        <h6 className="smallHeading mb-2">Latest news and insights</h6>
+        <h3 className="heading mb-12">
+          Stay up-to-date on the latest ecommerce trends
+        </h3>
 
         {/* Images and Content Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* First Image with Background and Content */}
-          <div className="relative flex flex-col gap-2 mx-auto -translate-y-[100px]">
+          <div className="relative flex flex-col gap-2 mx-auto p-4 w-full">
             <div
-              className="h-[600px] w-[70%] bg-cover bg-center rounded-lg mx-auto"
+              className="h-full w-full absolute top-0 left-0 bg-cover bg-center rounded-lg mx-auto"
               style={{ backgroundImage: 'url("/Images/Updatepics/Card.png")' }}
             ></div>
-            <div className="relative flex flex-col justify-center items-center h-full">
-              <img
+            <div className="relative flex flex-col h-full">
+              <Image
+                height={371}
+                width={385}
                 src="/Images/Updatepics/Updatepic1.png"
-                alt="Ecommerce Trend 1"
-                className="w-[250px] h-auto rounded-lg mb-4 transform translate-y-[-50px]"
+                alt="Marketing Automation"
+                className="w-full h-auto rounded-lg mb-4"
               />
-              <h4 className="text-xl font-semibold text-white">Ecommerce Trend 1</h4>
-              <p className="text-gray-300 text-center">
-                Description of the first ecommerce trend and its impact on the market.
+              <h4 className="font-semibold text-white uppercase mb-4">
+                Marketing Automation
+              </h4>
+              <p className="text-white">
+                If implemented properly, automated marketing will let you:{" "}
+                <br />
               </p>
+              <ol className="list-decimal box-border ml-5">
+                <li>Send out tailored emails to your customers.</li>
+                <li>Display new products and promotions as ...</li>
+              </ol>
             </div>
           </div>
 
           {/* Second Image with Background and Content */}
-          <div className="relative flex flex-col gap-2 mx-auto -translate-y-[100px]">
+          <div className="relative flex flex-col gap-2 mx-auto w-full p-4">
             <div
-              className="h-[600px] w-[70%] bg-cover bg-center rounded-lg mx-auto"
+              className="h-full w-full absolute top-0 left-0 bg-cover bg-center rounded-lg mx-auto"
               style={{ backgroundImage: 'url("/Images/Updatepics/Card.png")' }}
             ></div>
-            <div className="relative flex flex-col justify-center items-center h-full">
-              <img
+            <div className="relative flex flex-col h-full">
+              <Image
+                height={371}
+                width={385}
                 src="/Images/Updatepics/Updatepic2.png"
-                alt="Ecommerce Trend 2"
-                className="w-[250px] h-auto rounded-lg mb-4 transform translate-y-[-50px]"
+                alt="Subscription-Based Models"
+                className="w-full h-auto rounded-lg mb-4"
               />
-              <h4 className="text-xl font-semibold text-white">Ecommerce Trend 2</h4>
-              <p className="text-gray-300 text-center">
-                A deep dive into how this trend is shaping the future of online retail.
+              <h4 className="text-xl font-semibold text-white">
+                Subscription-Based <br className="hidden md:block" /> Models
+                Will Rise
+              </h4>
+              <p className="text-gray-300">
+                Digital payments are becoming convenient. We will see a rise in
+                subscription-based business models in 2025. Companies like Loot
+                Crate and BirchBox will see a ...
               </p>
             </div>
           </div>
 
           {/* Third Image with Background and Content */}
-          <div className="relative flex flex-col gap-2 mx-auto -translate-y-[100px]">
+          <div className="relative flex flex-col gap-2 mx-auto w-full p-4">
             <div
-              className="h-[600px] w-[70%] bg-cover bg-center rounded-lg mx-auto"
+              className="h-full w-full absolute top-0 left-0 bg-cover bg-center rounded-lg mx-auto"
               style={{ backgroundImage: 'url("/Images/Updatepics/Card.png")' }}
             ></div>
-            <div className="relative flex flex-col justify-center items-center h-full">
-              <img
+            <div className="relative flex flex-col h-full">
+              <Image
+                height={371}
+                width={385}
                 src="/Images/Updatepics/Updatepic3.png"
-                alt="Ecommerce Trend 3"
-                className="w-[250px] h-auto rounded-lg mb-4 transform translate-y-[-50px]"
+                alt="Chatbots"
+                className="w-full h-auto rounded-lg mb-4"
               />
-              <h4 className="text-xl font-semibold text-white">Ecommerce Trend 3</h4>
-              <p className="text-gray-300 text-center">
-                Exploring the rise of mobile commerce and its advantages for businesses.
+              <h4 className="text-xl font-semibold text-white">
+                Chatbots as Personal Assistants
+              </h4>
+              <p className="text-gray-300">
+                We have been using chatbots for a few years now. But because of
+                the use of neural networks now...
               </p>
             </div>
           </div>

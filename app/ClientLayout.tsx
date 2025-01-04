@@ -26,17 +26,17 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         <Provider store={store}>
             <AuthProvider>
                 <CartProvider>
-                    <section className="flex">
-                        <aside>
+                    <section className="flex overflow-hidden w-full">
+                        {/* <aside>
                             <Sidebar />
-                        </aside>
-                        <main className="flex-1 lg:ml-14 relative">
+                        </aside> */}
+                        <main className="flex-1 relative">
                             <div className="relative">
                                 <header>
                                     <NavBar
-                                        toggleMenu={toggleMenu}
-                                        toggleCart={toggleCart}
-                                        toggleSignIn={toggleSignIn}
+                                        // toggleMenu={toggleMenu}
+                                        // toggleCart={toggleCart}
+                                        // toggleSignIn={toggleSignIn}
                                     />
                                 </header>
                                 {menuDisplay && <MenuSideComponent toggleMenu={toggleMenu} toggleSignIn={toggleSignIn} />}

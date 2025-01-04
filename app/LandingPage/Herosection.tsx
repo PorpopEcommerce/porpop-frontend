@@ -38,19 +38,19 @@ const HeroSection = () => {
   }, [images.length, animations.length]);
 
   return (
-    <div className="h-screen relative overflow-hidden -mt-24 z-0 bg-black">
+    <div className="h-[600px] relative overflow-hidden z-0 bg-black padding-x">
       {/* Background Image with Dynamic Animation */}
       <div
-        className={`absolute inset-0 h-full w-full bg-cover bg-center transition-all duration-1000 ${currentAnimation}`}
+        className={`absolute inset-0 h-full w-screen overflow-hidden bg-cover bg-center transition-all duration-1000 ${currentAnimation}`}
         style={{ backgroundImage: `url(${images[currentImage]})` }}
       />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-[#4D702E] opacity-70 z-10" />
 
-       {/* Content */}
-       <div className="absolute inset-0 flex flex-col justify-start items-start text-left h-full text-white px-6 z-20 mt-64 ml-16 space-y-4">
-        <h1 className="text-4xl font-bold">
+      {/* Content */}
+      <div className="maxW relative inset-0 flex flex-col justify-center items-start text-left h-full text-white z-20 space-y-4">
+        <h1 className="text-5xl">
           Start your online <br /> store today
         </h1>
         <p className="text-lg">
@@ -58,8 +58,8 @@ const HeroSection = () => {
           beautiful online store and start selling your product <br />
           to the world.
         </p>
-        <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-          Get Started
+        <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
+          Get started
         </button>
       </div>
     </div>
