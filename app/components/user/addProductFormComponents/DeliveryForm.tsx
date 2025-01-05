@@ -1,11 +1,11 @@
-import { Product } from "@/app/types/product";
+import { FormProduct } from "@/app/types/formProduct";
 import React from "react";
 
 interface DeliveryFormProps {
   deliveryTime: string;
   backorderDeliveryTime: string;
   outOfStockDeliveryTime: string;
-  onChange: (field: keyof Product, value: string) => void;
+  onChange: (field: keyof FormProduct, value: string) => void;
 }
 
 const DeliveryForm: React.FC<DeliveryFormProps> = ({

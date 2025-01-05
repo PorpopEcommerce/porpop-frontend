@@ -1,73 +1,34 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Product } from "../types/product";
+import { FormProduct } from "../types/formProduct";
 
 export const useAddProductForm = () => {
-  const initialProduct: Product = {
-    id: "",
-    title: "",
-    productType: "Simple",
-    price: 0,
-    discountedPrice: 0,
-    scheduleDate: false,
-    scheduledFrom: "",
-    scheduledTo: "",
-    categories: [],
-    tags: [],
-    shortDescription: "",
-    productDescription: "",
-    SKU: "",
-    stockType: "In Stock",
-    allowType: false,
-    isStockManagementEnabled: false,
-    stockQuantity: 0,
-    lowStockThreshold: 0,
-    shippingMethod: "Standard",
-    shippingCost: 0,
-    isFreeShippingEnabled: false,
-    latitude: "",
-    longitude: "",
-    linkedProducts: [],
-    deliveryOptions: [],
-    deliveryTime: "",
-    discountPercentage: 0,
-    discountStartDate: "",
-    discountEndDate: "",
-    images: "",
-    createdAt: "",
-    updatedAt: "",
-    backorderDeliveryTime: "",
-    outOfStockDeliveryTime: "",
-    isDiscountEnabled: false,
-    minQuantityForDiscount: 0,
-    minQuantityForWholesale: 0,
-    wholesalePrice: 0,
-    isWholesaleEnabled: false,
-    productStatusType: "Online",
-    visibilityType: "Visible",
-    reviewType: false,
-    productNote: "",
-    dimensions: {weight: 0, height: 0, length: 0, width: 0},
-    shippingClass: '',
-    taxStatus: '',
-    taxClass: '',
-    isShippingManagementEnabled: false,
+  const initialProduct: FormProduct = {
+    name: "",
+    type: "Simple",
+    price_info: {
+      regular_price: 0,
+      discounted_price: 0,
+      allow_discount_schedule_date: false,
+      discount_scheduled_from: "",
+      discount_scheduled_to: "",
+    },
   };
 
-  const [formData, setFormData] = useState<Product>(initialProduct);
+  const [formData, setFormData] = useState<FormProduct>(initialProduct);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { activeUser } = useAuth();
+  const { vendor, user } = useAuth();
 
   // Generalized change handler
-  const handleChange = (field: keyof Product, value: any) => {
+  const handleChange = (field: keyof FormProduct, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleToggle = (field: keyof Product) => {
+  const handleToggle = (field: keyof FormProduct) => {
     setFormData((prev) => ({
       ...prev,
       [field]: !prev[field],
@@ -78,97 +39,62 @@ export const useAddProductForm = () => {
     setFormData((prev) => ({ ...prev, images }));
   };
 
-  const handleTagsChange = (tags: string[]) => handleChange("tags", tags);
+  // const handleTagsChange = (tags: string[]) => handleChange("tags", tags);
 
   const handleUpdateCategories = useCallback((updatedCategories: any) => {
     setFormData((prev) => ({ ...prev, categories: updatedCategories }));
   }, []);
 
-  const generateUniqueId = () => `${Date.now()}`;
-  const getCurrentTimestamp = () => new Date().toISOString();
-
   const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
-  
-      if (isSubmitting) return; // Prevent duplicate submissions
-      setIsSubmitting(true);
-  
+      setIsSubmitting(true); // Optional: Set loading state
+
       try {
-        if (
-          !activeUser ||
-          !activeUser.id ||
-          !activeUser.role.includes("vendor")
-        ) {
-          throw new Error("No authenticated vendor user found");
-        }
-  
-        const currentTimestamp = getCurrentTimestamp();
-  
-        // Check if it's an edit or add operation
-        let updatedProducts = [...(activeUser.vendorData?.products || [])];
-        let updatedProduct;
-  
-        if (formData.id) {
-          // Editing an existing product
-          updatedProducts = updatedProducts.map((product) =>
-            product.id === formData.id
-              ? { ...formData, updatedAt: currentTimestamp } // Update product
-              : product
-          );
-          updatedProduct = formData;
-          console.log("Product successfully edited", updatedProduct);
-        } else {
-          // Adding a new product
-          updatedProduct = {
-            ...formData,
-            id: generateUniqueId(),
-            createdAt: currentTimestamp,
-            updatedAt: currentTimestamp,
-          };
-          updatedProducts.push(updatedProduct);
-          console.log("Product successfully added", updatedProduct);
-        }
-  
-        // Update the vendor's product array
-        const updatedVendorData = {
-          ...activeUser.vendorData,
-          products: updatedProducts,
+        // Log the data for debugging
+        console.log("Form Data before submission:", formData);
+
+        const requestBody = {
+          ...formData,
+          vendor_id: vendor.vendor_id, // Ensure vendor_id is included in the payload
         };
-  
-        // Update user data with the updated product array
-        const updatedUser = { ...activeUser, vendorData: updatedVendorData };
-  
-        // Send the updated user data to the API
-        const updateResponse = await fetch(
-          `http://localhost:3001/users/${activeUser.id}`,
+
+        // Send the request to the API
+        const response = await fetch(
+          "https://backend-porpop.onrender.com/api/v1/product/create",
           {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedUser),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
           }
         );
-  
-        if (!updateResponse.ok) throw new Error("Failed to update vendor data");
-  
-        alert(
-          formData.id
-            ? "Product edited successfully"
-            : "Product added successfully"
-        );
-  
-        // Reset form to initial state if adding a new product
-        if (!formData.id) setFormData(initialProduct);
-      } catch (error: any) {
-        console.error("Error submitting form:", error.message);
-        alert(error.message);
+
+        // Check if the response is successful
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error Response:", errorData);
+          alert("Error creating product: " + errorData.message); // Display error message
+          return;
+        }
+
+        // Parse the response
+        const responseData = await response.json();
+        console.log("Product created successfully:", responseData);
+
+        // Reset the form or provide feedback
+        setFormData(initialProduct);
+        alert("Product created successfully!");
+      } catch (error) {
+        console.error("Submission error:", error);
+        alert("An error occurred while creating the product.");
       } finally {
-        setIsSubmitting(false);
+        setIsSubmitting(false); // Reset loading state
       }
     },
-    [activeUser, formData, isSubmitting, initialProduct]
+    [formData, initialProduct, user?.token]
   );
-  
 
   return {
     formData,
@@ -176,7 +102,7 @@ export const useAddProductForm = () => {
     isSubmitting,
     handleChange,
     handleToggle,
-    handleTagsChange,
+    // handleTagsChange,
     handleUpdateCategories,
     handleImagesChange,
     handleSubmit,

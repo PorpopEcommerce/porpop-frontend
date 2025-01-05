@@ -1,10 +1,10 @@
-import { Product } from "@/app/types/product";
+import { FormProduct } from "@/app/types/formProduct";
 import React, { useState } from "react";
 
 interface WholesaleFormProps {
     minQuantityForWholesale?: number;
     wholesalePrice?: number;
-    onChange: (field: keyof Product, value: any) => void;
+    onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const WholesaleForm: React.FC<WholesaleFormProps> = ({

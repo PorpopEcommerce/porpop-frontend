@@ -1,47 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { fetchProductByVendorId } from "@/app/redux/features/products/productSlice";
 import AddProduct from "./addProduct/AddProduct";
+import { useAuth } from "@/app/context/AuthContext";
 import ProductHeader from "./ProductHeader";
 import ProductList from "./productReview/ProductList";
 import EditProductForm from "./editProduct/EditProductForm";
 import Button from "@/app/components/product/Button";
 
 const Product = () => {
-  const [isProductActive, setIsProductActive] = useState(false);
-  const [productSelectedOption, setProductSelectedOption] =
-    useState("importComponent");
+  const [productSelectedOption, setProductSelectedOption] = useState<
+    | "importComponent"
+    | "addProductComponent"
+    | "exportComponent"
+    | "editComponent"
+    | "renderComponent"
+  >("renderComponent");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
-  const [showProductSelectedOption, setShowProductSelectedOption] =
-    useState(true);
 
-  const checkActiveProduct = () => {};
 
-  const handleAddProductClick = () => {
+  const handleAddProductClick = () =>
     setProductSelectedOption("addProductComponent");
-    setIsProductActive(true);
-  };
-
-  const handleImportClick = () => {
-    setProductSelectedOption("ImportComponent");
-    setIsProductActive(true);
-  };
-
-  const handleExportClick = () => {
-    setProductSelectedOption("exportComponent");
-    setIsProductActive(true);
-  };
+  const handleImportClick = () => setProductSelectedOption("importComponent");
+  const handleExportClick = () => setProductSelectedOption("exportComponent");
 
   const handleEditClick = (productId: string) => {
     setEditingProductId(productId);
-    setShowProductSelectedOption(false);
     setProductSelectedOption("editComponent");
   };
 
-  const handleCancelEditClick = () => {
+  const handleCancelEditClick = () =>
     setProductSelectedOption("importComponent");
-    setShowProductSelectedOption(true);
-  };
 
   const renderContent = () => {
     switch (productSelectedOption) {
@@ -50,7 +42,7 @@ const Product = () => {
       case "exportComponent":
         return <p>Export layout</p>;
       case "importComponent":
-        return <ProductList handleEditClick={handleEditClick} />;
+        return <p>Import layout</p>;
       case "editComponent":
         return (
           <EditProductForm
@@ -58,60 +50,31 @@ const Product = () => {
             handleCancelEditClick={handleCancelEditClick}
           />
         );
+      case "renderComponent":
+        return (
+          <>
+            <ProductList handleEditClick={handleEditClick} />
+          </>
+        );
+
       default:
-        return <p>dashboard</p>;
+        return (
+          <>
+            <ProductList handleEditClick={handleEditClick} />
+          </>
+        );
     }
   };
 
   return (
     <div>
-      {isProductActive ? (
-        <>
-          {showProductSelectedOption && (
-            <ProductHeader
-              handleAddProductClick={handleAddProductClick}
-              handleImportClick={handleImportClick}
-              handleExportClick={handleExportClick}
-            />
-          )}
+      <ProductHeader
+        handleAddProductClick={handleAddProductClick}
+        handleImportClick={handleImportClick}
+        handleExportClick={handleExportClick}
+      />
 
-          <section>{renderContent()}</section>
-        </>
-      ) : (
-        <>
-          <div className="flex justify-center mt-[150px]">
-            <div>
-              <p className="text-sm text-gray-500 text-center mt-3">
-                No Products Found!!.
-              </p>
-              <p className="text-sm text-gray-500 text-center mt-3">
-                Ready to start selling something awesome?.
-              </p>
-              <div className="flex gap-2 mt-3">
-                <Button
-                  label="Add New Product"
-                  custom="max-w-[fit-content] max-h-[fit-content] bg-red-700 hover:bg-[#9bf618] text-white"
-                  onClick={handleAddProductClick}
-                />
-
-                <Button
-                  label="Import Product from AliExpress"
-                  custom="max-w-[fit-content] max-h-[fit-content] bg-red-700 hover:bg-[#9bf618] text-white"
-                />
-                <Button
-                  label="Import AliExpress settings"
-                  custom="max-w-[fit-content] max-h-[fit-content] bg-red-700 hover:bg-[#9bf618] text-white"
-                />
-                <Button
-                  label="Import"
-                  custom="max-w-[fit-content] max-h-[fit-content] bg-red-700 hover:bg-[#9bf618] text-white"
-                  onClick={handleImportClick}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      <section>{renderContent()}</section>
     </div>
   );
 };

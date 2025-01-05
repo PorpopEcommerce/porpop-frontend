@@ -17,34 +17,6 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
-  // const [isMounted, setIsMounted] = useState(false); // Track if the component is mounted
-
-  // const { loading, setLoading } = useLoading();
-  // const router = useRouter();
-
-  // This ensures that the router is only used on the client
-  // useEffect(() => {
-  //   setIsMounted(true);
-  // }, []);
-
-  // Handle the loading spinner based on route changes
-  // useEffect(() => {
-  //   if (!isMounted) return; // Prevent errors before the component is mounted
-
-  //   const handleRouteChangeStart = () => setLoading(true);
-  //   const handleRouteChangeComplete = () => setLoading(false);
-  //   const handleRouteChangeError = () => setLoading(false);
-
-  //   router.events.on("routeChangeStart", handleRouteChangeStart);
-  //   router.events.on("routeChangeComplete", handleRouteChangeComplete);
-  //   router.events.on("routeChangeError", handleRouteChangeError);
-
-  //   return () => {
-  //     router.events.off("routeChangeStart", handleRouteChangeStart);
-  //     router.events.off("routeChangeComplete", handleRouteChangeComplete);
-  //     router.events.off("routeChangeError", handleRouteChangeError);
-  //   };
-  // }, [router, setLoading, isMounted]);
 
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
