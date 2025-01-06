@@ -20,7 +20,6 @@ import ProductOption from "./addProductFormComponents/ProductOption";
 import CatalgoForm from "./addProductFormComponents/CatalgoForm";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { fetchProducts } from "@/app/redux/features/products/productSlice";
 
 interface AddProductFormProp {
   productId: string | null;
@@ -29,23 +28,9 @@ interface AddProductFormProp {
 
 const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
 
-  const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector((state: RootState) => state.products.products);
+  const { formData, setFormData, handleChange, handleToggle, handleUpdateCategories, handleSubmit, handleImagesChange } = useAddProductForm();
 
-  const { formData, setFormData, handleChange, handleToggle, handleTagsChange, handleUpdateCategories, handleSubmit, handleImagesChange } = useAddProductForm();
 
-  useEffect(() => {
-    if (productId) {
-      const product = products.find((prod) => prod.id === productId);
-      if (product) {
-        setFormData(product); // Pre-fill form with product data
-      }
-    }
-  }, [productId, products]);
-
-  useEffect(() => {
-    dispatch(fetchProducts()); // Ensure products are loaded
-  }, [dispatch]);
 
   return (
     <div className="add-product-form">
@@ -53,47 +38,41 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
         {/* First Row */}
         <div className="grid grid-cols-3 gap-5">
           <div className="col-span-2">
-            <TitleField value={formData.title} onChange={(e) => handleChange("title", e.target.value)} />
+            <TitleField value={formData.name} onChange={(e) => handleChange("name", e.target.value)} />
             <ProductTypeForm
-              productType={formData.productType}
-              onProductTypeChange={(value) => handleChange("productType", value)}
+              productType={formData.type}
+              onProductTypeChange={(value) => handleChange("type", value)}
             />
             <PriceForm
-              price={formData.price}
-              discountedPrice={formData.discountedPrice}
-              scheduleDate={formData.scheduleDate}
-              scheduledFrom={formData.scheduledFrom}
-              scheduledTo={formData.scheduledTo}
+              price={formData.price_info}
               onChange={handleChange}
               onScheduleToggle={() => handleToggle("scheduleDate")}
             />
-            <CategoryForm
+            {/* <CategoryForm
               categories={formData.categories}
               onUpdateCategories={handleUpdateCategories}
-            />
-            <TagField tags={formData.tags} onTagsChange={handleTagsChange} />
+            /> */}
+            {/* <TagField tags={formData.tags} onTagsChange={handleTagsChange} /> */}
           </div>
-          <ImageUploadField onImageUpload={(imageUrl) => handleImagesChange(imageUrl)} />
+          {/* <ImageUploadField onImageUpload={(imageUrl) => handleImagesChange(imageUrl)} /> */}
 
         </div>
 
         {/* Description Fields */}
-        <ShortDescriptionForm
+        {/* <ShortDescriptionForm
           shortDescription={formData.shortDescription}
           onChange={handleChange}
         />
         <DescriptionForm
           productDescription={formData.productDescription}
           onChange={handleChange}
-        />
+        /> */}
 
         {/* Inventory Management */}
-        <InventoryForm
-          SKU={formData.SKU}
+        {/* <InventoryForm
           stockType={formData.stockType}
           allowType={formData.allowType}
           isStockManagementEnabled={formData.isStockManagementEnabled}
-          onSKUChange={(value) => handleChange("SKU", value)}
           onStockTypeChange={(value) => handleChange("stockType", value)}
           onAllowTypeChange={(value) => handleChange("allowType", value)}
           onStockManagementToggle={() => handleToggle("isStockManagementEnabled")}
@@ -101,39 +80,39 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
           lowStockThreshold={formData.lowStockThreshold}
           onStockQuantityChange={(value) => handleChange("stockQuantity", value)}
           onLowStockThresholdChange={(value) => handleChange("lowStockThreshold", value)}
-        />
+        /> */}
 
 
         {/* Other Fields */}
         {/* <GeolocationForm />
         <LinkedProductForm /> */}
-        <DeliveryForm
+        {/* <DeliveryForm
           deliveryTime={formData.deliveryTime}
           backorderDeliveryTime={formData.backorderDeliveryTime}
           outOfStockDeliveryTime={formData.outOfStockDeliveryTime}
           onChange={handleChange}
-        />
-        <ShippingForm
+        /> */}
+        {/* <ShippingForm
           dimensions={formData.dimensions}
           shippingClass={formData.shippingClass}
           taxStatus={formData.taxStatus}
           taxClass={formData.taxClass}
           isShippingManagementEnabled={formData.isShippingManagementEnabled}
           onChange={handleChange}
-        />
+        /> */}
 
-        <DiscountForm
+        {/* <DiscountForm
           minQuantityForDiscount={formData.minQuantityForDiscount}
           discountPercentage={formData.discountPercentage}
           onChange={handleChange}
-        />
+        /> */}
 
-        <WholesaleForm
+        {/* <WholesaleForm
           minQuantityForWholesale={formData.minQuantityForWholesale}
           wholesalePrice={formData.wholesalePrice}
-          onChange={handleChange} />
+          onChange={handleChange} /> */}
 
-        <MinMaxForm />
+        {/* <MinMaxForm />
 
         <ProductOption
           productStatusType={formData.productStatusType}
@@ -146,7 +125,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
           onChange={handleChange}
         />
 
-        <CatalgoForm />
+        <CatalgoForm /> */}
 
         {/* Submit Button */}
         <button

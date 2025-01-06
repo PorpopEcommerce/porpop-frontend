@@ -1,11 +1,11 @@
-import { Product } from "@/app/types/product";
+import { FormProduct } from "@/app/types/formProduct";
 import { useStepContext } from "@mui/material";
 import React, { useState } from "react";
 
 interface DiscountFormProps {
     minQuantityForDiscount?: number;
     discountPercentage?: number;
-    onChange: (field: keyof Product, value: any) => void;
+    onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const DiscountForm: React.FC<DiscountFormProps> = ({

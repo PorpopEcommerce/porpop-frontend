@@ -1,4 +1,4 @@
-import { Product } from '@/app/types/product';
+import { FormProduct } from "@/app/types/formProduct";
 import { useState } from 'react'
 
 
@@ -10,7 +10,7 @@ interface ProductOptionProps {
     productNote?: string;
     onProductStatusTypeChange: (type: string) => void;
     onVisibilityTypeChange: (type: string) => void;
-    onChange: (field: keyof Product, value: any) => void;
+    onChange: (field: keyof FormProduct, value: any) => void;
 }
 const ProductOption: React.FC<ProductOptionProps> = ({ productStatusType, visibilityType, onProductStatusTypeChange, onVisibilityTypeChange, onChange, productNote, reviewType, onReviewTypeChange }) => {
     const [productStatusTypeDropdown, setProductStatusTypeDropdown] = useState(false);

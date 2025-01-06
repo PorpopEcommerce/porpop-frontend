@@ -5,7 +5,6 @@ interface InventoryFormProps {
   stockType: string;
   allowType: boolean;
   isStockManagementEnabled: boolean;
-  onSKUChange: (value: string) => void;
   onStockTypeChange: (type: string) => void;
   onAllowTypeChange: (type: boolean) => void;
   onStockManagementToggle: () => void;
@@ -17,11 +16,9 @@ interface InventoryFormProps {
 }
 
 const InventoryForm: React.FC<InventoryFormProps> = ({
-  SKU,
   stockType,
   allowType,
   isStockManagementEnabled,
-  onSKUChange,
   onStockTypeChange,
   onAllowTypeChange,
   onStockManagementToggle,
@@ -29,30 +26,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   lowStockThreshold = 0,
   onStockQuantityChange,
   onLowStockThresholdChange,
-  existingSKUs = []
 }) => {
   const [stockTypeDropdown, setStockTypeDropdown] = useState(false);
-  const [generatedSKU, setGeneratedSKU] = useState("");
 
-  // Generate a unique SKU on initial load or if existing SKUs change
-  useEffect(() => {
-    const generateUniqueSKU = () => {
-      let newSKU;
-      do {
-        newSKU = `PROD-${Math.floor(1000 + Math.random() * 9000)}`; // Example format
-      } while (existingSKUs.includes(newSKU));
-      return newSKU;
-    };
-
-    const initialSKU = SKU || generateUniqueSKU();
-    setGeneratedSKU(initialSKU);
-    onSKUChange(initialSKU); // Notify parent about initial SKU
-  }, [SKU, existingSKUs, onSKUChange]);
-
-  const handleSKUChange = (value: string) => {
-    setGeneratedSKU(value);
-    onSKUChange(value);
-  };
 
   const handleStockTypeSelect = (type: string) => {
     onStockTypeChange(type);
@@ -71,18 +47,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       </div>
 
       <div className="p-3 grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
-            SKU <span>(Stock Keeping Unit)</span>
-          </label>
-          <input
-            type="text"
-            readOnly
-            value={SKU}
-            onChange={(e) => onSKUChange(e.target.value)}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-          />
-        </div>
+
 
         {!isStockManagementEnabled && (
           <div className="relative">

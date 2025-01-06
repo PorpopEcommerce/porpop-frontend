@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import RegisterForm from '@/app/components/user/RegisterForm'
 import { useRouter } from "next/navigation"; // For route navigation
 import LoginForm from '@/app/components/user/LoginForm';
@@ -14,9 +14,11 @@ const LoginRegisterPage = () => {
 
  
 
-  if (user) {
-    router.push("/my_account");
-  }
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   return (
     <div>
