@@ -1,113 +1,114 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Logo from "@/app/assets/porpopLogo.jpg";
-import { useAuth } from "./context/AuthContext";
-import { CiMenuBurger } from "react-icons/ci";
-import classNames from "classnames";
-import SearchBar from "./components/nav/SearchBar";
-import Cart from "./components/nav/Cart";
-import NavAccountComponent from "./components/nav/NavAccountComponent";
-import Image from "next/image";
+import Image from 'next/image';
+import { MdMenu } from 'react-icons/md';
+import { useState } from 'react';
+import { RxCaretDown } from 'react-icons/rx';
+import { FaTimes } from 'react-icons/fa';
 
-interface NavBarProps {
-  toggleMenu: () => void;
-  toggleCart: () => void;
-  toggleSignIn: () => void;
-}
+const Navbar = () => {
 
-const NavBar: React.FC<NavBarProps> = ({
-  toggleMenu,
-  toggleCart,
-  toggleSignIn,
-}) => {
-  const currentPath = usePathname();
-  const { user } = useAuth();
-
-  const navigationLinks = [
-    { label: "BLOG", href: "/blog" },
-    { label: "ORDER DISPATCH", href: "/order_dispatch" },
-    { label: "TRACK ORDER", href: "/track_order" },
-    { label: "PRODUCT FILTERS", href: "/product_filters" },
-  ];
+  const [ showSidebar, setShowSidebar ] = useState(false)
 
   return (
-    <nav className="relative px-3 lg:px-5 mb-5 max-w-[100rem] mx-auto">
-      <div className="hidden lg:flex lg:flex-col">
-        {/* Top navigation routes */}
-        <div className="py-3 flex justify-between border-b items-center text-[10px] font-light">
-          <div>
-            <Link className="text-5xl font-bold" href="/">
-              <Image src={Logo} alt="Porpop Logo " />
-            </Link>
-          </div>
+    <div className="absolute top-0 w-full z-10 padding-x py-4">
+      {/* Left Icon */}
+      <div className="maxW flex items-center justify-between bg-transparent">
 
-          <div className="flex gap-4 w-fit">
-            <Cart toggleCart={toggleCart} />
+      <div className="flex items-center">
+        <Image
+          src="/Images/logo.png"
+          alt="logo"
+          width={160}
+          height={47}
+          // className="w-20 h-10"
+        />
+      </div>
 
-            {user ? (
-              <NavAccountComponent />
-            ) : (
-              <div className="w-fit">
-                <div>
-                  <Link href="/login_signin">
-                    <button className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg">
-                      Sign in
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            )}
+      {/* Center Links */}
+      <ul className="hidden lg:flex space-x-6 items-center text-white">
+        <li className="relative group">
+          <button className="hover:text-gray-300 focus:outline-none flex items-center gap-2">
+            Solutions <RxCaretDown fontSize="20px" />
+          </button>
+          {/* Dropdown */}
+          <div className="absolute left-0 mt-2 hidden w-40 bg-white text-gray-800 rounded-md shadow-lg group-hover:block">
+            <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+              Option 1
+            </a>
+            <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+              Option 2
+            </a>
           </div>
-        </div>
+        </li>
+        <li><a href="/filters" className="hover:text-gray-300">Product Filters</a></li>
+        <li><a href="/pricing" className="hover:text-gray-300">Pricing</a></li>
+        <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
+        <li><a href="/blog" className="hover:text-gray-300">Blog</a></li>
+      </ul>
 
-        {/* Page and Social Links Navigation routes */}
-        <div className="flex justify-between py-5 items-center">
-          <div className="flex">
-            <SearchBar />
-          </div>
-          <div className="flex space-x-6">
-            <ul className="flex space-x-3 p-0 items-center">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  className={classNames({
-                    underline: link.href === currentPath,
-                    "font-semibold": link.href !== currentPath,
-                    "text-sm hover:text-zinc-500": true,
-                  })}
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </ul>
-          </div>
+      {/* Right Buttons */}
+      <div className="flex space-x-4 items-center">
+        <button className="hidden md:block px-4 py-2 bg-transparent text-white rounded-md">
+          Login
+        </button>
+        <button className="hidden md:block px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-white rounded-full border-2 border-[#A4CD3A] shrink-0">
+          Sign Up
+        </button>
+
+        <div className='shrink-0'>
+
+        <MdMenu fontSize="30px" color="white" className="lg:hidden" onClick={() => setShowSidebar(!showSidebar)} />
         </div>
       </div>
 
-      {/* small size view */}
-      <div className="lg:hidden w-full py-2">
-        <div className="flex justify-between items-center mb-3">
-          <div
-            className="cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500"
-            onClick={toggleMenu}
-          >
-            <CiMenuBurger />
-            <span className="text-lg">Menu</span>
-          </div>
-          <div>
-            <Link className="text-5xl font-bold" href="/">
-              <Image src={Logo} alt="Porpop Logo" />
-            </Link>
-          </div>
-          <Cart toggleCart={toggleCart} />
+      <div
+        className={`fixed top-0 px-4 right-0 w-1/2 h-full bg-white lg:hidden flex-col justify-between py-8 border-l z-30 duration-300 ease-in transition-all ${showSidebar ? "flex" : "hidden"} z-50`}
+      >
+        <div className="">
+        <div className="flex justify-end mb-4">
+          <FaTimes fontSize="30px" color="black" onClick={() => setShowSidebar(false)} />
         </div>
-        <SearchBar />
+        <ul className="flex flex-col gap-6 items-center text-black">
+        <li className="relative group">
+          <button className="hover:text-gray-300 focus:outline-none flex items-center gap-2">
+            Solutions <RxCaretDown fontSize="20px" />
+          </button>
+          {/* Dropdown */}
+          <div className="absolute left-0 mt-2 hidden w-40 bg-white text-gray-800 rounded-md shadow-lg group-hover:block">
+            <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+              Option 1
+            </a>
+            <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+              Option 2
+            </a>
+          </div>
+        </li>
+        <li><a href="/filters" className="hover:text-gray-300">Product Filters</a></li>
+        <li><a href="/pricing" className="hover:text-gray-300">Pricing</a></li>
+        <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
+        <li><a href="/blog" className="hover:text-gray-300">Blog</a></li>
+      </ul>
+
+      <div className="text-center mt-2 md:hidden">
+
+        <div className="text-center">
+        <button className="px-4 py-2 bg-transparent text-[#A4CD3A] rounded-md">
+          Login
+        </button>
+        </div>
+        <div className="text-center">
+
+        <button className="px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-[#A4CD3A] rounded-full border-2 border-[#A4CD3A] shrink-0">
+          Sign Up
+        </button>
+        </div>
       </div>
-    </nav>
+        </div>
+    </div>
+      </div>
+    </div>
   );
 };
 
-export default NavBar;
+export default Navbar;

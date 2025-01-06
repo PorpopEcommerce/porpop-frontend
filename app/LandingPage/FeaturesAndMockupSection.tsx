@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 export default function FeaturesAndMockupSection() {
   return (
@@ -7,10 +7,13 @@ export default function FeaturesAndMockupSection() {
       <div className="grid grid-cols-2 gap-8 items-center">
         {/* Top-left Content */}
         <div className="flex flex-col space-y-4">
-          <h1 className="text-4xl font-bold">Build your ONLINE STORE with ease</h1>
+          <h1 className="text-4xl font-bold">
+            Build your ONLINE STORE with ease
+          </h1>
           <p className="text-gray-700">
-          Create your professional store effortlessly with Porpop’s prebuilt platform.
-          Vendors experience minimal stress, making the store setup process exciting and seamless.
+            Create your professional store effortlessly with Porpop’s prebuilt
+            platform. Vendors experience minimal stress, making the store setup
+            process exciting and seamless.
           </p>
           <Link
             href="/explore"
@@ -36,10 +39,13 @@ export default function FeaturesAndMockupSection() {
 
         {/* Bottom-right Content */}
         <div className="flex flex-col space-y-4">
-          <h1 className="text-4xl font-bold">Receive PAYMENT with Google Pay</h1>
+          <h1 className="text-4xl font-bold">
+            Receive PAYMENT with Google Pay
+          </h1>
           <p className="text-gray-700">
-          Introducing Google Pay payment options for vendors, expanding payment flexibility and embracing digital
-          payment trends for enhanced transactions and financial inclusivity in the marketplace
+            Introducing Google Pay payment options for vendors, expanding
+            payment flexibility and embracing digital payment trends for
+            enhanced transactions and financial inclusivity in the marketplace
           </p>
           <Link
             href="/opportunities"
