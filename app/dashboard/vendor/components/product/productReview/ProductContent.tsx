@@ -13,10 +13,10 @@ import { useDispatch } from "react-redux";
 interface ProductContentProps {
     item: Product;
     handleEditClick: (ProductID: string) => void;
-    handleDeleteClick: (ProductID: string) => void;
+    // handleDeleteClick: (ProductID: string) => void;
 }
 
-const ProductContent: React.FC<ProductContentProps> = ({ item, handleEditClick, handleDeleteClick }) => {
+const ProductContent: React.FC<ProductContentProps> = ({ item, handleEditClick }) => {
 
     const router = useRouter();
 
