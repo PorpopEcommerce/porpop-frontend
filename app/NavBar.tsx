@@ -5,6 +5,7 @@ import { MdMenu } from 'react-icons/md';
 import { useState } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
 import { FaTimes } from 'react-icons/fa';
+import Link from 'next/link';
 
 const Navbar = () => {
 
@@ -32,13 +33,16 @@ const Navbar = () => {
             Solutions <RxCaretDown fontSize="20px" />
           </button>
           {/* Dropdown */}
-          <div className="absolute left-0 mt-2 hidden w-40 bg-white text-gray-800 rounded-md shadow-lg group-hover:block">
+          <div className="absolute left-0 pt-2 hidden group-hover:block hover:block">
+            
+          <div className="w-40 overflow-hidden bg-white text-gray-800 rounded-md shadow-lg">
             <a href="#" className="block px-4 py-2 hover:bg-gray-200">
               Option 1
             </a>
             <a href="#" className="block px-4 py-2 hover:bg-gray-200">
               Option 2
             </a>
+          </div>
           </div>
         </li>
         <li><a href="/filters" className="hover:text-gray-300">Product Filters</a></li>
@@ -49,16 +53,20 @@ const Navbar = () => {
 
       {/* Right Buttons */}
       <div className="flex space-x-4 items-center">
-        <button className="hidden md:block px-4 py-2 bg-transparent text-white rounded-md">
-          Login
-        </button>
-        <button className="hidden md:block px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-white rounded-full border-2 border-[#A4CD3A] shrink-0">
-          Sign Up
-        </button>
+        <Link href="/user/LoginForm" passHref>
+          <button className="hidden md:block px-4 py-2 bg-transparent hover:text-gray-300 text-white rounded-md">
+            Login
+          </button>
+        </Link>
+        <Link href="/signup" passHref>
+          <button className="hidden md:block px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-white rounded border-2 border-[#A4CD3A] shrink-0">
+            Sign Up
+          </button>
+        </Link>
 
         <div className='shrink-0'>
 
-        <MdMenu fontSize="30px" color="white" className="lg:hidden" onClick={() => setShowSidebar(!showSidebar)} />
+        <MdMenu fontSize="30px" color="white" className="lg:hidden cursor-pointer" onClick={() => setShowSidebar(!showSidebar)} />
         </div>
       </div>
 
@@ -67,15 +75,17 @@ const Navbar = () => {
       >
         <div className="">
         <div className="flex justify-end mb-4">
-          <FaTimes fontSize="30px" color="black" onClick={() => setShowSidebar(false)} />
+          <FaTimes fontSize="30px" className='cursor-pointer hover:text-red-400 transitionItem text-red-500' onClick={() => setShowSidebar(false)} />
         </div>
         <ul className="flex flex-col gap-6 items-center text-black">
         <li className="relative group">
-          <button className="hover:text-gray-300 focus:outline-none flex items-center gap-2">
+          <button className="hover:text-gray-500 focus:outline-none flex items-center gap-2">
             Solutions <RxCaretDown fontSize="20px" />
           </button>
           {/* Dropdown */}
-          <div className="absolute left-0 mt-2 hidden w-40 bg-white text-gray-800 rounded-md shadow-lg group-hover:block">
+          <div className="absolute left-0 pt-2 hidden group-hover:block hover:block">
+            
+          <div className="w-40 overflow-hidden bg-white text-gray-800 rounded-md shadow-lg">
             <a href="#" className="block px-4 py-2 hover:bg-gray-200">
               Option 1
             </a>
@@ -83,25 +93,30 @@ const Navbar = () => {
               Option 2
             </a>
           </div>
+          </div>
         </li>
-        <li><a href="/filters" className="hover:text-gray-300">Product Filters</a></li>
-        <li><a href="/pricing" className="hover:text-gray-300">Pricing</a></li>
-        <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
-        <li><a href="/blog" className="hover:text-gray-300">Blog</a></li>
+        <li><a href="/filters" className="hover:text-gray-500">Product Filters</a></li>
+        <li><a href="/pricing" className="hover:text-gray-500">Pricing</a></li>
+        <li><a href="/contact" className="hover:text-gray-500">Contact Us</a></li>
+        <li><a href="/blog" className="hover:text-gray-500">Blog</a></li>
       </ul>
 
       <div className="text-center mt-2 md:hidden">
 
         <div className="text-center">
-        <button className="px-4 py-2 bg-transparent text-[#A4CD3A] rounded-md">
-          Login
-        </button>
+        <Link href="/login" passHref>
+          <button className="px-4 py-2 bg-transparent text-[#A4CD3A] hover:text-gray-500 rounded-md">
+            Login
+          </button>
+        </Link>
         </div>
         <div className="text-center">
 
-        <button className="px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-[#A4CD3A] rounded-full border-2 border-[#A4CD3A] shrink-0">
-          Sign Up
-        </button>
+        <Link href="/signup" passHref>
+          <button className="px-4 py-2 bg-transparent hover:bg-[#A4CD3A] text-[#A4CD3A] rounded border-2 border-[#A4CD3A] shrink-0">
+            Sign Up
+          </button>
+        </Link>
         </div>
       </div>
         </div>
