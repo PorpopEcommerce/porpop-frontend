@@ -3,18 +3,20 @@ import axios from "axios";
 import { Product } from "@/app/types/product";
 
 interface ProductState {
-  products: Product[];
+  allProducts: Product[];
+  vendorProducts: Product[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: ProductState = {
-  products: [],
+  allProducts: [],
+  vendorProducts: [],
   status: "idle",
   error: null,
 };
 
-// Async thunk to fetch products
+// Async thunk to fetch all products
 export const fetchAllProducts = createAsyncThunk<Product[], void>(
   "products/fetchAll",
   async (_, { rejectWithValue }) => {
@@ -22,102 +24,71 @@ export const fetchAllProducts = createAsyncThunk<Product[], void>(
       const response = await axios.get(
         "https://backend-porpop.onrender.com/api/v1/products"
       );
-      return response.data.products; // Assuming "products" is the key containing the array
+      return response.data.products;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch products"
+        error.response?.data?.message || "Failed to fetch all products"
       );
     }
   }
 );
 
-
-export const fetchProductByVendorId = createAsyncThunk<Product[], string>(
+// Async thunk to fetch products by vendor ID
+export const fetchProductsByVendorId = createAsyncThunk<Product[], string>(
   "products/fetchByVendorId",
   async (vendorId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://backend-porpop.onrender.com/api/v1/products?vendorId=${vendorId}`,
-        {
-          params: { vendor_id: vendorId },
-          
-        },
+        `https://backend-porpop.onrender.com/api/v1/products/vendor/?vendor_id=${vendorId}`,
       );
       return response.data.products;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch products by vendor"
+        error.response?.data?.message || "Failed to fetch products by vendor ID"
       );
     }
   }
 );
 
-
-export const deleteProductByVendorId = createAsyncThunk<Product[], string>(
-  "products/fetchByVendorId",
-  async (productId, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `https://backend-porpop.onrender.com/api/v1/product?product_id=${productId}`,
-        {
-          params: { ProductId: productId },
-          
-        },
-      );
-      return response.data.products;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch products by vendor"
-      );
-    }
-  }
-);
-
-
-
+// Product slice
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    resetProductsState: (state) => {
-      state.products = [];
+    resetVendorProducts: (state) => {
+      state.vendorProducts = [];
       state.status = "idle";
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // Fetch all products
       .addCase(fetchAllProducts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        fetchAllProducts.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
-          state.status = "succeeded";
-          state.products = action.payload;
-        }
-      )
+      .addCase(fetchAllProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
+        state.status = "succeeded";
+        state.allProducts = action.payload;
+      })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       })
-      .addCase(fetchProductByVendorId.pending, (state) => {
+      // Fetch products by vendor ID
+      .addCase(fetchProductsByVendorId.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        fetchProductByVendorId.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
-          state.status = "succeeded";
-          state.products = action.payload;
-        }
-      )
-      .addCase(fetchProductByVendorId.rejected, (state, action) => {
+      .addCase(fetchProductsByVendorId.fulfilled, (state, action: PayloadAction<Product[]>) => {
+        state.status = "succeeded";
+        state.vendorProducts = action.payload;
+      })
+      .addCase(fetchProductsByVendorId.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
   },
-  
 });
 
-export const { resetProductsState } = productSlice.actions;
+export const { resetVendorProducts } = productSlice.actions;
 export default productSlice.reducer;
