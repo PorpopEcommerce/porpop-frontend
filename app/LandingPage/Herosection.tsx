@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 const HeroSection = () => {
+        
   const [currentImage, setCurrentImage] = useState(0);
   const [currentAnimation, setCurrentAnimation] = useState("animate-floating");
 
