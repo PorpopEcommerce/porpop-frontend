@@ -2,10 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 body {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.smallHeading {
+  @apply text-[#A4CD3A] text-sm font-medium;
+}
+
+.heading {
+  @apply text-white md:text-3xl text-2xl font-normal;
+}
+
+.padding-y {
+  @apply py-12;
+}
+
+.padding-x {
+  @apply lg:px-20 md:px-12 px-6;
+}
+
+.transitionItem {
+  @apply transition duration-200 ease-in;
+}
+
+button {
+  @apply transitionItem;
+}
+
+.maxW {
+  @apply max-w-[1440px] mx-auto;
 }

@@ -1,102 +1,133 @@
-import React, { useEffect, useState } from 'react';
+"use client";
 
-type ReviewData = {
-  id: number;
-  businessName: string;
-  address: string;
-  phone: string;
-  stars: number;
-  reviewsCount: string;
-  placeholderImage: string;
-};
+import React, { useState, useEffect } from "react";
+import TestimonialCard from "./TestimonialCard";
 
-const reviews: ReviewData[] = [
-  { id: 1, businessName: 'Vendor A', address: '123 Street, City', phone: '+1234567890', stars: 5, reviewsCount: '5.00 (10 reviews)', placeholderImage: 'A' },
-  { id: 2, businessName: 'Vendor B', address: '456 Avenue, City', phone: '+2345678901', stars: 4, reviewsCount: '4.50 (8 reviews)', placeholderImage: 'B' },
-  { id: 3, businessName: 'Vendor C', address: '789 Boulevard, City', phone: '+3456789012', stars: 3, reviewsCount: '3.00 (5 reviews)', placeholderImage: 'C' },
-  { id: 4, businessName: 'Vendor D', address: '101 Circle, City', phone: '+4567890123', stars: 4, reviewsCount: '4.00 (12 reviews)', placeholderImage: 'D' },
-  { id: 5, businessName: 'Vendor E', address: '202 Square, City', phone: '+5678901234', stars: 5, reviewsCount: '5.00 (20 reviews)', placeholderImage: 'E' },
-  { id: 6, businessName: 'Vendor F', address: '303 Triangle, City', phone: '+6789012345', stars: 2, reviewsCount: '2.00 (3 reviews)', placeholderImage: 'F' },
-  { id: 7, businessName: 'Vendor G', address: '404 Pentagon, City', phone: '+7890123456', stars: 3, reviewsCount: '3.50 (6 reviews)', placeholderImage: 'G' },
-  { id: 8, businessName: 'Vendor H', address: '505 Hexagon, City', phone: '+8901234567', stars: 5, reviewsCount: '5.00 (15 reviews)', placeholderImage: 'H' },
+// Testimonial data
+const testimonials = [
+  {
+    name: "Kevin H.",
+    business: "Music Instruments",
+    rating: 5,
+    imageUrl: "/Images/Landing/testifiers/1.jpg",
+    quote:
+      "Porpop has empowered me to take my small business to the next level. I'm now reaching customers all over the country, and I couldn't have done it without them.",
+  },
+  {
+    name: "Jane D.",
+    business: "Fashion Boutique",
+    rating: 4,
+    imageUrl: "/Images/Landing/testifiers/2.jpg",
+    quote:
+      "I was able to expand my reach and increase my sales dramatically. Highly recommend!",
+  },
+  {
+    name: "Mike T.",
+    business: "Tech Gadgets",
+    rating: 5,
+    imageUrl: "/Images/Landing/testifiers/3.jpg",
+    quote:
+      "Thanks to Porpop, my business is flourishing. I couldn't ask for better support!",
+  },
+  {
+    name: "Sarah L.",
+    business: "Fitness Coaching",
+    rating: 5,
+    imageUrl: "/Images/Landing/testifiers/4.jpg",
+    quote:
+      "My business grew exponentially after switching to Porpop. It's a game-changer.",
+  },
+  {
+    name: "Tom B.",
+    business: "Digital Marketing",
+    rating: 4,
+    imageUrl: "/Images/Landing/testifiers/1.jpg",
+    quote:
+      "The platform made it easier to track and manage my client base. Very efficient.",
+  },
 ];
 
-export default function ReviewsSection() {
+const ReviewsSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Automatic carousel scroll every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === reviews.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 6000); 
-    return () => clearInterval(interval);
-  }, []);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+    }, 5000); // 5 seconds for auto-scroll
 
-  const handlePrev = () => setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
-  const handleNext = () => setCurrentIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
+
+  // Navigate to the next testimonial
+  const nextTestimonial = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+  };
+
+  // Navigate to the previous testimonial
+  const prevTestimonial = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1,
+    );
+  };
 
   return (
-    <section className="bg-gray-100 py-8 overflow-hidden w-screen">
-      <div className="w-full mx-auto relative flex items-center">
-        
-        <button
-          onClick={handlePrev}
-          className="absolute left-0 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold p-2 rounded-full z-10"
-        >
-          ❮
-        </button>
+    <section className="bg-[#1E1E1E] py-16 padding-x padding-y w-screen overflow-hidden">
+      <div className="maxW text-left text-white">
+        <h2 className="heading mb-4">What our customers are saying</h2>
+        <div className="md:flex justify-between mb-12 space-y-2">
+          <p className="text-lg">Read why our customers love our platform</p>
+          <p className="text-[#A4CD3A]">
+            Businesses of every size are generating <br /> strong revenue
+            through Porpop.
+          </p>
+        </div>
 
-        {/* Carousel Container */}
-        <div className="overflow-hidden w-full">
-          <div
-            className="flex transition-transform duration-500"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="w-[300px] h-[180px] bg-white rounded-lg shadow-md hover:shadow-lg hover:shadow-gray-400 transition-shadow p-4 relative flex-shrink-0 mx-4"
-              >
-                <h3 className="text-lg font-semibold">{review.businessName}</h3>
-                <p className="text-gray-600">{review.address}</p>
-                <p className="text-gray-600">{review.phone}</p>
-
-                {/* Stars */}
-                <div className="flex items-center my-2">
-                  {[...Array(5)].map((_, index) => (
-                    <span
-                      key={index}
-                      className={`${
-                        index < review.stars
-                          ? 'text-yellow-400'
-                          : 'text-gray-300'
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
+        {/* Testimonial Carousel */}
+        <div className="relative">
+          {/* Testimonial Cards (showing 3 at once) */}
+          <div className="flex gap-6 overflow-hidden">
+            {testimonials
+              .slice(currentIndex, currentIndex + 3)
+              .map((testimonial, index) => (
+                <div key={index} className="flex-none w-full sm:w-1/3">
+                  <TestimonialCard {...testimonial} />
                 </div>
+              ))}
+          </div>
 
-                <p className="text-sm text-gray-500">{review.reviewsCount}</p>
-
-                {/* Vendor Image */}
-                <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center absolute bottom-2 right-2">
-                  <p className="text-gray-500 text-xl font-bold">{review.placeholderImage}</p>
-                </div>
-              </div>
-            ))}
+          {/* Carousel Buttons */}
+          <div className="absolute top-1/2 left-0 transform -translate-y-1/2 pl-4">
+            <button
+              onClick={prevTestimonial}
+              className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition"
+            >
+              &lt;
+            </button>
+          </div>
+          <div className="absolute top-1/2 right-0 transform -translate-y-1/2 pr-4">
+            <button
+              onClick={nextTestimonial}
+              className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition"
+            >
+              &gt;
+            </button>
           </div>
         </div>
 
-        {/* Next Button */}
-        <button
-          onClick={handleNext}
-          className="absolute right-0 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold p-2 rounded-full z-10"
-        >
-          ❯
-        </button>
+        {/* Final Message */}
+        <div className="text-center mt-12">
+          <p className="text-lg text-white font-semibold mb-6">
+            <span className="text-[#A4CD3A]">We&apos;re</span> always thrilled to hear Porpop has helped businesses thrive.
+            Yours should be next!
+          </p>
+          <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
+            Get started Now
+          </button>
+        </div>
       </div>
     </section>
   );
-}
+};
+
+export default ReviewsSection;

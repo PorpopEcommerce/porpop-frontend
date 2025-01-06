@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 export default function TenthSection() {
   return (
@@ -37,7 +37,9 @@ export default function TenthSection() {
 
         {/* Second Column */}
         <div>
-          <h3 className="text-lg lg:text-xl font-bold mb-4">Customer Service</h3>
+          <h3 className="text-lg lg:text-xl font-bold mb-4">
+            Customer Service
+          </h3>
           <ul className="space-y-2">
             <li>
               <Link href="/" className="hover:text-gray-300 transition">
@@ -91,7 +93,9 @@ export default function TenthSection() {
 
         {/* Available On Section */}
         <div>
-          <p className="text-sm lg:text-base font-semibold mb-2">Available on</p>
+          <p className="text-sm lg:text-base font-semibold mb-2">
+            Available on
+          </p>
           <div className="flex space-x-4 mb-4">
             <div className="bg-gray-800 w-20 h-8 sm:w-24 sm:h-10 rounded flex items-center justify-center">
               <p className="text-sm sm:text-base text-white">App Store</p>

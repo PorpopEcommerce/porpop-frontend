@@ -5,14 +5,20 @@ export default function GlobalReachSection() {
     <section className="bg-gray-100 py-20 px-8">
       {/* Centered Heading and Paragraph */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">We Have Introduced New Ways to<br /> Receive Funds Globally</h1>
+        <h1 className="text-4xl font-bold mb-4">
+          We Have Introduced New Ways to
+          <br /> Receive Funds Globally
+        </h1>
         <p className="text-lg text-gray-700">
-          Porpop is proud to announce its expansive reach to over 75 countries, now facilitating transactions
-          in their respective local currencies. This advancement is poised to revolutionize the experience
-          for vendors on Porpop, enhancing sales opportunities and streamlining transactions worldwide.
-          With this global expansion, vendors can expect a significant boost in sales as accessibility and
-          convenience are maximized for customers across diverse regions. Join us as we break barriers and unlock
-          new horizons for e-commerce excellence with Porpop.
+          Porpop is proud to announce its expansive reach to over 75 countries,
+          now facilitating transactions in their respective local currencies.
+          This advancement is poised to revolutionize the experience for vendors
+          on Porpop, enhancing sales opportunities and streamlining transactions
+          worldwide. With this global expansion, vendors can expect a
+          significant boost in sales as accessibility and convenience are
+          maximized for customers across diverse regions. Join us as we break
+          barriers and unlock new horizons for e-commerce excellence with
+          Porpop.
         </p>
       </div>
 
@@ -51,9 +57,7 @@ export default function GlobalReachSection() {
           <div className="p-10 bg-white rounded-lg shadow-md hover:bg-green-100 transition-colors h-[220px]">
             <h1 className="text-xl font-bold mb-2">15M+</h1>
             <h3 className="text-md font-semibold mb-1">CUSTOMERS SERVED</h3>
-            <p className="text-sm text-gray-700">
-              Tested and Trusted
-            </p>
+            <p className="text-sm text-gray-700">Tested and Trusted</p>
           </div>
 
           {/* Box 4 */}
