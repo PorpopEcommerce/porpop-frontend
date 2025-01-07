@@ -15,17 +15,14 @@ const VendorDashboard = () => {
 
   const { user, vendor } = useAuth();
 
-  const router = useRouter();
 
-  if (!user) {
+  if (!user && !vendor) {
     return null;
-  } else if (vendor.approved === "false") {
-    router.push("/subscribe");
   }
+
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside className="w-56 bg-white shadow-md border-r">
         <ul className="flex flex-col">
           {vendorDashboardOptions.map((option) => (

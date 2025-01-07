@@ -7,12 +7,12 @@ interface ProductOptionProps {
     onReviewTypeChange: (type: boolean) => void;
     productStatusType: string;
     visibilityType: string;
-    productNote?: string;
+    purchase_note?: string;
     onProductStatusTypeChange: (type: string) => void;
     onVisibilityTypeChange: (type: string) => void;
     onChange: (field: keyof FormProduct, value: any) => void;
 }
-const ProductOption: React.FC<ProductOptionProps> = ({ productStatusType, visibilityType, onProductStatusTypeChange, onVisibilityTypeChange, onChange, productNote, reviewType, onReviewTypeChange }) => {
+const ProductOption: React.FC<ProductOptionProps> = ({ productStatusType, visibilityType, onProductStatusTypeChange, onVisibilityTypeChange, onChange, purchase_note, reviewType, onReviewTypeChange }) => {
     const [productStatusTypeDropdown, setProductStatusTypeDropdown] = useState(false);
     const [visibilityTypeDropdown, setVisibilityTypeDropdown] = useState(false);
 
@@ -103,9 +103,9 @@ const ProductOption: React.FC<ProductOptionProps> = ({ productStatusType, visibi
                     rows={5}
                     placeholder='Customer will get this info in their order email'
                     className="block w-full px-4 py-2 mb-4 rounded-md border border-gray-300 focus:outline-none"
-                    value={productNote}
+                    value={purchase_note}
                     onChange={(e) =>
-                        onChange("productNote", e.target.value)
+                        onChange("purchase_note", e.target.value)
                     }
 
                 ></textarea>
