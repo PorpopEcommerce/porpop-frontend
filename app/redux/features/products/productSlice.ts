@@ -6,6 +6,7 @@ interface ProductState {
   allProducts: Product[];
   vendorProducts: Product[];
   status: "idle" | "loading" | "succeeded" | "failed";
+  deleteStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
@@ -13,6 +14,7 @@ const initialState: ProductState = {
   allProducts: [],
   vendorProducts: [],
   status: "idle",
+  deleteStatus: "idle",
   error: null,
 };
 
@@ -50,6 +52,31 @@ export const fetchProductsByVendorId = createAsyncThunk<Product[], string>(
   }
 );
 
+export const deleteProductByVendor = createAsyncThunk<
+  string, // This is the returned payload (product ID)
+  string, // This is the input (product ID)
+  { rejectValue: string }
+>(
+  "products/deleteByVendor",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `https://backend-porpop.onrender.com/api/v1/product?product_id=${productId}`
+      );
+      if (response.status === 200) {
+        return productId; // Return the deleted product's ID
+      } else {
+        return rejectWithValue("Failed to delete the product.");
+      }
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete the product."
+      );
+    }
+  }
+);
+
+
 // Product slice
 const productSlice = createSlice({
   name: "products",
@@ -85,6 +112,22 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsByVendorId.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload as string;
+      })
+      .addCase(deleteProductByVendor.pending, (state) => {
+        state.deleteStatus = "loading";
+      })
+      .addCase(deleteProductByVendor.fulfilled, (state, action: PayloadAction<string>) => {
+        state.deleteStatus = "succeeded";
+        state.vendorProducts = state.vendorProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
+        state.allProducts = state.allProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
+      })
+      .addCase(deleteProductByVendor.rejected, (state, action) => {
+        state.deleteStatus = "failed";
         state.error = action.payload as string;
       });
   },

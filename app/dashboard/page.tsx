@@ -17,7 +17,6 @@ const VendorAccount = () => {
     const checkSubscription = async () => {
       try {
         if (!vendor || !vendor.vendor_id) {
-          router.push("/subscribe");
           return;
         }
 
@@ -29,10 +28,9 @@ const VendorAccount = () => {
         // Since the API response is an array, access the first item
         const subscription = data[0]?.subscription;
 
-        if (subscription?.IsActive) {
+        if (subscription?.IsActive === true) {
           setHasSubscription(true); // Subscription is active
-        } else {
-          router.push("/subscribe"); // Redirect to subscription page
+          router.push("/dashboard");
         }
       } catch (error) {
         console.error("Error fetching subscription details:", error);
@@ -51,10 +49,6 @@ const VendorAccount = () => {
         <Spinner /> {/* Show a loading spinner while fetching subscription */}
       </div>
     );
-  }
-
-  if (!hasSubscription) {
-    return null; // Render nothing if no subscription
   }
 
   return (
