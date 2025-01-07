@@ -1,35 +1,30 @@
 import { FormProduct } from "@/app/types/formProduct";
-import React from "react";
+import { useState } from "react";
 
 interface PriceFormProps {
-  price_info: {
-    regular_price: number;
-    discounted_price: number;
-    allow_discount_schedule_date: boolean;
-    discount_scheduled_from: string;
-    discount_scheduled_to: string;
-  };
-  onChange: (field: keyof PriceFormProps["price_info"], value: any) => void;
-  onScheduleToggle: () => void;
+  regular_price: number;
+  discounted_price: number;
+  discount_scheduled_from: string;
+  discount_scheduled_to: string;
+  onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const PriceForm: React.FC<PriceFormProps> = ({
-  price_info: {
-    regular_price,
-    discounted_price,
-    allow_discount_schedule_date,
-    discount_scheduled_from,
-    discount_scheduled_to,
-  },
+  regular_price,
+  discounted_price,
+  discount_scheduled_from,
+  discount_scheduled_to,
   onChange,
-  onScheduleToggle,
 }) => {
+  const [isScheduleEnabled, setIsScheduleEnabled] = useState(false);
   return (
     <div className="relative mt-4">
       <div className="relative grid grid-cols-2 gap-4">
         {/* Regular Price */}
         <div className="mb-3">
-          <label className="block text-[12px] font-bold text-gray-700 mb-2">Price</label>
+          <label className="block text-[12px] font-bold text-gray-700 mb-2">
+            Price
+          </label>
           <div className="flex">
             <div className="bg-zinc-200 flex px-2 items-center justify-center">
               <p className="text-[12px]">US$</p>
@@ -38,7 +33,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
               type="text"
               placeholder="0.00"
               value={regular_price.toString()}
-              onChange={(e) => onChange("regular_price", parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                onChange("regular_price", parseFloat(e.target.value) || 0)
+              }
               className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
@@ -46,7 +43,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
 
         {/* Discounted Price */}
         <div className="mb-3">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">Discounted Price</label>
+          <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            Discounted Price
+          </label>
           <div className="flex">
             <div className="bg-zinc-200 flex px-2 items-center justify-center">
               <p className="text-[12px]">US$</p>
@@ -55,7 +54,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
               type="text"
               placeholder="0.00"
               value={discounted_price.toString()}
-              onChange={(e) => onChange("discounted_price", parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                onChange("discounted_price", parseFloat(e.target.value) || 0)
+              }
               className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
@@ -65,13 +66,13 @@ const PriceForm: React.FC<PriceFormProps> = ({
       {/* Schedule Toggle */}
       <div
         className="absolute top-0 right-2 cursor-pointer text-[12px]"
-        onClick={onScheduleToggle}
+        onClick={() => setIsScheduleEnabled(!isScheduleEnabled)}
       >
-        <span>{allow_discount_schedule_date ? "Cancel" : "Schedule"}</span>
+        <span>{isScheduleEnabled ? "Cancel" : "Schedule"}</span>
       </div>
 
       {/* Discount Schedule */}
-      {allow_discount_schedule_date && (
+      {isScheduleEnabled && (
         <div className="relative grid grid-cols-2 gap-4">
           {/* Discount Scheduled From */}
           <div className="mb-3">
@@ -82,7 +83,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
               <input
                 type="date"
                 value={discount_scheduled_from}
-                onChange={(e) => onChange("discount_scheduled_from", e.target.value)}
+                onChange={(e) =>
+                  onChange("discount_scheduled_from", e.target.value)
+                }
                 className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
               />
             </div>
@@ -97,7 +100,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
               <input
                 type="date"
                 value={discount_scheduled_to}
-                onChange={(e) => onChange("discount_scheduled_to", e.target.value)}
+                onChange={(e) =>
+                  onChange("discount_scheduled_to", e.target.value)
+                }
                 className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
               />
             </div>

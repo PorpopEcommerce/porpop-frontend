@@ -1,57 +1,57 @@
 export type FormProduct = {
-    name: string;
-    type: string; 
-    price_info: {
-      regular_price: number;
-      discounted_price: number;
-      allow_discount_schedule_date: boolean;
-      discount_scheduled_from: string;
-      discount_scheduled_to: string;
-    }
-    // price: number;
-    // discountedPrice: number;
-    // scheduleDate: boolean;
-    // scheduledFrom: string;
-    // scheduledTo: string;
-    // categories: string[];
-    // tags: string[];
-    // shortDescription: string;
-    // productDescription: string;
-    // SKU: string;
-    // stockType: string; // Adjust if necessary
-    // allowType: boolean;
-    // isStockManagementEnabled: boolean;
-    // stockQuantity: number;
-    // lowStockThreshold: number;
-    // shippingMethod: string; // Adjust according to options
-    // shippingCost: number;
-    // isFreeShippingEnabled: boolean;
-    // latitude: string;
-    // longitude: string;
-    // linkedProducts: string[]; // Array of linked product IDs
-    // deliveryOptions: string[]; // Can define more structure if needed
-    // deliveryTime: string;
-    // discountPercentage: number;
-    // discountStartDate: string;
-    // discountEndDate: string;
-    // images: string; // You can make this an array if there are multiple images
-    // createdAt: string;
-    // updatedAt: string;
-    // backorderDeliveryTime: string;
-    // outOfStockDeliveryTime: string;
-    // isDiscountEnabled: boolean;
-    // minQuantityForDiscount: number;
-    // minQuantityForWholesale: number;
-    // wholesalePrice: number;
-    // isWholesaleEnabled: boolean;
-    // productStatusType: string; // Adjust based on the valid statuses
-    // visibilityType: string; // Adjust according to the valid values
-    // reviewType: boolean;
-    // productNote: string;
-    // dimensions: { weight: number; height: number; length: number; width: number };
-    // shippingClass: string;
-    // taxStatus: string;
-    // taxClass: string;
-    // isShippingManagementEnabled: boolean;
-  };
-  
+  name: string;
+  type: string;
+  regular_price: number;
+  discounted_price: number;
+  discount_scheduled_from: string;
+  discount_scheduled_to: string;
+  // category_ids: {id: number, value: string};
+  // tag_ids: string[];
+  same_as_store: boolean;
+  longitude: number;
+  latitude: number;
+  override_option: boolean;
+  rma_type: string;
+  rma_label: string;
+  rma_length: string; 
+  rma_length_value: number; 
+  rma_length_duration: string;
+  rma_policy: string;
+  refund_reason: string;
+  weight: number;
+  length: number;
+  width: number;
+  height: number;
+  shipping_class: string;
+  tax_class: string;
+  tax_status: string;
+  allow_wholesales: boolean;
+  wholesales_price: number; 
+  wholesales_min_order: number;
+  virtual: boolean; 
+  downloadable: boolean; 
+  description: string; 
+  short_desc: string; 
+  discount_percentage: number;
+  min_quantity_for_discount: number;
+  allow_review: boolean;
+  min_order: number;
+  max_order: number;
+  product_status: string;
+  visibility: string;
+  purchase_note: string;
+  is_published: boolean;
+  add_to_cart: boolean;
+  hide_price: boolean;
+  is_addon_enabled: boolean; 
+  addon_cost: number; 
+  addon_length: number;
+  addon_duration: string; 
+  stock: number;
+  is_stock_management_enabled: boolean;
+  low_stock_threshold: number;
+  allow_back_order: boolean;
+  stock_type: string; 
+  is_only_one: boolean;
+  image_urls: string[];
+};

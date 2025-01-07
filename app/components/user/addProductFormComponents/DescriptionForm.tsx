@@ -17,7 +17,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
             </label>
             <TextEditor
                 value={productDescription}
-                onChange={(value) => onChange("productDescription", value)}
+                onChange={(value) => onChange("description", value)}
                 placeholder="Write your product description here..."
                 className="mb-3"
             />
