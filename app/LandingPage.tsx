@@ -37,7 +37,6 @@ const LandingPage = () => {
       <section className="bg-black">
         <Support />
         <StartSelling />
-        <Footer />
       </section>
     </main>
   );
