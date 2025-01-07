@@ -61,7 +61,7 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
                             type="text"
                             value={wholesalePrice}
                             onChange={(e) =>
-                                onChange("wholesalePrice", e.target.value)
+                                onChange("wholesales_price", e.target.value)
                             }
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                         />
