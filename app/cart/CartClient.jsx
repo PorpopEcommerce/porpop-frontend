@@ -7,12 +7,15 @@ import Heading from '../components/product/Heading';
 import Button from '../components/product/Button';
 import ItemContent from './ItemContent';
 import { formatPrice } from '../utils/formatter';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 
 const CartClient = () => {
 
     const { cartProducts, handleClearCart, cartTotalAmount, } = useCart();
-    const { activeUser } = useAuth(); // Assuming user is available from AuthContext
+    const { user } = useAuth(); // Assuming user is available from AuthContext
+
+    const router = useRouter();
 
     if (!cartProducts || cartProducts.length === 0) {
         return <div className='flex flex-col items-center'>
@@ -33,30 +36,33 @@ const CartClient = () => {
     }
 
     const onCartSubmit = () => {
-        if (!activeUser) {
-            alert("Please log in to proceed to checkout.");
-            return;
+        if (!user) {
+          alert('Please log in to proceed to checkout.');
+          return;
         }
-
-        // Retrieve stored users
-        const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-
-        // Find and update the active user's cart
-        const updatedUsers = storedUsers.map((user) => {
-            if (user.username === activeUser.username) {
-                return {
-                    ...user,
-                    cart: cartProducts, // Update the cart for the active user
-                };
-            }
-            return user;
-        });
-
-        // Save updated users back to localStorage
-        localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-        alert("Your cart has been saved to your profile!");
-    }
+    
+        // Prepare cart data to pass to the checkout page
+        const cartDetails = cartProducts.map((item) => ({
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+        }));
+    
+        const checkoutData = {
+          cartDetails,
+          subtotal: cartTotalAmount,
+        };
+    
+        // Convert the data to a query string
+        const queryString = new URLSearchParams({
+          cart: JSON.stringify(checkoutData.cartDetails),
+          subtotal: checkoutData.subtotal.toString(),
+        }).toString();
+    
+        // Navigate to the checkout page with the query string
+        router.push(`/checkout?${queryString}`);
+      };
 
     return <div>
         <Heading
@@ -89,11 +95,7 @@ const CartClient = () => {
                     <span>Subtotal</span>
                     <span>{formatPrice(cartTotalAmount)}</span>
                 </div>
-                <div className='flex justify-between w-full text-base font-semibold border-t-[1.5px] py-5'>
-                    <span>Shipping:</span>
-                    <span>Vendor Name</span>
-                </div>
-                <p>Taxes and Shipping Calculate at Checkout</p>
+    
                 <div className='mt-3'>
                     <Button onClick={onCartSubmit} label='PROCEED TO CHECKOUT' />
                 </div>

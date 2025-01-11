@@ -26,7 +26,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
       <AuthProvider>
         <CartProvider>
           <section className="flex overflow-hidden w-full">
-            <main className="flex-1 relative">
+            <main className="relative">
               <div className="relative">
                 <header>
                   <NavBar
@@ -47,8 +47,8 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
                     toggleSignIn={toggleSignIn}
                   />
                 )}
-                {children}
                 <ScrollToTop />
+                {children}
                 <section className="bg-black">
                   <Footer />
                 </section>

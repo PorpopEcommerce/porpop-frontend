@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { CartProductType } from "../components/product/ProductDetails";
+import { Product } from "../types/product";
 
 type CartContextType = {
     cartTotalQty: number
@@ -57,21 +58,21 @@ export const CartContextProvider = (props: Props) => {
 
     const handleAddProductToCart = useCallback((product: CartProductType) => {
         setCartProducts((prev) => {
-            let updatedCart;
-
-            if (prev) {
-                updatedCart = [...prev, product]
-            } else {
-                updatedCart = [product]
+            // Check if the product is already in the cart
+            const productExists = prev?.some((item) => item.id === product.id);
+    
+            if (productExists) {
+                alert("Product is already in the cart.");
+                return prev; // Do not add the product again
             }
-
-            localStorage.setItem('shopCartItems', JSON.stringify(updatedCart))
-
+    
+            // Add the product to the cart
+            const updatedCart = prev ? [...prev, product] : [product];
+            localStorage.setItem('shopCartItems', JSON.stringify(updatedCart));
             return updatedCart;
         });
-
-
-    }, [])
+    }, []);
+    
 
     const handleRemoveProductFromCart = useCallback((product: CartProductType) => {
         if (cartProducts) {
@@ -151,31 +152,6 @@ export const CartContextProvider = (props: Props) => {
         return;
     }
 
-    // Retrieve authenticated user's data
-    const { username } = loggedInUser;
-
-    // Key for storing the user's cart
-    const userCartKey = `cart_${username}`;
-
-    // Fetch current cart data for the user
-    const currentCart = JSON.parse(localStorage.getItem(userCartKey) || "[]");
-
-    // Check if the product already exists in the cart
-    const existingIndex = currentCart.findIndex(
-        (item: CartProductType) => item.id === product.id
-    );
-
-    if (existingIndex !== -1) {
-        // Increment quantity if the product exists
-        currentCart[existingIndex].quantity += product.quantity || 1;
-    } else {
-        // Add new product to the cart
-        currentCart.push({ ...product, quantity: product.quantity || 1 });
-    }
-
-    // Save updated cart back to localStorage
-    localStorage.setItem(userCartKey, JSON.stringify(currentCart));
-    alert("Product successfully added to your profile cart!");
 }, []);
 
     

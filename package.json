@@ -26,6 +26,7 @@
     "classnames": "^2.3.2",
     "eslint": "8.57.1",
     "eslint-config-next": "14.2.15",
+    "http-proxy-middleware": "^3.0.3",
     "js-cookie": "^3.0.5",
     "json-server": "^1.0.0-beta.3",
     "moment": "^2.30.1",

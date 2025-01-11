@@ -7,7 +7,7 @@ import { RootState, AppDispatch } from "../redux/store";
 
 const ProductTest = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { products, status, error } = useSelector(
+  const { allProducts, status, error } = useSelector(
     (state: RootState) => state.products
   );
 
@@ -20,11 +20,11 @@ const ProductTest = () => {
 
   return (
     <div>
-      {status === "succeeded" && products.length === 0 && (
+      {status === "succeeded" && allProducts.length === 0 && (
         <p>No products available.</p>
       )}
 
-      {products.map((product) => (
+      {allProducts.map((product) => (
         <div key={product.ProductID} className="product-card">
           <h2>{product.Name}</h2>
           <p>{product.Description}</p>
@@ -32,7 +32,7 @@ const ProductTest = () => {
           <p>Discounted Price: ${product.DiscountedPrice}</p>
           <p>Stock: {product.Stock} ({product.StockType})</p>
 
-          <div>
+          {/* <div>
             <h3>Attributes:</h3>
             <ul>
               {product.Attributes.map((attr) => (
@@ -41,16 +41,16 @@ const ProductTest = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <h3>Images:</h3>
             <div className="image-gallery">
               {product.Images.map((img, index) => (
                 <img key={index} src={img} alt={`${product.Name} ${index}`} />
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       ))}
     </div>
