@@ -23,7 +23,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import Spinner from "../Spinner";
 
 interface AddProductFormProp {
-  productId: string | null;
+  productId?: string | null;
 }
 
 const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { fetchProductByVendorId } from "@/app/redux/features/products/productSlice";
 import AddProduct from "./addProduct/AddProduct";
 import { useAuth } from "@/app/context/AuthContext";
 import ProductHeader from "./ProductHeader";
@@ -31,6 +30,8 @@ const Product = () => {
     setEditingProductId(productId);
     setProductSelectedOption("editComponent");
   };
+
+  console.log(editingProductId)
 
   const handleCancelEditClick = () =>
     setProductSelectedOption("importComponent");

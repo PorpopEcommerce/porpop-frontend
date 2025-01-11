@@ -2,6 +2,7 @@
 
 import SubHeading from "@/app/components/product/SubHeading";
 import AddProductForm from "@/app/components/user/AddProductForm";
+import Product from "../ManageProduct";
 
 
 const Horizontal = () => {

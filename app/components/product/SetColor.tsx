@@ -1,10 +1,11 @@
 'use client'
 
 import { CartProductType, SelectedImageType } from "./ProductDetails";
+import { Product } from "@/app/types/product";
 
 interface SetColorProps {
     images: SelectedImageType[],
-    cartProduct: CartProductType,
+    cartProduct: Product,
     handleColorSelect: (value: SelectedImageType) => void
 }
 
@@ -17,7 +18,7 @@ const SetColor: React.FC<SetColorProps> = ({ images, cartProduct, handleColorSel
                     return (
                         <div
                             key={image.color}
-                            className={`h-7 w-7 rounded-full border-teal-400 flex items-center justify-center ${cartProduct.selectedImg.color === image.color ? 'border-[1.5px]' : 'border-none'}`}
+                            // className={`h-7 w-7 rounded-full border-teal-400 flex items-center justify-center ${cartProduct.selectedImg.color === image.color ? 'border-[1.5px]' : 'border-none'}`}
                             onClick={() => handleColorSelect(image)}
                         >
                             <div style={{ background: image.colorCode }}
