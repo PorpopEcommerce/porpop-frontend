@@ -1,15 +1,34 @@
-import React from 'react'
-import { products } from '../utils/Products'
-import ProductCard from '../components/product/ProductCard'
+'use client'
+
+import { useEffect } from "react";
+// import { products } from "../utils/Products";
+import ProductCard from "../components/product/ProductCard";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllProducts } from "../redux/features/products/productSlice";
+import { RootState, AppDispatch } from "../redux/store";
+import Spinner from "../components/Spinner";
 
 const ProductList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { allProducts, status, error } = useSelector(
+    (state: RootState) => state.products
+  );
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  if (status === "loading") return <Spinner />;
+  if (status === "failed") return <p>Error: {error}</p>;
+
+
   return (
-    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8'>
-      {products.map((product: any) => {
-        return <ProductCard key={product.id} data={product}/>
+    <div className="w-full p-6 max-w-[100rem] mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+      {allProducts.map((product: any) => {
+        return <ProductCard key={product.ProductID} data={product} />;
       })}
     </div>
-  )
-}
+  );
+};
 
-export default ProductList
+export default ProductList;

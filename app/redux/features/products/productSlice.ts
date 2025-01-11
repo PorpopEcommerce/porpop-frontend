@@ -41,7 +41,13 @@ export const fetchProductsByVendorId = createAsyncThunk<Product[], string>(
   async (vendorId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://backend-porpop.onrender.com/api/v1/products/vendor/?vendor_id=${vendorId}`,
+        `https://backend-porpop.onrender.com/api/v1/products/vendor/`,
+        {
+          params: { vendor_id: vendorId },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       return response.data.products;
     } catch (error: any) {

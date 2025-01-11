@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface ProductContentProps {
   item: Product;
-  handleEditClick: (ProductID: string) => void;
+  handleEditClick: (productId: string) => void;
   // handleDeleteClick: (ProductID: string) => void;
 }
 
@@ -30,7 +30,6 @@ const ProductContent: React.FC<ProductContentProps> = ({
   const handleDeleteClick = (productId: string) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       dispatch(deleteProductByVendor(productId));
-      window.location.reload();
     }
   };
 
@@ -49,7 +48,7 @@ const ProductContent: React.FC<ProductContentProps> = ({
             <SubHeading title={truncateText(item.Name)} />
           </Link>
           <div className="flex flex-wrap gap-1">
-            <button className="text-slate-400 text-[10px]" onClick={() => {}}>
+            <button className="text-slate-400 text-[10px]" onClick={() => {handleEditClick(item.ProductID)}}>
               Edit
             </button>
             <button className="text-slate-400 text-[10px]" onClick={() => {handleDeleteClick(item.ProductID)}}>

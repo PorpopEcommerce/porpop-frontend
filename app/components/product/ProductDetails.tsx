@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Rating } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
@@ -7,193 +7,164 @@ import SetQuantity from "./SetQuantity";
 import Button from "./Button";
 import ProductImage from "./ProductImage";
 import { useCart } from "@/app/hooks/useCart";
+import { Product } from "@/app/types/product";
 import { formatPrice } from "@/app/utils/formatter";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
 interface ProductDetailsProps {
-    product: any;
+  product: any;
 }
 
 export type CartProductType = {
-    id: string,
-    title: string,
-    description: string,
-    category: string,
-    // brand: string,
-    selectedImg?: SelectedImageType,
-    quantity: number,
-    price: number
-}
+  id: string;
+  title: string;
+  description: string;
+  category?: string;
+  // brand: string,
+  selectedImg?: SelectedImageType;
+  quantity: number;
+  price: number;
+};
 
 export type SelectedImageType = {
-    color: string,
-    colorCode: string,
-    image: string
-}
+  color: string;
+  colorCode: string;
+  image: string;
+};
 
 const Horizontal = () => {
-    return <hr className="w-[30%] my-2" />
-}
+  return <hr className="w-[30%] my-2" />;
+};
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
+  const router = useRouter();
 
-    const router = useRouter();
+  const { handleAddProductToCart, cartProducts } = useCart();
+  const [isProductInCart, setIsProductInCart] = useState(false);
 
-    const { handleAddProductToCart, cartProducts } = useCart();
-    const [isProductInCart, setIsProductInCart] = useState(false);
+  const [cartProduct, setCartProduct] = useState<CartProductType>({
+    id: product.ProductID,
+    title: product.Name,
+    description: product.Description,
+    // brand: product.brand,
+    // selectedImg: { ...product.images[0] },
+    quantity: 1,
+    price: product.RegularPrice,
+  });
 
-    const [cartProduct, setCartProduct] = useState<CartProductType>({
-        id: product.id,
-        title: product.name,
-        description: product.description,
-        category: product.category,
-        // brand: product.brand,
-        // selectedImg: { ...product.images[0] },
-        quantity: 1,
-        price: product.price,
-    })
+  useEffect(() => {
+    // Check if the product is already in the cart
+    const productExists = cartProducts?.some(
+      (item) => item.id === product.ProductID
+    );
+    setIsProductInCart(productExists || false);
+  }, [cartProducts, product.ProductID]);
 
-    useEffect(() => {
-        setIsProductInCart(false);
+  const handleBuyProduct = () => {
+    const orderDetails = {
+      id: cartProduct.id,
+      title: cartProduct.title,
+      description: cartProduct.description,
+      price: cartProduct.price,
+      quantity: cartProduct.quantity,
+    };
 
-        if (cartProducts) {
-            const existingCart = cartProducts.findIndex((item) => item.id === product.id);
+    const checkoutData = {
+      id: orderDetails.id.toString(),
+      title: orderDetails.title,
+      description: orderDetails.description,
+      price: orderDetails.price.toString(),
+      quantity: orderDetails.quantity.toString(),
+    };
 
-            if (existingCart > -1) {
-                setIsProductInCart(true);
-            }
-        }
+    // Manually construct the query string
+    const queryString = new URLSearchParams({
+      product: JSON.stringify(checkoutData),
+    }).toString();
 
-    }, [cartProducts])
+    // Pass the full URL as a string to `router.push()`
+    router.push(`/checkout?${queryString}`);
+  };
 
-    // console.log(cartProduct)
+  const handleQtyIncrease = useCallback(() => {
+    setCartProduct((prev) => {
+      return { ...prev, quantity: prev.quantity + 1 };
+    });
+  }, []);
 
-    // getting the average reviews for our rating
-    // const productRating =
-    //     product.reviews.reduce((acc: number, item: any) =>
-    //         item.rating + acc, 0) /
-    //     product.reviews.length;
+  const handleQtyDecrease = useCallback(() => {
+    setCartProduct((prev) => {
+      const newQuantity = Math.max(prev.quantity - 1, 1); // Ensure it doesn't go below 1
+      return { ...prev, quantity: newQuantity };
+    });
+  }, []);
 
-    // const handleColorSelect = useCallback(
-    //     (value: SelectedImageType) => {
-    //         setCartProduct((prev) => {
-    //             return { ...prev, selectedImg: value }
-    //         })
-    //     },
-    //     [cartProduct.selectedImg])
+  const handleAddToCart = () => {
+    handleAddProductToCart(cartProduct);
+    setIsProductInCart(true); // Update state to reflect the product is now in the cart
+  };
 
-    const handleQtyIncrease = useCallback(() => {
-        setCartProduct((prev) => {
-            return { ...prev, quantity: ++prev.quantity }
-        })
-    }, [cartProduct])
-
-    const handleQtyDecrease = useCallback(() => {
-
-        if (cartProduct.quantity === 1) {
-            return;
-        }
-
-        setCartProduct((prev) => {
-            return { ...prev, quantity: --prev.quantity }
-        })
-    }, [cartProduct])
-
-
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div></div>
-            {/* <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} /> */}
-            <div className="flex flex-col gap-1">
-                <h1 className="text-4xl font-bold">{product.title}</h1>
-                <div><h2>{formatPrice(product.discountedPrice)} - {formatPrice(product.price)}</h2></div>
-                {/* <div className="flex items-center gap-2">
-                    <Rating value={productRating} readOnly />
-                    <div>
-                        {product.reviews.length} reviews
-                    </div>
-                </div> */}
-
-                <Horizontal />
-
-                <div className="text-justify">
-                    {product.description}
-                </div>
-
-                <Horizontal />
-
-                {/* <div>
-                    <span className="font-semibold">CATEGORY: </span> {product.categories}
-                </div> */}
-
-                <div className={product.stockType ? 'text-teal-400' : 'text-rose-400'}>
-                    {product.stockType ? 'In Stock' : 'Out of Stock'}
-                </div>
-
-                <Horizontal />
-
-                <div className="flex gap-2">
-                    <SetQuantity
-                        cartProduct={cartProduct}
-                        handleQtyIncrease={handleQtyIncrease}
-                        handleQtyDecrease={handleQtyDecrease}
-                    />
-                    <div className="max-w-[300px]">
-                        <Button
-                            label="Add To Cart"
-                            onClick={() => handleAddProductToCart(cartProduct)}
-                        />
-                    </div>
-                    <div className="max-w-[300px]">
-                        <Button
-                            label="Buy Now"
-                            onClick={() => {}}
-                        />
-                    </div>
-                </div>
-
-                {/* {isProductInCart ?
-                    <>
-                        <div>
-                            <p className="mb-2 text-slate-500 flex items-center gap-1">
-                                <IoMdCheckmarkCircle className="text-teal-400" size={20} />
-                                <span>Product added to cart</span>
-                            </p>
-                            <div className="max-w-[300px]">
-                                <Button
-                                    label="View Cart"
-                                    outline
-                                    onClick={() => {
-                                        router.push('/cart')
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </> : <>
-                        <SetColor
-                            cartProduct={cartProduct}
-                            images={product.images}
-                            handleColorSelect={handleColorSelect}
-                        />
-                        <Horizontal />
-                        <SetQuantity
-                            cartProduct={cartProduct}
-                            handleQtyIncrease={handleQtyIncrease}
-                            handleQtyDecrease={handleQtyDecrease}
-                        />
-                        <Horizontal />
-
-                        <div className="max-w-[300px]">
-                            <Button
-                                label="Add To Cart"
-                                onClick={() => handleAddProductToCart(cartProduct)}
-                            />
-                        </div>
-                    </>} */}
-            </div>
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div></div>
+      {/* <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} /> */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-4xl font-bold">{product.Name}</h1>
+        <div>
+          <h2>{formatPrice(product.RegularPrice)}</h2>
         </div>
-    )
-}
+
+        <div className="text-justify">{product.Description}</div>
+
+        <div className="text-xl font-normal">{product.StockType}</div>
+
+        <Horizontal />
+
+        {isProductInCart ? (
+          <>
+            <div>
+              <p className="mb-2 text-slate-500 flex items-center gap-1">
+                <IoMdCheckmarkCircle className="text-teal-400" size={20} />
+                <span>Product added to cart</span>
+              </p>
+              <div className="max-w-[300px]">
+                <Button
+                  label="View Cart"
+                  outline
+                  onClick={() => {
+                    router.push("/cart");
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* <SetColor
+              cartProduct={cartProduct}
+              images={product.images}
+              handleColorSelect={handleColorSelect}
+            /> */}
+            <Horizontal />
+            <div className="flex gap-2">
+              <SetQuantity
+                cartProduct={cartProduct}
+                handleQtyIncrease={handleQtyIncrease}
+                handleQtyDecrease={handleQtyDecrease}
+              />
+              <div className="max-w-[300px]">
+                <Button label="Add To Cart" onClick={handleAddToCart} />
+              </div>
+              <div className="max-w-[300px]">
+                <Button label="Buy Now" onClick={() => handleBuyProduct()} />
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default ProductDetails;

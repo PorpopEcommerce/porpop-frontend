@@ -4,11 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import ProductContent from "./ProductContent";
 import Spinner from "@/app/components/Spinner";
+
 import axios from "axios";
 import { Product } from "@/app/types/product";
 
 interface ProductListProps {
-  product: Product[]
+  // product: Product[]
   handleEditClick: (productId: string) => void;
 }
 
@@ -17,6 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
 
   // Local state management
   const [vendorProducts, setVendorProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true)
   const [status, setStatus] = useState<"idle" | "loading" | "succeeded" | "failed">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +46,10 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
 
     fetchVendorProducts();
   }, [vendor?.vendor_id]);
+
+
+
+
 
   return (
     <div className="flex-1">
