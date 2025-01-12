@@ -16,7 +16,7 @@ interface DashboardOption {
 export const useAccountNavigation = () => {
   const router = useRouter();
   const [vendorSelectedOption, setVendorSelectedOption] = useState<string>("dashboard");
-  const { logout, activeUser } = useAuth(); // Assuming currentUser contains user details
+  const { logout } = useAuth(); // Assuming currentUser contains user details
 
 
   // Define vendor dashboard options 

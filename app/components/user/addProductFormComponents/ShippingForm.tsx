@@ -1,33 +1,37 @@
-import { Product } from "@/app/types/product";
-import { useCallback, useState } from "react";
+import { useState } from "react";
+import { FormProduct } from "@/app/types/formProduct";
 
-const ShippingForm = ({
-  dimensions,
-  isShippingManagementEnabled,
-  onChange,
-}: {
-  dimensions: { weight: number; length: number; width: number; height: number };
+interface ShippingFormProps {
+  weight: number;
+  length: number;
+  width: number;
+  height: number;
   shippingClass: string;
   taxStatus: string;
   taxClass: string;
-  isShippingManagementEnabled: boolean;
-  onChange: (field: any, value: any) => void;
+  onChange: (field: keyof FormProduct, value: any) => void;
+}
+
+const ShippingForm: React.FC<ShippingFormProps> = ({
+  weight,
+  length,
+  width,
+  height,
+  shippingClass,
+  taxStatus,
+  taxClass,
+  onChange,
 }) => {
-  const handleDimensionChange = useCallback(
-    (field: keyof typeof dimensions, value: number) => {
-      onChange("dimensions", { ...dimensions, [field]: value });
-    },
-    [dimensions, onChange]
-  );
+  const [isShippingClassDropdownOpen, setIsShippingClassDropdownOpen] =
+    useState(false);
+  const [isTaxStatusDropdownOpen, setIsTaxStatusDropdownOpen] = useState(false);
+  const [isTaxClassDropdownOpen, setIsTaxClassDropdownOpen] = useState(false);
+  const [isShippingRequired, setIsShippingRequired] = useState(false);
 
+  const handleDropdownSelection = (field: keyof FormProduct, value: string) => {
+    onChange(field, value);
+  };
 
-  const [shippingTypeDropdown, setShippingClassTypeDropdown] = useState(false);
-  
-  
-    const handleShippingTypeSelect = (type: string) => {
-      onStockTypeChange(type);
-      setShippingClassTypeDropdown(false);
-    };
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
@@ -42,64 +46,67 @@ const ShippingForm = ({
       <div className="p-3 flex gap-3 items-center">
         <input
           type="checkbox"
-          checked={isShippingManagementEnabled}
-          onChange={(e) =>
-            onChange("isShippingManagementEnabled", e.target.checked)
-          }
+          checked={isShippingRequired}
+          onChange={(e) => setIsShippingRequired(e.target.checked)}
         />
         <label className="text-[12px] font-medium text-gray-700">
           This product requires shipping
         </label>
       </div>
 
-      {isShippingManagementEnabled && (
+      {isShippingRequired && (
         <>
+          {/* Dimensions Inputs */}
           <div className="grid grid-cols-4 p-3 gap-3">
-            {["weight", "length", "width", "height"].map((field) => (
+            {[{ field: "weight", value: weight, placeholder: "Weight (kg)" },
+              { field: "length", value: length, placeholder: "Length (cm)" },
+              { field: "width", value: width, placeholder: "Width (cm)" },
+              { field: "height", value: height, placeholder: "Height (cm)" },
+            ].map(({ field, value, placeholder }) => (
               <input
                 key={field}
                 type="number"
                 min="0"
-                placeholder={`${field} (cm)`}
-                value={dimensions[field as keyof typeof dimensions]}
+                value={value || ""}
                 onChange={(e) =>
-                  handleDimensionChange(
-                    field as keyof typeof dimensions,
-                    Number(e.target.value)
-                  )
+                  onChange(field as keyof FormProduct, parseFloat(e.target.value) || 0)
                 }
+                placeholder={placeholder}
                 className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
               />
             ))}
           </div>
 
+          {/* Shipping Class */}
           <div className="p-3 relative">
             <label className="block text-[12px] font-medium text-gray-700 mb-2">
               Shipping Class
             </label>
             <input
               type="text"
-              placeholder={stockType}
-              value={stockType}
+              value={shippingClass}
               readOnly
-              onClick={() => setShippingClassTypeDropdown((prev) => !prev)}
+              onClick={() => setIsShippingClassDropdownOpen((prev) => !prev)}
               className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
             />
-            {shippingTypeDropdown && (
+            {isShippingClassDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
                 {[
-                  "No shipping class (US$0)",
+                  "No shipping class",
                   "TVs",
                   "Refrigeration",
                   "Sewing Machine",
                   "Center Table",
                   "Engine",
                   "Generator",
-                  "T-Shirts"
+                  "T-Shirts",
                 ].map((type) => (
                   <div
                     key={type}
-                    onClick={() => handleShippingTypeSelect(type)}
+                    onClick={() => {
+                      handleDropdownSelection("shipping_class", type);
+                      setIsShippingClassDropdownOpen(false);
+                    }}
                     className="p-2 hover:bg-gray-100 cursor-pointer"
                   >
                     {type}
@@ -108,63 +115,70 @@ const ShippingForm = ({
               </div>
             )}
           </div>
+
+          {/* Tax Status */}
+          <div className="grid grid-cols-2 p-3 gap-3">
+            <div className="relative">
+              <label className="block text-[12px] font-medium text-gray-700 mb-2">
+                Tax Status
+              </label>
+              <input
+                type="text"
+                value={taxStatus}
+                readOnly
+                onClick={() => setIsTaxStatusDropdownOpen((prev) => !prev)}
+                className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+              />
+              {isTaxStatusDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                  {["Taxable", "Non-taxable", "Shipping only"].map((type) => (
+                    <div
+                      key={type}
+                      onClick={() => {
+                        handleDropdownSelection("tax_status", type);
+                        setIsTaxStatusDropdownOpen(false);
+                      }}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Tax Class */}
+            <div className="relative">
+              <label className="block text-[12px] font-medium text-gray-700 mb-2">
+                Tax Class
+              </label>
+              <input
+                type="text"
+                value={taxClass}
+                readOnly
+                onClick={() => setIsTaxClassDropdownOpen((prev) => !prev)}
+                className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+              />
+              {isTaxClassDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                  {["Standard", "Reduced rate", "Zero rate"].map((type) => (
+                    <div
+                      key={type}
+                      onClick={() => {
+                        handleDropdownSelection("tax_class", type);
+                        setIsTaxClassDropdownOpen(false);
+                      }}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </>
       )}
-
-      <div className="grid grid-cols-2 p-3 gap-3">
-        <div className="relative">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
-            Tax Status
-          </label>
-          <input
-            type="text"
-            placeholder={stockType}
-            value={stockType}
-            readOnly
-            onClick={() => setStockTypeDropdown((prev) => !prev)}
-            className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
-          />
-          {stockTypeDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
-              {["In Stock", "Out of Stock", "On Backorder"].map((type) => (
-                <div
-                  key={type}
-                  onClick={() => handleStockTypeSelect(type)}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {type}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="relative">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
-            Tax Class
-          </label>
-          <input
-            type="text"
-            placeholder={stockType}
-            value={stockType}
-            readOnly
-            onClick={() => setStockTypeDropdown((prev) => !prev)}
-            className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
-          />
-          {stockTypeDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
-              {["In Stock", "Out of Stock", "On Backorder"].map((type) => (
-                <div
-                  key={type}
-                  onClick={() => handleStockTypeSelect(type)}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {type}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

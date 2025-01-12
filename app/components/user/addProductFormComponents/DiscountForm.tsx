@@ -1,34 +1,18 @@
 import { FormProduct } from "@/app/types/formProduct";
-import { useStepContext } from "@mui/material";
 import React, { useState } from "react";
 
 interface DiscountFormProps {
   min_quantity_for_discount?: number;
   discount_percentage?: number;
-//   onChange: (field: keyof FormProduct, value: any) => void;
+  onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const DiscountForm: React.FC<DiscountFormProps> = ({
   min_quantity_for_discount,
   discount_percentage,
-//   onChange,
+  onChange,
 }) => {
   const [isDiscountEnabled, setIsDiscountEnabled] = useState(false);
-  const [minQuantityForDiscount, setMinQuantityForDiscount] = useState<
-    number | undefined
-  >(undefined);
-  const [discountPercentage, setDiscountPercentage] = useState<
-    number | undefined
-  >(undefined);
-
-  const handleDiscountChange = (field: keyof FormProduct, value: any) => {
-    if (field === "min_quantity_for_discount") {
-      setMinQuantityForDiscount(value);
-    } else if (field === "discount_percentage") {
-      setDiscountPercentage(value);
-    }
-  };
-
 
   return (
     <div className="mb-3 border">
@@ -53,30 +37,43 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
 
       {isDiscountEnabled && (
         <div className="p-3 grid grid-cols-2 gap-3">
+          {/* Minimum Quantity Input */}
           <div>
             <label className="block text-[12px] font-medium text-gray-700 mb-2">
               Minimum quantity
             </label>
             <input
               type="number"
-              min="0" // Ensure the minimum value is 0
-              value={minQuantityForDiscount ?? ""}
-              onChange={(e) => {
-                const value = Math.max(0, Number(e.target.value));
-                handleDiscountChange("min_quantity_for_discount", value);
-              }}
-              placeholder="minimum quantity"
-              className="mt-1  w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              min="0"
+              value={min_quantity_for_discount || ""}
+              onChange={(e) =>
+                onChange(
+                  "min_quantity_for_discount",
+                  parseInt(e.target.value, 10) || 0
+                )
+              }
+              placeholder="Minimum Quantity"
+              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
+
+          {/* Discount Percentage Input */}
           <div>
             <label className="block text-[12px] font-medium text-gray-700 mb-2">
               Discount %
             </label>
             <input
-              type="text"
-              value={discountPercentage}
-              onChange={(e) => handleDiscountChange("discount_percentage", e.target.value)}
+              type="number"
+              min="0"
+              max="100"
+              value={discount_percentage || ""}
+              onChange={(e) =>
+                onChange(
+                  "discount_percentage",
+                  parseFloat(e.target.value) || 0
+                )
+              }
+              placeholder="Discount Percentage"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>

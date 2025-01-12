@@ -1,26 +1,21 @@
-import { useEffect } from "react";
+"use client"
+
+
 import ShortDescriptionForm from "./addProductFormComponents/ShortDescriptionForm";
 import DescriptionForm from "./addProductFormComponents/DescriptionForm";
 import InventoryForm from "./addProductFormComponents/InventoryForm";
 import GeolocationForm from "./addProductFormComponents/GeolocationForm";
 import ProductTypeForm from "./addProductFormComponents/ProductTypeForm";
-import DeliveryForm from "./addProductFormComponents/DeliveryForm";
 import ShippingForm from "./addProductFormComponents/ShippingForm";
 import PriceForm from "./addProductFormComponents/PriceForm";
-import CategoryForm from "./addProductFormComponents/CategoryForm";
 import DiscountForm from "./addProductFormComponents/DiscountForm";
-import LinkedProductForm from "./addProductFormComponents/LinkedProductForm";
-import ImageUploadField from "./addProductFormComponents/ImageUploadField";
 import TitleField from "./addProductFormComponents/TitleField";
-import TagField from "./addProductFormComponents/TagField";
 import { useAddProductForm } from "@/app/hooks/useAddProductForm";
 import WholesaleForm from "./addProductFormComponents/WholesaleForm";
 import MinMaxForm from "./addProductFormComponents/MinMaxForm";
 import ProductOption from "./addProductFormComponents/ProductOption";
-import CatalgoForm from "./addProductFormComponents/CatalgoForm";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/app/redux/store";
-import Spinner from "../Spinner";
+import CatalogForm from "./addProductFormComponents/CatalogForm";
+
 
 interface AddProductFormProp {
   productId?: string | null;
@@ -60,15 +55,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
               discount_scheduled_from={formData.discount_scheduled_from}
               onChange={handleChange}
             />
-            {/* <CategoryForm
-              categories={formData.category_ids}
-              onUpdateCategories={handleUpdateCategories}
-            /> */}
-            {/* <TagField tags={formData.tags} onTagsChange={handleTagsChange} /> */}
           </div>
-          {/* <ImageUploadField
-            onImageUpload={(imageUrl) => handleImagesChange(imageUrl)}
-          /> */}
         </div>
 
         {/* Description Fields */}
@@ -101,56 +88,48 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
 
         {/* Other Fields */}
         <GeolocationForm />
-        {/* <LinkedProductForm /> */}
-        {/* <DeliveryForm
-          deliveryTime={formData.delivery_time}
-          backorderDeliveryTime={formData.backorderDeliveryTime}
-          outOfStockDeliveryTime={formData.outOfStockDeliveryTime}
+        <ShippingForm
+          weight={formData.weight}
+          length={formData.length}
+          width={formData.width}
+          height={formData.height}
+          shippingClass={formData.shipping_class}
+          taxStatus={formData.tax_status}
+          taxClass={formData.tax_class}
           onChange={handleChange}
-        /> */}
-        {/* <ShippingForm
-          dimensions={formData.dimensions}
-          shippingClass={formData.shippingClass}
-          taxStatus={formData.taxStatus}
-          taxClass={formData.taxClass}
-          isShippingManagementEnabled={formData.isShippingManagementEnabled}
-          onChange={handleChange}
-        /> */}
+        />
 
         <DiscountForm
           min_quantity_for_discount={formData.min_quantity_for_discount}
           discount_percentage={formData.discount_percentage}
-        />
-
-        <WholesaleForm
-          minQuantityForWholesale={formData.wholesales_min_order}
-          wholesalePrice={formData.wholesales_price}
           onChange={handleChange}
         />
 
-        {/* <MinMaxForm
-          minQuantity={formData.min_order || 0}
-          maxQuantity={formData.max_order || 0}
-          onMinMaxChange={handleMinMaxChange}
-        /> */}
+        <WholesaleForm
+          wholesales_min_order={formData.wholesales_min_order}
+          wholesales_price={formData.wholesales_price}
+          onChange={handleChange}
+        />
 
-        {/* <ProductOption
+        <MinMaxForm
+          max_order={formData.max_order}
+          min_order={formData.min_order}
+          onChange={handleChange}
+        />
+
+        <ProductOption
           productStatusType={formData.product_status}
           visibilityType={formData.visibility}
-          onProductStatusTypeChange={(value) =>
-            handleChange("product_status", value)
-          }
-          onVisibilityTypeChange={(value) => handleChange("visibility", value)}
           purchase_note={formData.purchase_note}
           reviewType={formData.allow_review}
           onReviewTypeChange={(value) => handleChange("allow_review", value)}
           onChange={handleChange}
-        /> */}
+        />
 
-        {/* <CatalgoForm
+        <CatalogForm
           productPriceToggle={formData.hide_price}
           addToCartToggle={formData.add_to_cart}
-        /> */}
+        />
 
         {/* Submit Button */}
         <button
@@ -158,14 +137,11 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
           {isSubmitting ? (
-            <div>
-              Submitting....
-            </div>
+            <div>Submitting....</div>
           ) : (
             <>{productId ? "Update Product" : "Add Product"}</>
           )}
         </button>
-
       </form>
     </div>
   );

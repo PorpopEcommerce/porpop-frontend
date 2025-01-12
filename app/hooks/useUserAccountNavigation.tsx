@@ -22,7 +22,7 @@ export const useAccountNavigation = () => {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<string>("dashboard");
   const [vendorSelectedOption, setVendorSelectedOption] = useState<string>("vendorDashboard");
-  const { logout, activeUser } = useAuth(); // Assuming currentUser contains user details
+  const { logout, user } = useAuth(); // Assuming currentUser contains user details
 
   // Define user dashboard options with icons
   const dashboardOptions: DashboardOption[] = [
@@ -83,7 +83,7 @@ export const useAccountNavigation = () => {
         return <p>Product Layout</p>;
       case "vendorForm":
         // Pass the userId prop to VendorForm
-        return <VendorForm userId={activeUser?.id || ""} />;
+        return <VendorForm />;
       default:
         return <p>Dashboard Overview</p>;
     }

@@ -25,9 +25,9 @@ export const useAddProductForm = () => {
     length: 0,
     width: 0,
     height: 0,
-    shipping_class: "standard",
-    tax_class: "GST",
-    tax_status: "taxable",
+    shipping_class: "",
+    tax_class: "",
+    tax_status: "",
     allow_wholesales: true,
     wholesales_price: 0,
     wholesales_min_order: 0,
@@ -71,6 +71,9 @@ export const useAddProductForm = () => {
       short_desc: initialProduct.short_desc,
       discount_percentage: initialProduct.discount_percentage,
       min_quantity_for_discount: initialProduct.min_quantity_for_discount,
+      // weight: initialProduct.weight,
+      // length: initialProduct.length,
+      // width: initialProduct.width,
       // allow_review: initialProduct.allow_review,
       // min_order: initialProduct.min_order,
       // max_order: initialProduct.max_order,
@@ -130,21 +133,20 @@ export const useAddProductForm = () => {
       //   rma_policy: initialProduct.rma_policy,
       //   refund_reason: initialProduct.refund_reason,
       // },
-      // shipping_info: {
-      //   weight: initialProduct.weight,
-      //   length: initialProduct.length,
-      //   width: initialProduct.width,
-      //   height: initialProduct.height,
-      //   shipping_class: initialProduct.shipping_class,
-      //   tax_class: initialProduct.tax_class,
-      //   tax_status: initialProduct.tax_status,
-      // },
+
+      weight: initialProduct.weight,
+      length: initialProduct.length,
+      width: initialProduct.width,
+      height: initialProduct.height,
+      shipping_class: initialProduct.shipping_class,
+      tax_class: initialProduct.tax_class,
+      tax_status: initialProduct.tax_status,
     };
   };
 
   const [formData, setFormData] = useState<FormProduct>(initialProduct);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Generalized change handler
   const handleChange = (field: keyof FormProduct, value: any) => {
@@ -221,7 +223,7 @@ export const useAddProductForm = () => {
 
         // Reset the form or provide feedback
         setFormData(initialProduct);
-        setIsSuccess(true)
+        setIsSuccess(true);
         alert("Product created successfully!");
       } catch (error) {
         console.error("Submission error:", error);

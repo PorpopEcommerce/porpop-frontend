@@ -1,14 +1,18 @@
-import React from 'react';
+import React from "react";
+import { FormProduct } from "@/app/types/formProduct";
+
 
 interface MinMaxFormProps {
-  minQuantity: number;
-  maxQuantity: number;
-  onMinMaxChange: (field: "minQuantity" | "maxQuantity", value: number) => void;
+  min_order: number;
+  max_order: number;
+  onChange: (field: keyof FormProduct, value: any) => void;
 }
 
-const MinMaxForm: React.FC<MinMaxFormProps> = ({ minQuantity, maxQuantity, onMinMaxChange }) => {
-
-  
+const MinMaxForm: React.FC<MinMaxFormProps> = ({
+  min_order,
+  max_order,
+  onChange,
+}) => {
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
@@ -26,11 +30,13 @@ const MinMaxForm: React.FC<MinMaxFormProps> = ({ minQuantity, maxQuantity, onMin
           </label>
           <input
             type="number"
-            min="0"
-            value={minQuantity}
-            onChange={(e) => onMinMaxChange("minQuantity", Math.max(0, Number(e.target.value)))}
-            placeholder="Minimum Quantity"
-            className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+            min="0" // Ensure the minimum value is 0
+            value={min_order || ""}
+            onChange={(e) =>
+              onChange("min_order", parseInt(e.target.value, 10) || 0)
+            }
+            placeholder="Minimum quantity"
+            className="mt-1  w-full p-2 border border-gray-300 rounded-md focus:outline-none"
           />
         </div>
         <div className="lg:max-w-[50%] w-full">
@@ -39,16 +45,19 @@ const MinMaxForm: React.FC<MinMaxFormProps> = ({ minQuantity, maxQuantity, onMin
           </label>
           <input
             type="number"
-            min="0"
-            value={maxQuantity}
-            onChange={(e) => onMinMaxChange("maxQuantity", Math.max(0, Number(e.target.value)))}
+            min="0" // Ensure the minimum value is 0
+            value={max_order || ""}
+            onChange={(e) =>
+              onChange("max_order", parseInt(e.target.value, 10) || 0)
+            }
             placeholder="Maximum Quantity"
             className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
           />
         </div>
         <span className="text-[10px] font-light italic">
-          Please leave both fields empty or set to 0 to disable the minimum and maximum product
-          quantity. Ensure the minimum quantity is not greater than the maximum quantity.
+          Please leave both fields empty or set to 0 to disable the minimum and
+          maximum product quantity. Ensure the minimum quantity is not greater
+          than the maximum quantity.
         </span>
       </div>
     </div>

@@ -17,7 +17,7 @@ const VendorAccount = () => {
     const checkSubscription = async () => {
       try {
         if (!vendor || !vendor.vendor_id) {
-          return;
+          router.push("/");
         }
 
         const response = await fetch(

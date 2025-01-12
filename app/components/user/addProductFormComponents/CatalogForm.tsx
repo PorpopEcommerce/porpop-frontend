@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-interface CatalgoFormProps {
+interface CatalogFormProps {
   addToCartToggle: boolean;
   productPriceToggle: boolean;
 }
 
-const CatalgoForm: React.FC<CatalgoFormProps> = ({
+const CatalogForm: React.FC<CatalogFormProps> = ({
   addToCartToggle,
   productPriceToggle,
 }) => {
   const [addToCartToggleType, setAddToCartToggleType] = useState(false); // State for Add to Cart toggle
   const [productPriceToggleType, setProductPriceToggleType] = useState(false); // State for Product Price toggle
- 
- 
+
   const onAddToCartToggleTypeChange = (isChecked: boolean) => {
     setAddToCartToggleType(isChecked);
-    setAddToCartToggleType(addToCartToggle) 
+    setAddToCartToggleType(addToCartToggle);
   };
 
   const onProdcutPriceToggleTypeChange = (isChecked: boolean) => {
@@ -26,9 +25,9 @@ const CatalgoForm: React.FC<CatalgoFormProps> = ({
     <div className="mb-3 border">
       <div className="p-3 border-b">
         <p className="block text-[14px] font-bold text-gray-700">
-          Other Options{" "}
+          Catalog Mode{" "}
           <span className="text-[10px] font-light italic">
-            Set your extra product options
+            Enable/Disable Catalog Mode for this product
           </span>
         </p>
       </div>
@@ -61,4 +60,4 @@ const CatalgoForm: React.FC<CatalgoFormProps> = ({
   );
 };
 
-export default CatalgoForm;
+export default CatalogForm;
