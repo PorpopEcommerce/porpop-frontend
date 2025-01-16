@@ -2,6 +2,7 @@
 
 import React from "react";
 import { LinearProgress } from "@mui/material";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 import Earnings from "@/app/components/vendor/Earnings";
 import Orders from "@/app/components/vendor/Orders";
 import Reviews from "@/app/components/vendor/Reviews";
@@ -50,17 +51,20 @@ const DashboardComponent = () => {
   return (
     <div className="">
       <div className="p-4 border mb-4">
-        <div className="relative">
+        <div className="relative mb-4">
           <LinearProgress
             variant="determinate"
             value={completion}
-            sx={{ width: "100%", height: 17, borderRadius: 2 }}
+            sx={{ width: "100%", height: 19, borderRadius: 2 }}
           />
           <p className="absolute inset-0 text-[12px] text-white text-center font-medium">
             {completion}% Profile Completed
           </p>
         </div>
-        <div className="bg-red-500"></div>
+        <div className="bg-red-500 w-full p-5 text-white flex items-center gap-2">
+          <AiOutlineExclamationCircle />
+          Add profile picture to gain 15% progress
+        </div>
       </div>
       <div className="grid grid-cols-2">
         <div>

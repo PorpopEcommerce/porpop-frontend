@@ -3,7 +3,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { IconType } from "react-icons"; // Import IconType to type icons
 import ManageProduct from "@/app/dashboard/vendor/components/product/ManageProduct"
-import DashboardComponent from "../dashboard/vendor/components/product/DashboardComponent";
+import DashboardComponent from "../dashboard/vendor/components/DashboardComponent";
+import OrderComponent from "../dashboard/vendor/components/OrderComponent";
+import WithDraw from "../dashboard/vendor/components/WithDraw";
+import ReverseWithdraw from "../dashboard/vendor/components/ReverseWithdraw";
 
 
 
@@ -26,28 +29,10 @@ export const useAccountNavigation = () => {
     { label: "Product", key: "product" },
     { label: "Local Currency Subcription", key: "local" },
     { label: "Orders", key: "orders" },
-    { label: "Request Quotes", key: "request" },
-    { label: "Coupons", key: "coupons" },
-    { label: "Reports", key: "reports" },
-    { label: "Delivery Time", key: "delivery" },
-    { label: "Reviews", key: "reviews" },
     { label: "Withdraw", key: "withdraw" },
-    { label: "Reverse Withdraw", key: "r.withdraw" },
-    { label: "Badge", key: "badge" },
+    { label: "Reverse Withdraw", key: "revWithdraw" },
     { label: "Product Q&A", key: "productQ/A" },
-    { label: "Staff", key: "staff" },
-    { label: "Followers", key: "followers" },
-    { label: "USD Subscription", key: "usd" },
-    { label: "Annoucements", key: "annoucements" },
-    { label: "Analytics", key: "analytics" },
-    { label: "Tools", key: "tools" },
     { label: "Support", key: "support" },
-    { label: "My CVs Listing", key: "CVlisting" },
-    { label: "Make my CV", key: "myCV" },
-    { label: "My Blogs", key: "blog" },
-    { label: "Add New Blog", key: "newBlog" },
-    { label: "Custom Menu Builder", key: "builder" },
-    { label: "Facebook Pixel", key: "pixel" },
     { label: "Settings", key: "settings" },
   ];
 
@@ -69,6 +54,14 @@ export const useAccountNavigation = () => {
       case "pof":
         return <p>POF Layout</p>;
       case "product":
+        return <ManageProduct />;
+      case "orders":
+        return <OrderComponent />;
+      case "withdraw":
+        return <WithDraw />;
+      case "revWithdraw":
+        return <ReverseWithdraw />;
+      case "":
         return <ManageProduct />;
       default:
         return <p>Parent</p>;

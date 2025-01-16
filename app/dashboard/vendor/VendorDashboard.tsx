@@ -16,13 +16,13 @@ const VendorDashboard = () => {
   const { user, vendor } = useAuth();
 
 
-  if (!user && !vendor) {
-    return null;
-  }
+  // if (!user && !vendor) {
+  //   return null;
+  // }
 
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen">
       <aside className="w-56 bg-white shadow-md border-r">
         <ul className="flex flex-col">
           {vendorDashboardOptions.map((option) => (

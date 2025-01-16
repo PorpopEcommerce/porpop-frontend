@@ -10,7 +10,7 @@ import Spinner from "../components/Spinner";
 const VendorAccount = () => {
   const router = useRouter();
   const { vendor } = useAuth(); // Assuming vendor details come from AuthContext
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasSubscription, setHasSubscription] = useState(false);
 
   useEffect(() => {

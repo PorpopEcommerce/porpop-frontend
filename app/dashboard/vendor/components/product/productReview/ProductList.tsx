@@ -47,6 +47,12 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
     fetchVendorProducts();
   }, [vendor?.vendor_id]);
 
+  const removeProductFromUI = (productId: string) => {
+    setVendorProducts((prevProducts) =>
+      prevProducts.filter((product) => product.ProductID !== productId)
+    );
+  };
+
 
 
 
@@ -65,11 +71,10 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
         <>
           {vendorProducts.length > 0 ? (
             <>
-              <div className="grid grid-cols-11 text-xs gap-4 pb-2 items-center mt-8">
+              <div className="grid grid-cols-10 text-xs gap-4 pb-2 items-center mt-8">
                 <div>IMAGE</div>
                 <div className="col-span-2 justify-self-start">NAME</div>
                 <div className="justify-self-start">STATUS</div>
-                <div className="justify-self-start">SKU</div>
                 <div className="justify-self-start">STOCK</div>
                 <div className="justify-self-start">PRICE</div>
                 <div className="justify-self-start">TYPE</div>
@@ -83,6 +88,7 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
                     key={item.ProductID}
                     item={item}
                     handleEditClick={handleEditClick}
+                    removeProductFromUI={removeProductFromUI}
                   />
                 ))}
               </div>

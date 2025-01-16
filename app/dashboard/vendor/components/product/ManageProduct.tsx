@@ -25,6 +25,7 @@ const Product = () => {
     setProductSelectedOption("addProductComponent");
   const handleImportClick = () => setProductSelectedOption("importComponent");
   const handleExportClick = () => setProductSelectedOption("exportComponent");
+  const handleViewProductClick = () => setProductSelectedOption("renderComponent");
 
   const handleEditClick = (productId: string) => {
     setEditingProductId(productId);
@@ -73,6 +74,7 @@ const Product = () => {
         handleAddProductClick={handleAddProductClick}
         handleImportClick={handleImportClick}
         handleExportClick={handleExportClick}
+        handleViewProductClick={handleViewProductClick}
       />
 
       <section>{renderContent()}</section>

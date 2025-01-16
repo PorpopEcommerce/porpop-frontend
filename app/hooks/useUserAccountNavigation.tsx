@@ -22,7 +22,7 @@ export const useAccountNavigation = () => {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<string>("dashboard");
   const [vendorSelectedOption, setVendorSelectedOption] = useState<string>("vendorDashboard");
-  const { logout, user } = useAuth(); // Assuming currentUser contains user details
+  const { logout } = useAuth(); // Assuming currentUser contains user details
 
   // Define user dashboard options with icons
   const dashboardOptions: DashboardOption[] = [
@@ -35,7 +35,6 @@ export const useAccountNavigation = () => {
     { label: "Payment methods", key: "paymentMethod", icon: FaUser },
     { label: "My wallet", key: "myWallet", icon: MdPayment },
     { label: "Account details", key: "account", icon: MdPayment },
-    { label: "Vendors", key: "vendors", icon: MdPayment },
     { label: "Seller Support Tickets", key: "seller", icon: MdPayment },
     { label: "Wishlist", key: "wishlist", icon: FaLock },
     { label: "Logout", key: "logout", icon: FaSignOutAlt },

@@ -27,23 +27,45 @@ const NavBar: React.FC<NavBarProps> = ({
 
   const navigationLinks = [
     { label: "BLOG", href: "/blog" },
-    { label: "ORDER DISPATCH", href: "/order_dispatch" },
     { label: "TRACK ORDER", href: "/track_order" },
-    { label: "PRODUCT FILTERS", href: "/product_filters" },
+    { label: "SHOP", href: "/shop" },
   ];
 
   return (
     <nav className="relative bg-transparent px-3 lg:px-5 mb-5 max-w-[100rem] mx-auto">
-      <div className="hidden lg:flex lg:flex-col">
+      <div className="hidden lg:flex w-full">
         {/* Top navigation routes */}
-        <div className="py-3 flex justify-between border-b items-center text-[10px] font-light">
+        <div className="py-3 w-full flex justify-between items-center text-[10px] font-light">
           <div>
             <Link className="text-5xl font-bold" href="/">
               <Image src={Logo} alt="Porpop Logo " />
             </Link>
           </div>
 
-          <div className="flex gap-4 w-fit">
+          <div className="max-w-[60%] flex-1 flex justify-between gap-4 py-5 items-center">
+            <div className="flex flex-1">
+              <SearchBar />
+            </div>
+            <div className="flex space-x-6">
+              <ul className="flex gap-2 p-0 items-center">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    className={classNames({
+                      underline: link.href === currentPath,
+                      "font-semibold": link.href !== currentPath,
+                      "text-sm hover:text-zinc-500": true,
+                    })}
+                    href={link.href}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 w-fit">
             <Cart toggleCart={toggleCart} />
 
             {user ? (
@@ -63,28 +85,6 @@ const NavBar: React.FC<NavBarProps> = ({
         </div>
 
         {/* Page and Social Links Navigation routes */}
-        <div className="flex justify-between py-5 items-center">
-          <div className="flex">
-            <SearchBar />
-          </div>
-          <div className="flex space-x-6">
-            <ul className="flex space-x-3 p-0 items-center">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  className={classNames({
-                    underline: link.href === currentPath,
-                    "font-semibold": link.href !== currentPath,
-                    "text-sm hover:text-zinc-500": true,
-                  })}
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
 
       {/* small size view */}

@@ -87,7 +87,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
         />
 
         {/* Other Fields */}
-        <GeolocationForm />
+        {/* <GeolocationForm /> */}
         <ShippingForm
           weight={formData.weight}
           length={formData.length}

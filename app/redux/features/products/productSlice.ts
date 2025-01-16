@@ -5,17 +5,21 @@ import { Product } from "@/app/types/product";
 interface ProductState {
   allProducts: Product[];
   vendorProducts: Product[];
+  filteredProducts: Product[]; //
   status: "idle" | "loading" | "succeeded" | "failed";
   deleteStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  priceRange?: { min: number; max: number }; // Price filter range
 }
 
 const initialState: ProductState = {
   allProducts: [],
   vendorProducts: [],
+  filteredProducts: [],
   status: "idle",
   deleteStatus: "idle",
   error: null,
+  priceRange: { min: 0, max: 0 }, // Default price range
 };
 
 // Async thunk to fetch all products
@@ -93,6 +97,13 @@ const productSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
+    filterByPrice: (state, action: PayloadAction<{ min: number; max: number }>) => {
+      const { min, max } = action.payload;
+      state.filteredProducts = state.allProducts.filter(
+        (product) => product.RegularPrice >= min && product.RegularPrice <= max
+      );
+      state.priceRange = { min, max }; // Update the price range
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -131,6 +142,9 @@ const productSlice = createSlice({
         state.allProducts = state.allProducts.filter(
           (product) => product.ProductID !== action.payload
         );
+        state.filteredProducts = state.filteredProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
       })
       .addCase(deleteProductByVendor.rejected, (state, action) => {
         state.deleteStatus = "failed";
@@ -139,5 +153,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetVendorProducts } = productSlice.actions;
+export const { resetVendorProducts, filterByPrice } = productSlice.actions;
 export default productSlice.reducer;

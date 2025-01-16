@@ -5,7 +5,7 @@ import { FormProduct } from "../types/formProduct";
 export const useAddProductForm = () => {
   const initialProduct: FormProduct = {
     name: "",
-    type: "Simple",
+    type: "",
     regular_price: 0,
     discounted_price: 0,
     discount_scheduled_from: "",
@@ -40,8 +40,8 @@ export const useAddProductForm = () => {
     allow_review: false,
     min_order: 0,
     max_order: 0,
-    product_status: "Online",
-    visibility: "Visible",
+    product_status: "",
+    visibility: "",
     purchase_note: "",
     is_published: false,
     add_to_cart: false,
@@ -54,7 +54,7 @@ export const useAddProductForm = () => {
     is_stock_management_enabled: false,
     low_stock_threshold: 0,
     allow_back_order: false,
-    stock_type: "In Stock",
+    stock_type: "",
     is_only_one: false,
     image_urls: [""],
   };
@@ -118,11 +118,11 @@ export const useAddProductForm = () => {
       //   { name: "Color", value: "Black" },
       //   { name: "Size", value: "Medium" },
       // ],
-      geo_info: {
-        same_as_store_add: initialProduct.same_as_store,
-        longitude: initialProduct.longitude,
-        latitude: initialProduct.latitude,
-      },
+      // geo_info: {
+      //   same_as_store_add: initialProduct.same_as_store,
+      //   longitude: initialProduct.longitude,
+      //   latitude: initialProduct.latitude,
+      // },
       // rma_info: {
       //   override_option: initialProduct.override_option,
       //   rma_type: initialProduct.rma_type,

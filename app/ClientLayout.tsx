@@ -26,7 +26,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
       <AuthProvider>
         <CartProvider>
           <section className="flex overflow-hidden w-full">
-            <main className="relative">
+            <main className="relative w-full">
               <div className="relative">
                 <header>
                   <NavBar

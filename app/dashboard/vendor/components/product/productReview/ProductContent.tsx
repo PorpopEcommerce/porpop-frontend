@@ -5,36 +5,55 @@ import { formatDate, formatPrice } from "@/app/utils/formatter";
 import { truncateText } from "@/app/utils/truncateText";
 import { useRouter } from "next/navigation";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { deleteProductByVendor, fetchProductsByVendorId } from "@/app/redux/features/products/productSlice";
-import Image from "next/image";
+import {
+  deleteProductByVendor,
+  fetchProductsByVendorId,
+} from "@/app/redux/features/products/productSlice";
 import { Product } from "@/app/types/product";
 import SubHeading from "@/app/components/product/SubHeading";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useAuth } from "@/app/context/AuthContext";
 
 interface ProductContentProps {
   item: Product;
   handleEditClick: (productId: string) => void;
+  removeProductFromUI: (productId: string) => void;
   // handleDeleteClick: (ProductID: string) => void;
 }
 
 const ProductContent: React.FC<ProductContentProps> = ({
   item,
   handleEditClick,
+  removeProductFromUI,
 }) => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
- 
 
-
-  const handleDeleteClick = (productId: string) => {
+  const handleDeleteClick = async (productId: string) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      dispatch(deleteProductByVendor(productId));
+      try {
+        // Dispatch the delete thunk
+        const resultAction = await dispatch(deleteProductByVendor(productId));
+
+        // Check if the delete operation was successful
+        if (deleteProductByVendor.fulfilled.match(resultAction)) {
+          // Call the removeProductFromUI function to update the UI
+          removeProductFromUI(productId);
+        } else {
+          // Handle the rejected case
+          alert(
+            resultAction.payload ||
+              "Failed to delete the product. Please try again."
+          );
+        }
+      } catch (error) {
+        alert("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
   return (
-    <div className="grid grid-cols-11 text-sm md:text-sm gap-4 border-t-[1.5px] border-slate-200 py-4">
+    <div className="grid grid-cols-10 text-sm md:text-sm gap-4 border-t-[1.5px] border-slate-200 py-4">
       <div className="justify-self-center">
         <Link href={`/product/${item.ProductID}`}>
           <div className="relative w-[70px] aspect-square">
@@ -48,10 +67,20 @@ const ProductContent: React.FC<ProductContentProps> = ({
             <SubHeading title={truncateText(item.Name)} />
           </Link>
           <div className="flex flex-wrap gap-1">
-            <button className="text-slate-400 text-[10px]" onClick={() => {handleEditClick(item.ProductID)}}>
+            <button
+              className="text-slate-400 text-[10px]"
+              onClick={() => {
+                handleEditClick(item.ProductID);
+              }}
+            >
               Edit
             </button>
-            <button className="text-slate-400 text-[10px]" onClick={() => {handleDeleteClick(item.ProductID)}}>
+            <button
+              className="text-slate-400 text-[10px]"
+              onClick={() => {
+                handleDeleteClick(item.ProductID);
+              }}
+            >
               Delete Permanently
             </button>
             <button
@@ -64,13 +93,9 @@ const ProductContent: React.FC<ProductContentProps> = ({
         </div>
       </div>
       <div className="">{item.ProductStatus}</div>
-      <div className="">aliExpress ID</div>
-      <div className="flex flex-wrap">
-        <p>{item.SKU}</p>
-      </div>
       <div className="">{item.StockType}</div>
       <div className="">
-        {formatPrice(item.DiscountedPrice)} - {formatPrice(item.RegularPrice)}
+        {formatPrice(item.RegularPrice)}
       </div>
       <div className="">{item.Type}</div>
       <div className="">View</div>
