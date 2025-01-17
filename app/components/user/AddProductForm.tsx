@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 
 import ShortDescriptionForm from "./addProductFormComponents/ShortDescriptionForm";
 import DescriptionForm from "./addProductFormComponents/DescriptionForm";
@@ -15,7 +14,6 @@ import WholesaleForm from "./addProductFormComponents/WholesaleForm";
 import MinMaxForm from "./addProductFormComponents/MinMaxForm";
 import ProductOption from "./addProductFormComponents/ProductOption";
 import CatalogForm from "./addProductFormComponents/CatalogForm";
-
 
 interface AddProductFormProp {
   productId?: string | null;
@@ -129,6 +127,8 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
         <CatalogForm
           productPriceToggle={formData.hide_price}
           addToCartToggle={formData.add_to_cart}
+          onAddToCartChange={(value) => handleChange("add_to_cart", value)}
+          onAllowHidePriceChange={(value) => handleChange("hide_price", value)}
         />
 
         {/* Submit Button */}

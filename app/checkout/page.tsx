@@ -81,14 +81,22 @@ const Page = () => {
 
   const handleCountryChange = (selectedCountry: string) => {
     setCountry(selectedCountry);
-    setPhoneCode(countriesData[selectedCountry].code);
-    setState("");
-    setCities([]);
+    setPhoneCode(countriesData[selectedCountry].code); // Update phone code
+    setCities([]); // Reset cities
+    setState(""); // Reset state
+    setCity(""); // Reset city
+    handleChange("country", selectedCountry); // Update form
+    handleChange("state", ""); // Reset state in form
+    handleChange("city", ""); // Reset city in form
   };
 
   const handleStateChange = (selectedState: string) => {
-    setState(selectedState);
-    setCities(countriesData[country].states[selectedState] || []);  
+    setState(selectedState); // Update state
+    const newCities = countriesData[country].states[selectedState] || [];
+    setCities(newCities); // Populate cities based on selected state
+    setCity(""); // Reset city
+    handleChange("state", selectedState); // Update state in form
+    handleChange("city", ""); // Reset city in form
   };
 
   return (
@@ -110,7 +118,7 @@ const Page = () => {
               </label>
               <select
                 value={form.country}
-                onChange={(e) => handleChange("country", e.target.value)}
+                onChange={(e) => handleCountryChange(e.target.value)}
                 className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {Object.keys(countriesData).map((country) => (
@@ -131,7 +139,9 @@ const Page = () => {
                   onChange={(e) => handleChange("firstName", e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
+                {errors.firstName && (
+                  <p className="text-red-500">{errors.firstName}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -143,7 +153,9 @@ const Page = () => {
                   onChange={(e) => handleChange("lastName", e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
+                {errors.lastName && (
+                  <p className="text-red-500">{errors.lastName}</p>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,7 +183,9 @@ const Page = () => {
                     type="text"
                     placeholder="Enter phone number"
                     value={form.phoneNumber}
-                    onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("phoneNumber", e.target.value)
+                    }
                     className="flex-1 block w-full p-2 border-t border-r border-b border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -211,18 +225,15 @@ const Page = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   City
                 </label>
-                <select
+                <input
+                  type="text"
                   value={form.city}
                   onChange={(e) => handleChange("city", e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a city</option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
+                />
+                {errors.lastName && (
+                  <p className="text-red-500">{errors.city}</p>
+                )}
               </div>
             </div>
             <div>
@@ -255,10 +266,7 @@ const Page = () => {
             <p>{formatPrice(subtotal)}</p>
           </div>
           <div className="mt-6">
-            <Button
-              label="Proceed to Payment"
-              onClick={() => handleSubmit()}
-            />
+            <Button label="Proceed to Payment" onClick={() => handleSubmit(products, subtotal)} />
           </div>
         </div>
       </div>

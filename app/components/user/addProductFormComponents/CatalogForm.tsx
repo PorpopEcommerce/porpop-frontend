@@ -1,26 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+
 interface CatalogFormProps {
   addToCartToggle: boolean;
   productPriceToggle: boolean;
+  onAddToCartChange: (type: boolean) => void; // Callback to update state in the parent
+  onAllowHidePriceChange: (type: boolean) => void; // Callback to update state in the parent
 }
 
 const CatalogForm: React.FC<CatalogFormProps> = ({
   addToCartToggle,
   productPriceToggle,
+  onAddToCartChange,
+  onAllowHidePriceChange, // Callback to update state in the parent
 }) => {
-  const [addToCartToggleType, setAddToCartToggleType] = useState(false); // State for Add to Cart toggle
-  const [productPriceToggleType, setProductPriceToggleType] = useState(false); // State for Product Price toggle
-
-  const onAddToCartToggleTypeChange = (isChecked: boolean) => {
-    setAddToCartToggleType(isChecked);
-    setAddToCartToggleType(addToCartToggle);
-  };
-
-  const onProdcutPriceToggleTypeChange = (isChecked: boolean) => {
-    setProductPriceToggleType(isChecked); // Update Product Price toggle checkbox
-    setProductPriceToggleType(productPriceToggle); // Update Product Price toggle checkbox
-  };
-
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
@@ -36,8 +28,8 @@ const CatalogForm: React.FC<CatalogFormProps> = ({
       <div className="flex items-center p-3 gap-3">
         <input
           type="checkbox"
-          checked={addToCartToggleType}
-          onChange={(e) => onAddToCartToggleTypeChange(e.target.checked)}
+          checked={addToCartToggle}
+          onChange={(e) => onAddToCartChange( e.target.checked)} // Update parent state
         />
         <label className="text-[12px] font-medium text-gray-700">
           Check to remove Add to Cart option from your products.
@@ -45,12 +37,11 @@ const CatalogForm: React.FC<CatalogFormProps> = ({
       </div>
 
       {/* Product Price Toggle */}
-
       <div className="flex items-center p-3 gap-3">
         <input
           type="checkbox"
-          checked={productPriceToggleType}
-          onChange={(e) => onProdcutPriceToggleTypeChange(e.target.checked)}
+          checked={productPriceToggle}
+          onChange={(e) => onAllowHidePriceChange(e.target.checked)} // Update parent state
         />
         <label className="text-[12px] font-medium text-gray-700">
           Check to hide product price from your products.

@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Product } from "../types/product";
+import { useRouter } from "next/navigation";
 
 type CheckoutForm = {
   country: string;
@@ -29,6 +32,9 @@ const useCheckout = () => {
     postalCode: "",
   });
 
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [errors, setErrors] = useState<CheckoutError>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,34 +58,68 @@ const useCheckout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (
-    field: keyof CheckoutForm,
-    value: string
-  ): void => {
+  const handleChange = (field: keyof CheckoutForm, value: string): void => {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
-  const handleSubmit = async () => {
+  const transformToRequestBody = (
+    form: CheckoutForm,
+    products: any[],
+    subtotal: number
+  ) => {
+    return {
+      order: {
+        buyer_id: user.user_id,
+        total_amount: subtotal,
+        shipping_address: form.streetAddress,
+        first_name: form.firstName,
+        last_name: form.lastName,
+        country: form.country,
+        address: form.streetAddress,
+        postal_code: form.postalCode,
+        email: form.email,
+      },
+      items: products.map((product) => ({
+        product_id: product.id,
+        quantity: product.quantity,
+        price: product.price,
+      })),
+    };
+  };
+
+  const handleSubmit = async (products: any[], subtotal: number) => {
     if (!validate()) return;
 
     setIsSubmitting(true);
     try {
       // Example of a POST request
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const requestBody = transformToRequestBody(form, products, subtotal);
+
+      const response = await fetch(
+        "https://backend-porpop.onrender.com/api/v1/order/create?gatewayType=paystack",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit data");
       }
 
-      const data = await response.json();
+      const data: { payment: any } = await response.json();
       console.log("Checkout successful:", data);
+
+      if (data.payment.payment_url) {
+        // Redirect to the payment gateway
+        router.push(data.payment.payment_url);
+      } else {
+        throw new Error("Payment URL not received from the backend");
+      }
 
       // Handle success (e.g., redirect to confirmation page)
     } catch (error) {
