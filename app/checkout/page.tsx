@@ -8,7 +8,7 @@ import Heading from "../components/product/Heading";
 import { formatPrice } from "../utils/formatter";
 import useCheckout from "../hooks/useCheckout";
 
-type Product = {
+export type Product = {
   id: string;
   title: string;
   description: string;

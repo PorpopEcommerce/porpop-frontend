@@ -49,8 +49,6 @@ export const useLoginForm = () => {
         { withCredentials: true }
       );
 
-      console.log(response);
-
       // Call login function from AuthContext
       login(response.data);
 

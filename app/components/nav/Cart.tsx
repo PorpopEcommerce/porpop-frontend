@@ -36,10 +36,10 @@ const Cart: React.FC<CartComponentProps> = ({ toggleCart }) => {
         )}
       </div>
 
-      <div className="text-sm hidden lg:flex flex-col border-l border-zinc-500 px-2">
+      {/* <div className="text-sm hidden lg:flex flex-col border-l border-zinc-500 px-2">
         <p>{formatPrice(cartTotalAmount)}</p>
         <p>{cartTotalQty} <span>Item(s)</span></p>
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -5,13 +5,14 @@ import Button from "@/app/components/product/Button";
 import { Product } from "@/app/types/product";
 import { useAuth } from "@/app/context/AuthContext";
 import axios from "axios";
-import AliExpressImportModal from "@/app/dashboard/vendor/components/AliExpressImportModal"; // Adjust the path as needed
+import AliExpressImportModal from "@/app/dashboard/vendor/components/product/addProduct/AliExpressImport"; // Adjust the path as needed
 
 interface ProductHeaderProp {
   handleAddProductClick: () => void;
   handleImportClick: () => void;
   handleExportClick: () => void;
   handleViewProductClick: () => void;
+  handleImportAliProduct: () => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProp> = ({
@@ -19,6 +20,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleImportClick,
   handleExportClick,
   handleViewProductClick,
+  handleImportAliProduct
 }) => {
   const { vendor } = useAuth();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -95,7 +97,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           <Button
             label="Import Product from AliExpress"
             custom="max-w-[fit-content] bg-red-700 border-red-700"
-            onClick={() => setModalOpen(true)}
+            onClick={handleImportAliProduct}
           />
           <div className="flex gap-3">
             <Button
@@ -115,12 +117,6 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           </div>
         </div>
       </div>
-
-      {/* AliExpress Import Modal */}
-      <AliExpressImportModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
     </>
   );
 };
