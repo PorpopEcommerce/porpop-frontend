@@ -4,7 +4,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import SubHeading from "@/app/components/product/SubHeading";
 import Button from "@/app/components/product/Button";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface DashboardProps {
   handleVendorFormClick: () => void; // Accept the vendor handler as a prop
@@ -14,32 +14,46 @@ const Dashboard: React.FC<DashboardProps> = ({ handleVendorFormClick }) => {
   const { user, logout, vendor } = useAuth();
   const router = useRouter();
 
+  const [subscriptionStatus, setSubscriptionStatus] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(false); // Loading state
+
   useEffect(() => {
-    if (!user) {
-      router.push("/login_signin"); // Redirect to login if user is not logged in
-    }
-  }, [user, router]);
+    const fetchSubscription = async () => {
+      try {
+        if (vendor?.vendor_id) {
+          const response = await fetch(
+            `https://backend-porpop.onrender.com/api/v1/billing/subscriptions?vendorID=${vendor.vendor_id}`
+          );
+          const data = await response.json();
+          
+          const subscription = data[0]?.subscription;
+          setSubscriptionStatus(subscription?.IsActive || false);
+        }
+      } catch (err: any) {
+        console.error("Error fetching subscription:", err.message);
+        setSubscriptionStatus(false);
+      }
+    };
+
+    if (user) fetchSubscription();
+    else router.push("/login_signin");
+  }, [user, vendor?.vendor_id, router]);
 
   const handleVendorButtonClick = async () => {
+    setLoading(true); // Start loading
+
     try {
-      const response = await fetch(
-        `https://backend-porpop.onrender.com/api/v1/billing/subscriptions?vendorID=${vendor.vendor_id}`
-      );
-      const data = await response.json();
-  
-      // Since the API response is an array, access the first item
-      const subscription = data[0]?.subscription;
-  
-      if (subscription?.IsActive === true) {
+      if (subscriptionStatus === true) {
         router.push("/dashboard");
       } else {
         router.push("/subscribe");
       }
     } catch (err: any) {
-      console.error("Error fetching subscription:", err.message);
+      console.error("Error navigating:", err.message);
+    } finally {
+      setLoading(false); // Stop loading after navigation
     }
   };
-  
 
   if (!user) {
     return null; // Avoid rendering until the user is checked
@@ -70,11 +84,14 @@ const Dashboard: React.FC<DashboardProps> = ({ handleVendorFormClick }) => {
         <div className="w-full max-w-[200px]">
           {isVendor ? (
             <Button
-              label="Vendor Dashboard"
-              onClick={handleVendorButtonClick}
+              label={"Vendor Dashboard"} // Change label during loading
+              onClick={() => router.push('/dashboard')}
             />
           ) : (
-            <Button label="Become a Vendor" onClick={handleVendorFormClick} />
+            <Button
+              label="Become a Vendor"
+              onClick={handleVendorFormClick}
+            />
           )}
         </div>
       </section>
