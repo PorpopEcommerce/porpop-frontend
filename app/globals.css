@@ -35,3 +35,24 @@ button {
 .maxW {
   @apply max-w-[1440px] mx-auto;
 }
+
+.sidebarScrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebarScrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebarScrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+}
+
+.sidebarScrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.sidebarScrollbar li {
+  @apply text-sm;
+}

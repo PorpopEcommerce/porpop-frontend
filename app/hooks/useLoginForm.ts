@@ -49,12 +49,14 @@ export const useLoginForm = () => {
         { withCredentials: true }
       );
 
+      console.log(response);
+
       // Call login function from AuthContext
       login(response.data);
 
       setFormData({ email: "", password: "" });
       setIsSuccessfull("Logged in successfully");
-      router.push("/");
+      router.push("/my_account");
     } catch (err: any) {
       setIsLoading(false);
       if (err.response && err.response.status === 403) {

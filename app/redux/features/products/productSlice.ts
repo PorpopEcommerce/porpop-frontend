@@ -66,22 +66,26 @@ export const deleteProductByVendor = createAsyncThunk<
   string, // This is the returned payload (product ID)
   string, // This is the input (product ID)
   { rejectValue: string }
->("products/deleteByVendor", async (productId, { rejectWithValue }) => {
-  try {
-    const response = await axios.delete(
-      `https://backend-porpop.onrender.com/api/v1/product?product_id=${productId}`
-    );
-    if (response.status === 200) {
-      return productId; // Return the deleted product's ID
-    } else {
-      return rejectWithValue("Failed to delete the product.");
+>(
+  "products/deleteByVendor",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `https://backend-porpop.onrender.com/api/v1/product?product_id=${productId}`
+      );
+      if (response.status === 200) {
+        return productId; // Return the deleted product's ID
+      } else {
+        return rejectWithValue("Failed to delete the product.");
+      }
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete the product."
+      );
     }
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to delete the product."
-    );
   }
-});
+);
+
 
 // Product slice
 const productSlice = createSlice({
@@ -93,10 +97,7 @@ const productSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
-    filterByPrice: (
-      state,
-      action: PayloadAction<{ min: number; max: number }>
-    ) => {
+    filterByPrice: (state, action: PayloadAction<{ min: number; max: number }>) => {
       const { min, max } = action.payload;
       state.filteredProducts = state.allProducts.filter(
         (product) => product.RegularPrice >= min && product.RegularPrice <= max
@@ -110,13 +111,10 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        fetchAllProducts.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
-          state.status = "succeeded";
-          state.allProducts = action.payload;
-        }
-      )
+      .addCase(fetchAllProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
+        state.status = "succeeded";
+        state.allProducts = action.payload;
+      })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
@@ -125,13 +123,10 @@ const productSlice = createSlice({
       .addCase(fetchProductsByVendorId.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(
-        fetchProductsByVendorId.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
-          state.status = "succeeded";
-          state.vendorProducts = action.payload;
-        }
-      )
+      .addCase(fetchProductsByVendorId.fulfilled, (state, action: PayloadAction<Product[]>) => {
+        state.status = "succeeded";
+        state.vendorProducts = action.payload;
+      })
       .addCase(fetchProductsByVendorId.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
@@ -139,21 +134,18 @@ const productSlice = createSlice({
       .addCase(deleteProductByVendor.pending, (state) => {
         state.deleteStatus = "loading";
       })
-      .addCase(
-        deleteProductByVendor.fulfilled,
-        (state, action: PayloadAction<string>) => {
-          state.deleteStatus = "succeeded";
-          state.vendorProducts = state.vendorProducts.filter(
-            (product) => product.ProductID !== action.payload
-          );
-          state.allProducts = state.allProducts.filter(
-            (product) => product.ProductID !== action.payload
-          );
-          state.filteredProducts = state.filteredProducts.filter(
-            (product) => product.ProductID !== action.payload
-          );
-        }
-      )
+      .addCase(deleteProductByVendor.fulfilled, (state, action: PayloadAction<string>) => {
+        state.deleteStatus = "succeeded";
+        state.vendorProducts = state.vendorProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
+        state.allProducts = state.allProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
+        state.filteredProducts = state.filteredProducts.filter(
+          (product) => product.ProductID !== action.payload
+        );
+      })
       .addCase(deleteProductByVendor.rejected, (state, action) => {
         state.deleteStatus = "failed";
         state.error = action.payload as string;

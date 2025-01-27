@@ -11,11 +11,9 @@ import PriceFilter from "../components/product/PriceFilter";
 
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const {allProducts, filteredProducts, status, error } = useSelector(
+  const {filteredProducts, status, error } = useSelector(
     (state: RootState) => state.products
   );
-
-  const productsToDisplay = filteredProducts.length > 0 ? filteredProducts : allProducts;
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -31,7 +29,7 @@ const ProductList = () => {
 
       </div>
       <div className="w-full p-6 max-w-[100rem] mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
-        {productsToDisplay.map((product: any) => {
+        {filteredProducts.map((product: any) => {
           return <ProductCard key={product.ProductID} data={product} />;
         })}
       </div>

@@ -2,13 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { IconType } from "react-icons"; // Import IconType to type icons
-import ManageProduct from "@/app/dashboard/vendor/components/product/ManageProduct"
-import DashboardComponent from "../dashboard/vendor/components/DashboardComponent";
-import OrderComponent from "../dashboard/vendor/components/OrderComponent";
-import WithDraw from "../dashboard/vendor/components/WithDraw";
-import ReverseWithdraw from "../dashboard/vendor/components/ReverseWithdraw";
-
-
+import ManageProduct from "@/app/(authenticated)/dashboard/vendor/components/product/ManageProduct";
+import DashboardComponent from "../(authenticated)/dashboard/vendor/components/DashboardComponent";
+import OrderComponent from "../(authenticated)/dashboard/vendor/components/OrderComponent";
+import WithDraw from "../(authenticated)/dashboard/vendor/components/WithDraw";
+import ReverseWithdraw from "../(authenticated)/dashboard/vendor/components/ReverseWithdraw";
 
 interface DashboardOption {
   label: string;
@@ -18,11 +16,11 @@ interface DashboardOption {
 
 export const useAccountNavigation = () => {
   const router = useRouter();
-  const [vendorSelectedOption, setVendorSelectedOption] = useState<string>("dashboard");
+  const [vendorSelectedOption, setVendorSelectedOption] =
+    useState<string>("dashboard");
   const { logout } = useAuth(); // Assuming currentUser contains user details
 
-
-  // Define vendor dashboard options 
+  // Define vendor dashboard options
   const vendorDashboardOptions: DashboardOption[] = [
     { label: "Dashboard", key: "dashboard" },
     { label: "POF Programme", key: "pof" },
@@ -44,8 +42,6 @@ export const useAccountNavigation = () => {
     }
     setVendorSelectedOption(key);
   };
-
-
 
   const renderContent = (): JSX.Element | null => {
     switch (vendorSelectedOption) {

@@ -11,8 +11,11 @@ import { AuthProvider } from "./context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Footer from "./LandingPage/Footer";
+import { usePathname } from "next/navigation";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
@@ -28,30 +31,38 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
           <section className="flex overflow-hidden w-full">
             <main className="relative w-full">
               <div className="relative">
-                <header>
-                  <NavBar
-                    toggleMenu={toggleMenu}
-                    toggleCart={toggleCart}
-                    toggleSignIn={toggleSignIn}
-                  />
-                </header>
-                {menuDisplay && (
-                  <MenuSideComponent
-                    toggleMenu={toggleMenu}
-                    toggleSignIn={toggleSignIn}
-                  />
+                {pathname.includes("dashboard") ? (
+                  children
+                ) : (
+                  <>
+                    <header>
+                      <NavBar
+                      // toggleMenu={toggleMenu}
+                      // toggleCart={toggleCart}
+                      // toggleSignIn={toggleSignIn}
+                      />
+                    </header>
+                    {menuDisplay && (
+                      <MenuSideComponent
+                        toggleMenu={toggleMenu}
+                        toggleSignIn={toggleSignIn}
+                      />
+                    )}
+                    {cartDisplay && (
+                      <CartSideComponent toggleCart={toggleCart} />
+                    )}
+                    {signInDisplay && (
+                      <Login_RegistrationSideComponent
+                        toggleSignIn={toggleSignIn}
+                      />
+                    )}
+                    <ScrollToTop />
+                    {children}
+                    <section className="bg-black">
+                      <Footer />
+                    </section>
+                  </>
                 )}
-                {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
-                {signInDisplay && (
-                  <Login_RegistrationSideComponent
-                    toggleSignIn={toggleSignIn}
-                  />
-                )}
-                <ScrollToTop />
-                {children}
-                <section className="bg-black">
-                  <Footer />
-                </section>
               </div>
             </main>
           </section>

@@ -14,7 +14,6 @@ import WholesaleForm from "./addProductFormComponents/WholesaleForm";
 import MinMaxForm from "./addProductFormComponents/MinMaxForm";
 import ProductOption from "./addProductFormComponents/ProductOption";
 import CatalogForm from "./addProductFormComponents/CatalogForm";
-import ImageUploadField from "./addProductFormComponents/ImageUploadField";
 
 interface AddProductFormProp {
   productId?: string | null;
@@ -55,7 +54,6 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
               onChange={handleChange}
             />
           </div>
-          {/* <ImageUploadField onImageUpload={} /> */}
         </div>
 
         {/* Description Fields */}
