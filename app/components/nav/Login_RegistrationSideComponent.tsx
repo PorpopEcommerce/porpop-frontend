@@ -25,7 +25,7 @@ const Login_RegistrationSideComponent: React.FC<SignInSideComponentProps> = ({ t
                     </button>
                 </div>
 
-                <LoginForm />
+                <LoginForm toggleSignIn={toggleSignIn}/>
 
                 <div className="mt-auto text-center text-xs md:text-sm pt-6">
                     <p className="mb-2">No account yet?</p>

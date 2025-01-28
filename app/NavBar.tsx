@@ -73,11 +73,12 @@ const NavBar: React.FC<NavBarProps> = ({
             ) : (
               <div className="w-fit">
                 <div>
-                  <Link href="/login_signin">
-                    <button className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg">
-                      Sign in
-                    </button>
-                  </Link>
+                  <button
+                    className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
+                    onClick={toggleSignIn}
+                  >
+                    Sign in
+                  </button>
                 </div>
               </div>
             )}

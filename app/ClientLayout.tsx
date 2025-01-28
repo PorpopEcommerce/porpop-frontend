@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import MenuSideComponent from "./components/nav/MenuSideComponent";
 import CartSideComponent from "./components/nav/CartSideComponent";
-import Login_RegistrationSideComponent from "./components/nav/Login_RegistrationSideComponent";
+import Login from "./components/nav/Login";
 import ScrollToTop from "./components/ScrollToTop";
 import CartProvider from "./provider/CartProvider";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,11 +21,21 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const toggleCart = () => setCartDisplay((prev) => !prev);
   const toggleSignIn = () => setSignInDisplay((prev) => !prev);
 
+  useEffect(() => {
+    if (signInDisplay || menuDisplay || cartDisplay) {
+      // Disable scrolling when a modal is active
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scrolling when no modal is active
+      document.body.style.overflow = "auto";
+    }
+  }, [signInDisplay, menuDisplay, cartDisplay]);
+
   return (
     <Provider store={store}>
       <AuthProvider>
         <CartProvider>
-          <section className="flex overflow-hidden w-full">
+          <section className="flex w-full">
             <main className="relative w-full">
               <div className="relative">
                 <header>
@@ -43,7 +53,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
                 )}
                 {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
                 {signInDisplay && (
-                  <Login_RegistrationSideComponent
+                  <Login
                     toggleSignIn={toggleSignIn}
                   />
                 )}

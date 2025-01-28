@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 
-export const useLoginForm = () => {
+export const useLoginForm = (onSuccess?: () => void) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
@@ -54,6 +54,13 @@ export const useLoginForm = () => {
 
       setFormData({ email: "", password: "" });
       setIsSuccessfull("Logged in successfully");
+
+       // Trigger the onSuccess callback to close the modal
+       if (onSuccess) {
+        onSuccess();
+      }
+
+
       router.push("/");
     } catch (err: any) {
       setIsLoading(false);
