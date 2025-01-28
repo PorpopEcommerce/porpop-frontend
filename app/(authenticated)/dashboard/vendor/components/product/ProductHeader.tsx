@@ -5,13 +5,14 @@ import Button from "@/app/components/product/Button";
 import { Product } from "@/app/types/product";
 import { useAuth } from "@/app/context/AuthContext";
 import axios from "axios";
-import AliExpressImportModal from "@/app/(authenticated)/dashboard/vendor/components/AliExpressImportModal"; // Adjust the path as needed
+import AliExpressImportModal from "@/app/dashboard/vendor/components/product/addProduct/AliExpressImport"; // Adjust the path as needed
 
 interface ProductHeaderProp {
   handleAddProductClick: () => void;
   handleImportClick: () => void;
   handleExportClick: () => void;
   handleViewProductClick: () => void;
+  handleImportAliProduct: () => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProp> = ({
@@ -19,6 +20,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleImportClick,
   handleExportClick,
   handleViewProductClick,
+  handleImportAliProduct
 }) => {
   const { vendor } = useAuth();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -49,7 +51,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`
         );
         const products = response.data.products || [];
-        console.log(products);
+        console.log(products)
         setStatus("succeeded");
 
         // Calculate counts dynamically
@@ -79,9 +81,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
       <div className="grid grid-cols-2 gap-5 mb-3">
         <div>
           <ul className="flex gap-2 items-center text-sm text-[#84788c]">
-            <li className="cursor-pointer" onClick={handleViewProductClick}>
-              All ({counts.all})
-            </li>
+            <li className="cursor-pointer" onClick={handleViewProductClick}>All ({counts.all})</li>
             <li>Online ({counts.online})</li>
             <li>Draft ({counts.draft})</li>
             <li>In Stock ({counts.inStock})</li>
@@ -97,7 +97,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           <Button
             label="Import Product from AliExpress"
             custom="max-w-[fit-content] bg-red-700 border-red-700"
-            onClick={() => setModalOpen(true)}
+            onClick={handleImportAliProduct}
           />
           <div className="flex gap-3">
             <Button
@@ -117,12 +117,6 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           </div>
         </div>
       </div>
-
-      {/* AliExpress Import Modal */}
-      <AliExpressImportModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
     </>
   );
 };

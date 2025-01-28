@@ -9,10 +9,12 @@ import ProductHeader from "./ProductHeader";
 import ProductList from "./productReview/ProductList";
 import EditProductForm from "./editProduct/EditProductForm";
 import Button from "@/app/components/product/Button";
+import AliExpressImport from "./addProduct/AliExpressImport";
 
 const Product = () => {
   const [productSelectedOption, setProductSelectedOption] = useState<
     | "importComponent"
+    | "importAliComponent"
     | "addProductComponent"
     | "exportComponent"
     | "editComponent"
@@ -26,6 +28,7 @@ const Product = () => {
   const handleImportClick = () => setProductSelectedOption("importComponent");
   const handleExportClick = () => setProductSelectedOption("exportComponent");
   const handleViewProductClick = () => setProductSelectedOption("renderComponent");
+  const handleImportAliProduct = () => setProductSelectedOption("importAliComponent");
 
   const handleEditClick = (productId: string) => {
     setEditingProductId(productId);
@@ -43,8 +46,8 @@ const Product = () => {
         return <AddProduct />;
       case "exportComponent":
         return <p>Export layout</p>;
-      case "importComponent":
-        return <p>Import layout</p>;
+      case "importAliComponent":
+        return <AliExpressImport />;
       case "editComponent":
         return (
           <EditProductForm
@@ -75,6 +78,7 @@ const Product = () => {
         handleImportClick={handleImportClick}
         handleExportClick={handleExportClick}
         handleViewProductClick={handleViewProductClick}
+        handleImportAliProduct={handleImportAliProduct}
       />
 
       <section>{renderContent()}</section>

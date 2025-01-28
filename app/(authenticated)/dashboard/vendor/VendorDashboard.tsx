@@ -3,7 +3,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import SubHeading from "@/app/components/product/SubHeading";
 import { useRouter } from "next/navigation";
-import { useAccountNavigation } from "@/app/hooks/useVendorAccountNavigation";
+import { useAccountNavigation } from "../../../hooks/useVendorAccountNavigation";
 
 const VendorDashboard = () => {
   const {
@@ -15,9 +15,11 @@ const VendorDashboard = () => {
 
   const { user, vendor } = useAuth();
 
+
   // if (!user && !vendor) {
   //   return null;
   // }
+
 
   return (
     <div className="flex min-h-screen">
