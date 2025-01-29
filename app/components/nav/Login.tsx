@@ -15,7 +15,7 @@ const Login: React.FC<SignInSideComponentProps> = ({ toggleSignIn }) => {
   const [showLogin, setShowLogin] = useState(true);
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center z-40 py-5 overflow-y-auto"
+      className="fixed inset-0 bg-black bg-opacity-80 flex justify-center z-40 py-5 overflow-y-auto"
       onClick={toggleSignIn}
     >
       <div

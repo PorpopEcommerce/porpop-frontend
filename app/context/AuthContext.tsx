@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Retrieve stored data from cookies and sessionStorage on component mount
   useEffect(() => {
     // Retrieve JWT token from cookies
-    const token = Cookies.get("authToken"); // Accessing JWT token from cookies
+    const token = Cookies.get("jwt"); // Accessing JWT token from cookies
     
     // If the token exists, set the authToken state
     if (token) {

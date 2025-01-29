@@ -3,12 +3,12 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
+  const { user, vendor } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login_signin");
+    if (!user || !vendor) {
+      alert("please login to continue")
     }
   }, [user, router]);
 

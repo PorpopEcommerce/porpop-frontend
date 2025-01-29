@@ -2,22 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // For route navigation
-import ProtectedRoute from "../provider/ProtectedRoute";
+import ProtectedRoute from "@/app/provider/ProtectedRoute";
 import VendorDashboard from "./vendor/VendorDashboard";
-import { useAuth } from "../context/AuthContext";
-import Spinner from "../components/Spinner";
+import { useAuth } from "@/app/context/AuthContext";
+import Spinner from "@/app/components/Spinner";
+import { triggerLoginModal } from "@/app/events/modalEvents";
 
 const VendorAccount = () => {
   const router = useRouter();
-  const { vendor } = useAuth(); // Assuming vendor details come from AuthContext
-  const [loading, setLoading] = useState(false);
+  const { vendor, user } = useAuth(); // Assuming vendor details come from AuthContext
+  const [loading, setLoading] = useState(true);
   const [hasSubscription, setHasSubscription] = useState(false);
 
   useEffect(() => {
     const checkSubscription = async () => {
       try {
-        if (!vendor || !vendor.vendor_id) {
-          router.push("/");
+
+        if (!user) {
+          alert('please log in to continue');
+          router.push('/')
+          triggerLoginModal()
+        } else if (!vendor || !vendor.vendor_id) {
+          alert('please create a vendor account to continue');
+          router.push("/my_account");
         }
 
         const response = await fetch(
@@ -31,12 +38,13 @@ const VendorAccount = () => {
         if (subscription?.IsActive === true) {
           setHasSubscription(true); // Subscription is active
           router.push("/dashboard");
+          setLoading(false)
+        } else {
+          router.push("/subscribe");
         }
       } catch (error) {
         console.error("Error fetching subscription details:", error);
-        router.push("/subscribe"); // Handle errors by redirecting
-      } finally {
-        setLoading(false); // Stop loading
+        router.push("/"); // Handle errors by redirecting
       }
     };
 

@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import ProtectedRoute from "../provider/ProtectedRoute";
-import { useAuth } from "../context/AuthContext";
+import ProtectedRoute from "@/app/provider/ProtectedRoute";
+import { useAuth } from "@/app/context/AuthContext";
 import AccountPage from "./profile/page";
 import { useRouter } from "next/navigation";
-import Spinner from "../components/Spinner";
-
+import Spinner from "@/app/components/Spinner";
+import { triggerLoginModal } from "@/app/events/modalEvents";
 const AccountPageWithProtection = () => {
   const { user } = useAuth(); // Check authentication state
   const router = useRouter();
@@ -19,8 +19,10 @@ const AccountPageWithProtection = () => {
     }
 
     if (!user) {
-      // Redirect to login page if not logged in
-      router.push("/login_signin");
+      // Trigger the login modal instead of redirecting
+      alert("Please login to continue...");
+      router.push("/")
+      triggerLoginModal();
     } else {
       setLoading(false); // Stop loading once authenticated
     }

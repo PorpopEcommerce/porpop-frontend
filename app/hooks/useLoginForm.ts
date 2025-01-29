@@ -52,6 +52,8 @@ export const useLoginForm = (onSuccess?: () => void) => {
       // Call login function from AuthContext
       login(response.data);
 
+      console.log(response.data)
+
       setFormData({ email: "", password: "" });
       setIsSuccessfull("Logged in successfully");
 

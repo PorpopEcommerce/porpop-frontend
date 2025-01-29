@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { IconType } from "react-icons"; // Import IconType to type icons
-import ManageProduct from "@/app/dashboard/vendor/components/product/ManageProduct"
-import DashboardComponent from "../dashboard/vendor/components/DashboardComponent";
-import OrderComponent from "../dashboard/vendor/components/OrderComponent";
-import WithDraw from "../dashboard/vendor/components/WithDraw";
-import ReverseWithdraw from "../dashboard/vendor/components/ReverseWithdraw";
+import ManageProduct from "@/app/(authenticate)/dashboard/vendor/components/product/ManageProduct"
+import DashboardComponent from "@/app/(authenticate)/dashboard/vendor/components/DashboardComponent";
+import OrderComponent from "@/app/(authenticate)/dashboard/vendor/components/OrderComponent";
+import WithDraw from "@/app/(authenticate)/dashboard/vendor/components/WithDraw";
+import ReverseWithdraw from "@/app/(authenticate)/dashboard/vendor/components/ReverseWithdraw";
 
 
 

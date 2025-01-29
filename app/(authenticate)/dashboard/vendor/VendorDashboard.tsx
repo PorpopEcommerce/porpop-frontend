@@ -3,7 +3,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import SubHeading from "@/app/components/product/SubHeading";
 import { useRouter } from "next/navigation";
-import { useAccountNavigation } from "../../hooks/useVendorAccountNavigation";
+import { useAccountNavigation } from "@/app/hooks/useVendorAccountNavigation";
 
 const VendorDashboard = () => {
   const {

@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/context/AuthContext';
 import SubHeading from '@/app/components/product/SubHeading';
-import { useAccountNavigation } from '../../../hooks/useUserAccountNavigation';
+import { useAccountNavigation } from '@/app/hooks/useUserAccountNavigation';
 
 
 

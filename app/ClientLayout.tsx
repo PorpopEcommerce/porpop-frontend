@@ -16,10 +16,12 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
+  const [previousPath, setPreviousPath] = useState("");
 
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
   const toggleSignIn = () => setSignInDisplay((prev) => !prev);
+
 
   useEffect(() => {
     if (signInDisplay || menuDisplay || cartDisplay) {
@@ -30,6 +32,19 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
       document.body.style.overflow = "auto";
     }
   }, [signInDisplay, menuDisplay, cartDisplay]);
+
+  useEffect(() => {
+    // Listen for the custom login trigger event
+    const handleLoginTrigger = () => {
+      setSignInDisplay(true);
+    };
+
+    window.addEventListener('triggerLogin', handleLoginTrigger);
+
+    // return () => {
+    //   window.removeEventListener('triggerLogin', handleLoginTrigger);
+    // };
+  }, []);
 
   return (
     <Provider store={store}>
