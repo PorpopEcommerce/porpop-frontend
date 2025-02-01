@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { VscAccount } from 'react-icons/vsc';
 import { IoPersonOutline } from 'react-icons/io5';
 import { LuLogOut } from 'react-icons/lu';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 
 const NavAccountComponent = () => {
   const { logout, user } = useAuth();

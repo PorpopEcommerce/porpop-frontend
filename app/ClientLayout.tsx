@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NavBar from "./NavBar";
-import MenuSideComponent from "./components/nav/MenuSideComponent";
-import CartSideComponent from "./components/nav/CartSideComponent";
-import Login from "./components/nav/Login";
+import NavBar from "@/app/components/header/NavBar";
+import MenuSideComponent from "./components/header/nav/MenuSideComponent";
+import CartSideComponent from "./components/header/nav/CartSideComponent";
+import Login from "./components/header/nav/Login";
 import ScrollToTop from "./components/ScrollToTop";
 import CartProvider from "./provider/CartProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Footer from "./LandingPage/Footer";
+import { usePathname } from "next/navigation";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [menuDisplay, setMenuDisplay] = useState(false);
@@ -18,10 +19,11 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [signInDisplay, setSignInDisplay] = useState(false);
   const [previousPath, setPreviousPath] = useState("");
 
+  const pathName = usePathname();
+
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
   const toggleSignIn = () => setSignInDisplay((prev) => !prev);
-
 
   useEffect(() => {
     if (signInDisplay || menuDisplay || cartDisplay) {
@@ -39,7 +41,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
       setSignInDisplay(true);
     };
 
-    window.addEventListener('triggerLogin', handleLoginTrigger);
+    window.addEventListener("triggerLogin", handleLoginTrigger);
 
     // return () => {
     //   window.removeEventListener('triggerLogin', handleLoginTrigger);
@@ -52,32 +54,34 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         <CartProvider>
           <section className="flex w-full">
             <main className="relative w-full">
-              <div className="relative">
-                <header>
-                  <NavBar
-                    toggleMenu={toggleMenu}
-                    toggleCart={toggleCart}
-                    toggleSignIn={toggleSignIn}
-                  />
-                </header>
-                {menuDisplay && (
-                  <MenuSideComponent
-                    toggleMenu={toggleMenu}
-                    toggleSignIn={toggleSignIn}
-                  />
-                )}
-                {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
-                {signInDisplay && (
-                  <Login
-                    toggleSignIn={toggleSignIn}
-                  />
-                )}
-                <ScrollToTop />
-                {children}
-                <section className="bg-black">
-                  <Footer />
-                </section>
-              </div>
+              {pathName.includes("/dashboard") ||
+              pathName.includes("/my_account") ||
+              pathName.includes("/subscribe")? (
+                children
+              ) : (
+                <div className="relative">
+                  <header>
+                    <NavBar
+                      toggleMenu={toggleMenu}
+                      toggleCart={toggleCart}
+                      toggleSignIn={toggleSignIn}
+                    />
+                  </header>
+                  {menuDisplay && (
+                    <MenuSideComponent
+                      toggleMenu={toggleMenu}
+                      toggleSignIn={toggleSignIn}
+                    />
+                  )}
+                  {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
+                  {signInDisplay && <Login toggleSignIn={toggleSignIn} />}
+                  <ScrollToTop />
+                  {children}
+                  <section className="bg-black">
+                    <Footer />
+                  </section>
+                </div>
+              )}
             </main>
           </section>
         </CartProvider>

@@ -5,20 +5,15 @@ import Button from "@/app/components/product/Button";
 import { Product } from "@/app/types/product";
 import { useAuth } from "@/app/context/AuthContext";
 import axios from "axios";
-import AliExpressImportModal from "@/app/dashboard/vendor/components/product/addProduct/AliExpressImport"; // Adjust the path as needed
 
 interface ProductHeaderProp {
   handleAddProductClick: () => void;
-  handleImportClick: () => void;
-  handleExportClick: () => void;
   handleViewProductClick: () => void;
   handleImportAliProduct: () => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleAddProductClick,
-  handleImportClick,
-  handleExportClick,
   handleViewProductClick,
   handleImportAliProduct
 }) => {
@@ -78,7 +73,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-5 mb-3">
+      <div className="flex justify-between mb-3">
         <div>
           <ul className="flex gap-2 items-center text-sm text-[#84788c]">
             <li className="cursor-pointer" onClick={handleViewProductClick}>All ({counts.all})</li>
@@ -87,34 +82,20 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
             <li>In Stock ({counts.inStock})</li>
           </ul>
         </div>
-        <div className="flex flex-col items-end gap-4">
-          <Button
-            label="Add Product"
-            custom="max-w-[fit-content] bg-red-700 border-red-700"
+        <div className="flex items-end gap-4">
+          {/* <Button
+            label="+ Add Product"
+            custom="max-w-[fit-content] border-red-700"
             onClick={handleAddProductClick}
-          />
+          /> */}
+          <button className="max-w-[fit-content] text-sm hover:text-gray-400" onClick={handleAddProductClick}>+ Add Product</button>
+          <button className="max-w-[fit-content] text-sm hover:text-gray-400" onClick={handleAddProductClick}>Import Product from AliExpress</button>
 
-          <Button
+          {/* <Button
             label="Import Product from AliExpress"
             custom="max-w-[fit-content] bg-red-700 border-red-700"
             onClick={handleImportAliProduct}
-          />
-          <div className="flex gap-3">
-            <Button
-              label="Import AliExpress settings"
-              custom="max-w-[fit-content] bg-red-700 border-red-700"
-            />
-            <Button
-              label="Import"
-              custom="max-w-[fit-content] bg-red-700 border-red-700"
-              onClick={handleImportClick}
-            />
-            <Button
-              label="Export"
-              custom="max-w-[fit-content] bg-red-700 border-red-700"
-              onClick={handleExportClick}
-            />
-          </div>
+          /> */}
         </div>
       </div>
     </>

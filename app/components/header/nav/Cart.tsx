@@ -1,8 +1,8 @@
 'use client';
 
 import { FiShoppingCart } from "react-icons/fi";
-import { formatPrice } from "../../utils/formatter";
-import { useCart } from "../../hooks/useCart";
+import { formatPrice } from "../../../utils/formatter";
+import { useCart } from "../../../hooks/useCart";
 import { useRouter } from "next/navigation";
 
 interface CartComponentProps {

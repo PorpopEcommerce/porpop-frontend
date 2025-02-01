@@ -37,8 +37,8 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
     <div className="add-product-form">
       <form onSubmit={handleSubmit}>
         {/* First Row */}
-        <div className="grid grid-cols-3 gap-5">
-          <div className="col-span-2">
+        <div className="">
+          <div className="bg-[#1f2937] p-5 rounded-xl">
             <TitleField
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
@@ -55,7 +55,6 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
               onChange={handleChange}
             />
           </div>
-          {/* <ImageUploadField onImageUpload={} /> */}
         </div>
 
         {/* Description Fields */}

@@ -7,13 +7,17 @@ import Spinner from "@/app/components/Spinner";
 
 import axios from "axios";
 import { Product } from "@/app/types/product";
+import ProductHeader from "../ProductHeader";
 
 interface ProductListProps {
   // product: Product[]
   handleEditClick: (productId: string) => void;
+  handleAddProductClick: () => void;
+  handleViewProductClick: () => void;
+  handleImportAliProduct: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
+const ProductList: React.FC<ProductListProps> = ({ handleEditClick, handleImportAliProduct,  handleViewProductClick, handleAddProductClick}) => {
   const { vendor } = useAuth();
 
   // Local state management
@@ -59,6 +63,11 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, }) => {
 
   return (
     <div className="flex-1">
+      <ProductHeader
+        handleAddProductClick={handleAddProductClick}
+        handleViewProductClick={handleViewProductClick}
+        handleImportAliProduct={handleImportAliProduct}
+      />
       {status === "loading" && (
         <div>
           <Spinner />

@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/app/assets/porpopLogo.jpg";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { CiMenuBurger } from "react-icons/ci";
 import classNames from "classnames";
-import SearchBar from "./components/nav/SearchBar";
-import Cart from "./components/nav/Cart";
-import NavAccountComponent from "./components/nav/NavAccountComponent";
+import SearchBar from "@/app/components/header/nav/SearchBar";
+import Cart from "@/app/components/header/nav/Cart";
+import NavAccountComponent from "@/app/components/header/nav/NavAccountComponent";
 import Image from "next/image";
 
 interface NavBarProps {

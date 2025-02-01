@@ -22,20 +22,21 @@ const Product = () => {
   >("renderComponent");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
-
   const handleAddProductClick = () =>
     setProductSelectedOption("addProductComponent");
   const handleImportClick = () => setProductSelectedOption("importComponent");
   const handleExportClick = () => setProductSelectedOption("exportComponent");
-  const handleViewProductClick = () => setProductSelectedOption("renderComponent");
-  const handleImportAliProduct = () => setProductSelectedOption("importAliComponent");
+  const handleViewProductClick = () =>
+    setProductSelectedOption("renderComponent");
+  const handleImportAliProduct = () =>
+    setProductSelectedOption("importAliComponent");
 
   const handleEditClick = (productId: string) => {
     setEditingProductId(productId);
     setProductSelectedOption("editComponent");
   };
 
-  console.log(editingProductId)
+  console.log(editingProductId);
 
   const handleCancelEditClick = () =>
     setProductSelectedOption("importComponent");
@@ -58,14 +59,24 @@ const Product = () => {
       case "renderComponent":
         return (
           <>
-            <ProductList handleEditClick={handleEditClick} />
+            <ProductList
+              handleEditClick={handleEditClick}
+              handleViewProductClick={handleViewProductClick}
+              handleImportAliProduct={handleImportAliProduct}
+              handleAddProductClick={handleAddProductClick}
+            />
           </>
         );
 
       default:
         return (
           <>
-            <ProductList handleEditClick={handleEditClick} />
+            <ProductList
+              handleEditClick={handleEditClick}
+              handleViewProductClick={handleViewProductClick}
+              handleImportAliProduct={handleImportAliProduct}
+              handleAddProductClick={handleAddProductClick}
+            />
           </>
         );
     }
@@ -73,14 +84,6 @@ const Product = () => {
 
   return (
     <div>
-      <ProductHeader
-        handleAddProductClick={handleAddProductClick}
-        handleImportClick={handleImportClick}
-        handleExportClick={handleExportClick}
-        handleViewProductClick={handleViewProductClick}
-        handleImportAliProduct={handleImportAliProduct}
-      />
-
       <section>{renderContent()}</section>
     </div>
   );

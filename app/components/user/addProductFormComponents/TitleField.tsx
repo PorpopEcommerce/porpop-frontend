@@ -14,7 +14,7 @@ const TitleField: React.FC<TitleFieldProps> = ({ value, onChange }) => {
         placeholder="Product Name"
         value={value}
         onChange={onChange}
-        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+        className="mt-1 block bg-[#111827] w-full p-2 border border-gray-300 rounded-md focus:outline-none"
       />
     </div>
   );

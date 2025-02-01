@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import SubHeading from "../product/SubHeading";
+import SubHeading from "../../product/SubHeading";
 import { FaTimes } from "react-icons/fa";
-import LoginForm from "../user/LoginForm";
-import RegisterForm from "../user/RegisterForm";
+import LoginForm from "../../user/LoginForm";
+import RegisterForm from "../../user/RegisterForm";
 
 interface SignInSideComponentProps {
   toggleSignIn: () => void;

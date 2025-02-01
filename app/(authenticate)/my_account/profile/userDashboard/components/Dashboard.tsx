@@ -39,21 +39,21 @@ const Dashboard: React.FC<DashboardProps> = ({ handleVendorFormClick }) => {
     else router.push("/login_signin");
   }, [user, vendor?.vendor_id, router]);
 
-  const handleVendorButtonClick = async () => {
-    setLoading(true); // Start loading
+  // const handleVendorButtonClick = async () => {
+  //   setLoading(true); // Start loading
 
-    try {
-      if (subscriptionStatus === true) {
-        router.push("/dashboard");
-      } else {
-        router.push("/subscribe");
-      }
-    } catch (err: any) {
-      console.error("Error navigating:", err.message);
-    } finally {
-      setLoading(false); // Stop loading after navigation
-    }
-  };
+  //   try {
+  //     if (subscriptionStatus === true) {
+  //       router.push("/dashboard");
+  //     } else {
+  //       router.push("/subscribe");
+  //     }
+  //   } catch (err: any) {
+  //     console.error("Error navigating:", err.message);
+  //   } finally {
+  //     setLoading(false); // Stop loading after navigation
+  //   }
+  // };
 
   if (!user) {
     return null; // Avoid rendering until the user is checked
@@ -63,7 +63,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleVendorFormClick }) => {
 
   return (
     <div className="space-y-6">
-      <section className="bg-white p-6 rounded-lg shadow-sm">
+      <section className="bg-[#1f2937] p-6 rounded-lg shadow-sm text-white">
         <SubHeading title={`Welcome, ${user.username}!`} />
         <p className="mb-3">
           Hello {user.username} (Not {user.username}?{" "}

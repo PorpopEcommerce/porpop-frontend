@@ -29,7 +29,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
           value={productType} // Reflect the selected product type in the input field
           readOnly
           onClick={() => setProductTypeDropdown((prev) => !prev)} // Toggle dropdown visibility
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none cursor-pointer"
+          className="mt-1 block bg-[#111827] w-full p-2 border border-gray-300 rounded-md focus:outline-none cursor-pointer"
         />
 
         {/* Dropdown Container */}
