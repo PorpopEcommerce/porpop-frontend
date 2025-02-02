@@ -1,7 +1,7 @@
 'use client'
 
 import { CiSearch } from "react-icons/ci";
-import { IoIosArrowDown } from "react-icons/io";
+
 
 const SearchBar = () => {
   return (
@@ -9,7 +9,7 @@ const SearchBar = () => {
       <div className="flex h-full flex-1">
         <input
           type="text"
-          className="flex-1 px-2 focus:outline-none"
+          className="flex-1 px-2 focus:outline-none bg-transparent text-white text-xl"
           placeholder="Search for Products"
         />
       </div>

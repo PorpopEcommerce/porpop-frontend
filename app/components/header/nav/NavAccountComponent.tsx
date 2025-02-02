@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { VscAccount } from 'react-icons/vsc';
 import { IoPersonOutline } from 'react-icons/io5';
+import { FaUserCircle } from "react-icons/fa";
 import { LuLogOut } from 'react-icons/lu';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -32,10 +32,10 @@ const NavAccountComponent = () => {
     <div className="relative inline-block" ref={dropdownRef}>
       {/* Account Icon - Toggles Dropdown on Click */}
       <div
-        className="text-2xl text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer"
+        className="text-2xl text-[#9bf618] hover:text-zinc-800 transition-colors cursor-pointer"
         onClick={() => setShowDropdown((prev) => !prev)}
       >
-        <VscAccount />
+        <FaUserCircle />
       </div>
 
       {/* Dropdown Menu */}
@@ -44,7 +44,7 @@ const NavAccountComponent = () => {
           {/* Account Details */}
           <div className="flex flex-col items-center mb-4">
             <div className="text-7xl text-zinc-500">
-              <VscAccount />
+              <FaUserCircle />
             </div>
             <p className="text-xl font-semibold text-black">{user.username}</p>
             <p className="text-sm text-gray-500">{user.email}</p>

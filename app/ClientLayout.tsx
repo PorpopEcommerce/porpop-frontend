@@ -20,6 +20,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [previousPath, setPreviousPath] = useState("");
 
   const pathName = usePathname();
+  const isHome = pathName === "/"
 
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
@@ -56,11 +57,15 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
             <main className="relative w-full">
               {pathName.includes("/dashboard") ||
               pathName.includes("/my_account") ||
-              pathName.includes("/subscribe")? (
+              pathName.includes("/subscribe") ? (
                 children
               ) : (
                 <div className="relative">
-                  <header>
+                  <header
+                    className={`${
+                      isHome ? "absolute top-0" : "bg-[#255200]"
+                    } w-full z-10`}
+                  >
                     <NavBar
                       toggleMenu={toggleMenu}
                       toggleCart={toggleCart}

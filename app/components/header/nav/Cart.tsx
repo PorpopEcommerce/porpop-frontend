@@ -1,7 +1,7 @@
 'use client';
 
 import { FiShoppingCart } from "react-icons/fi";
-import { formatPrice } from "../../../utils/formatter";
+import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "../../../hooks/useCart";
 import { useRouter } from "next/navigation";
 
@@ -28,7 +28,7 @@ const Cart: React.FC<CartComponentProps> = ({ toggleCart }) => {
     <div className="h-full cursor-pointer flex gap-2"
       onClick={handleCartToggle}>
       <div className="relative flex justify-center items-center">
-        <FiShoppingCart className="text-2xl" />
+        <FaShoppingCart className="text-2xl text-white" />
         {cartTotalQty > 0 && (
           <span className="absolute top-[-10px] left-[-10px] text-white h-6 w-6 rounded-full flex items-center justify-center bg-teal-400">
             {cartTotalQty}
