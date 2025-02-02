@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "@/app/assets/porpopLogo.jpg";
+import Logo from "/public/images/logo.png";
 import { useAuth } from "@/app/context/AuthContext";
 import { CiMenuBurger } from "react-icons/ci";
 import classNames from "classnames";
@@ -32,7 +32,7 @@ const NavBar: React.FC<NavBarProps> = ({
   ];
 
   return (
-    <nav className="relative px-3 lg:px-5 max-w-[100rem] mx-auto">
+    <nav className="relative bg-transparent px-3 lg:px-5 max-w-[100rem] mx-auto">
       <div className="hidden lg:flex w-full">
         {/* Top navigation routes */}
         <div className="py-1 w-full flex justify-between items-center text-[10px] font-light">

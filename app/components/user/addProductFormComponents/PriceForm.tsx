@@ -22,12 +22,12 @@ const PriceForm: React.FC<PriceFormProps> = ({
       <div className="relative grid grid-cols-2 gap-4">
         {/* Regular Price */}
         <div className="mb-3">
-          <label className="block text-[12px] font-bold text-gray-700 mb-2">
+          <label className="block text-[12px] font-bold text-white mb-2">
             Price
           </label>
           <div className="flex">
-            <div className="bg-zinc-200 flex px-2 items-center justify-center">
-              <p className="text-[12px]">US$</p>
+            <div className="flex px-2 border bg-[#111827] items-center justify-center">
+              <p className="text-[12px] text-white">US$</p>
             </div>
             <input
               type="text"
@@ -36,19 +36,19 @@ const PriceForm: React.FC<PriceFormProps> = ({
               onChange={(e) =>
                 onChange("regular_price", parseFloat(e.target.value) || 0)
               }
-              className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
+              className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
         </div>
 
         {/* Discounted Price */}
         <div className="mb-3">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
+          <label className="block text-[12px] font-medium text-white mb-2">
             Discounted Price
           </label>
           <div className="flex">
-            <div className="bg-zinc-200 flex px-2 items-center justify-center">
-              <p className="text-[12px]">US$</p>
+            <div className="flex px-2 border bg-[#111827] items-center justify-center">
+              <p className="text-[12px] text-white">US$</p>
             </div>
             <input
               type="text"
@@ -57,7 +57,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
               onChange={(e) =>
                 onChange("discounted_price", parseFloat(e.target.value) || 0)
               }
-              className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
+              className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
             />
           </div>
         </div>
@@ -77,8 +77,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
           {/* Discount Scheduled From */}
           <div className="mb-3">
             <div className="flex">
-              <div className="bg-zinc-200 flex px-2 items-center justify-center">
-                <p className="text-[12px]">From</p>
+              <div className="bg-[#111827] border flex px-2 items-center justify-center">
+                <p className="text-[12px] text-white">From</p>
               </div>
               <input
                 type="date"
@@ -86,7 +86,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 onChange={(e) =>
                   onChange("discount_scheduled_from", e.target.value)
                 }
-                className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
+                className="block w-full p-2 bg-[#111827] border border-gray-300 rounded-r-md focus:outline-none"
               />
             </div>
           </div>
@@ -94,8 +94,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
           {/* Discount Scheduled To */}
           <div className="mb-3">
             <div className="flex">
-              <div className="bg-zinc-200 flex px-2 items-center justify-center">
-                <p className="text-[12px]">To</p>
+              <div className="bg-[#111827] border flex px-2 items-center justify-center">
+                <p className="text-[12px] text-white">To</p>
               </div>
               <input
                 type="date"
@@ -103,7 +103,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 onChange={(e) =>
                   onChange("discount_scheduled_to", e.target.value)
                 }
-                className="block w-full p-2 border border-gray-300 rounded-r-md focus:outline-none"
+                className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
               />
             </div>
           </div>

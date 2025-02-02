@@ -3,7 +3,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import SubHeading from "@/app/components/product/SubHeading";
 import { useAccountNavigation } from "@/app/hooks/useUserAccountNavigation";
-import Logo from "@/app/assets/porpopLogo.jpg";
+import Logo from "/public/images/logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/app/components/header/Header";

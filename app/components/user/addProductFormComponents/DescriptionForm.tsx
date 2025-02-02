@@ -12,7 +12,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
 }) => {
     return (
         <div className="mb-3">
-            <label className="block text-[12px] font-bold text-gray-700 mb-2">
+            <label className="block text-[12px] font-bold text-white mb-2">
                 Description
             </label>
             <TextEditor

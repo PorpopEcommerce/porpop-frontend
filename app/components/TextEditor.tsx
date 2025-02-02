@@ -36,7 +36,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange, placeholder, c
       onChange={onChange}
       modules={modules}
       placeholder={placeholder || "Write something here..."}
-      className={`border border-gray-300 rounded-md ${className || ""}`}
+      className={`border border-gray-300 rounded-md text-white bg-[#111827] ${className || ""}`}
     />
   );
 };

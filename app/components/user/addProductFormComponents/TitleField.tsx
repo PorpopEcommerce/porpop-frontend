@@ -8,7 +8,7 @@ interface TitleFieldProps {
 const TitleField: React.FC<TitleFieldProps> = ({ value, onChange }) => {
   return (
     <div className="mb-3">
-      <label className="block text-[12px] font-bold text-gray-700 mb-2">Title</label>
+      <label className="block text-[12px] font-bold text-white mb-2">Title</label>
       <input
         type="text"
         placeholder="Product Name"

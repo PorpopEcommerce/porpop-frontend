@@ -44,7 +44,7 @@ const Product = () => {
   const renderContent = () => {
     switch (productSelectedOption) {
       case "addProductComponent":
-        return <AddProduct />;
+        return <AddProduct handleViewProductClick={handleViewProductClick}/>;
       case "exportComponent":
         return <p>Export layout</p>;
       case "importAliComponent":
