@@ -27,7 +27,6 @@ const ProductList: React.FC<ProductListProps> = ({
 
   // Local state management
   const [vendorProducts, setVendorProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState<
     "idle" | "loading" | "succeeded" | "failed"
   >("idle");
