@@ -35,7 +35,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
 
   return (
     <div className="add-product-form">
-      <form onSubmit={handleSubmit}>
+      <form>
         {/* First Row */}
         <div className="">
           <div className="bg-[#1f2937] p-5 rounded-xl mb-4">
@@ -52,6 +52,8 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
               productDescription={formData.description}
               onChange={handleChange}
             />
+
+            <ImageUploadField onImageUpload={handleImagesChange}/>
 
             <PriceForm
               regular_price={formData.regular_price}
@@ -140,6 +142,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
         <button
           type="submit"
           className="mt-4 px-4 py-2 bg-[#a4cd3a] text-white rounded-md"
+          onClick={handleSubmit}
         >
           {isSubmitting ? (
             <div>Submitting....</div>

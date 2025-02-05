@@ -15,7 +15,7 @@ interface ProductHeaderProp {
 const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleAddProductClick,
   handleViewProductClick,
-  handleImportAliProduct
+  handleImportAliProduct,
 }) => {
   const { vendor } = useAuth();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -46,7 +46,7 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
           `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`
         );
         const products = response.data.products || [];
-        console.log(products)
+        console.log(products);
         setStatus("succeeded");
 
         // Calculate counts dynamically
@@ -76,26 +76,27 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
       <div className="flex justify-between mb-3">
         <div>
           <ul className="flex gap-2 items-center text-sm text-[#84788c]">
-            <li className="cursor-pointer" onClick={handleViewProductClick}>All ({counts.all})</li>
+            <li className="cursor-pointer" onClick={handleViewProductClick}>
+              All ({counts.all})
+            </li>
             <li>Online ({counts.online})</li>
             <li>Draft ({counts.draft})</li>
             <li>In Stock ({counts.inStock})</li>
           </ul>
         </div>
         <div className="flex items-end gap-4">
-          {/* <Button
-            label="+ Add Product"
-            custom="max-w-[fit-content] border-red-700"
+          <button
+            className="max-w-[fit-content] text-sm hover:text-gray-400"
             onClick={handleAddProductClick}
-          /> */}
-          <button className="max-w-[fit-content] text-sm hover:text-gray-400" onClick={handleAddProductClick}>+ Add Product</button>
-          <button className="max-w-[fit-content] text-sm hover:text-gray-400" onClick={handleAddProductClick}>Import Product from AliExpress</button>
-
-          {/* <Button
-            label="Import Product from AliExpress"
-            custom="max-w-[fit-content] bg-red-700 border-red-700"
+          >
+            + Add Product
+          </button>
+          <button
+            className="max-w-[fit-content] text-sm hover:text-gray-400"
             onClick={handleImportAliProduct}
-          /> */}
+          >
+            Import Product from AliExpress
+          </button>
         </div>
       </div>
     </>

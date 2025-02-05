@@ -16,7 +16,6 @@ const Product = () => {
     | "importComponent"
     | "importAliComponent"
     | "addProductComponent"
-    | "exportComponent"
     | "editComponent"
     | "renderComponent"
   >("renderComponent");
@@ -24,8 +23,6 @@ const Product = () => {
 
   const handleAddProductClick = () =>
     setProductSelectedOption("addProductComponent");
-  const handleImportClick = () => setProductSelectedOption("importComponent");
-  const handleExportClick = () => setProductSelectedOption("exportComponent");
   const handleViewProductClick = () =>
     setProductSelectedOption("renderComponent");
   const handleImportAliProduct = () =>
@@ -45,10 +42,8 @@ const Product = () => {
     switch (productSelectedOption) {
       case "addProductComponent":
         return <AddProduct handleViewProductClick={handleViewProductClick}/>;
-      case "exportComponent":
-        return <p>Export layout</p>;
       case "importAliComponent":
-        return <AliExpressImport />;
+        return <AliExpressImport handleViewProductClick={handleViewProductClick}/>;
       case "editComponent":
         return (
           <EditProductForm

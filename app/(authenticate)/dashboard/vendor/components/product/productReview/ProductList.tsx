@@ -17,13 +17,20 @@ interface ProductListProps {
   handleImportAliProduct: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ handleEditClick, handleImportAliProduct,  handleViewProductClick, handleAddProductClick}) => {
+const ProductList: React.FC<ProductListProps> = ({
+  handleEditClick,
+  handleImportAliProduct,
+  handleViewProductClick,
+  handleAddProductClick,
+}) => {
   const { vendor } = useAuth();
 
   // Local state management
   const [vendorProducts, setVendorProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true)
-  const [status, setStatus] = useState<"idle" | "loading" | "succeeded" | "failed">("idle");
+  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "succeeded" | "failed"
+  >("idle");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,13 +44,15 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, handleImport
 
       try {
         const response = await axios.get(
-          `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`,
+          `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`
         );
         setVendorProducts(response.data.products || []);
-        console.log(vendorProducts)
+        console.log(vendorProducts);
         setStatus("succeeded");
       } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch products by vendor.");
+        setError(
+          err.response?.data?.message || "Failed to fetch products by vendor."
+        );
         setStatus("failed");
       }
     };
@@ -57,9 +66,7 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, handleImport
     );
   };
 
-
-
-
+  console.log(vendorProducts);
 
   return (
     <div className="flex-1">
@@ -106,7 +113,8 @@ const ProductList: React.FC<ProductListProps> = ({ handleEditClick, handleImport
             <div className="flex justify-center mt-[150px]">
               <div>
                 <p className="text-sm text-gray-500 text-center mt-3">
-                  No Products Found!! Ready to start selling something awesome? Add a product now!.
+                  No Products Found!! Ready to start selling something awesome?
+                  Add a product now!.
                 </p>
               </div>
             </div>

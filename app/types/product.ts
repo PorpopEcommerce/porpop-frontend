@@ -23,6 +23,13 @@ export interface Tag {
   TagID: string;
 }
 
+interface Images {
+  ImageID: string;
+  Position: number;
+  ProductID: string;
+  URL: string;
+}
+
 export type Product = {
   AllowBackOrder: boolean;
   AllowDiscountScheduleDate: boolean;
@@ -37,7 +44,7 @@ export type Product = {
   DiscountScheduledFrom: string;
   DiscountScheduledTo: string;
   DiscountedPrice: number;
-  Images: string[];
+  Images: Images[];
   IsDiscountEnabled: boolean;
   IsDownloadable: boolean;
   IsFeatured: boolean;
@@ -69,4 +76,4 @@ export type Product = {
   VendorID: string;
   Visibility: boolean;
   WholesalesPrice: number;
-}
+};

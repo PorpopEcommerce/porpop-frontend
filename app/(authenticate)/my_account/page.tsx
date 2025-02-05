@@ -19,10 +19,7 @@ const AccountPageWithProtection = () => {
     }
 
     if (!user) {
-      // Trigger the login modal instead of redirecting
-      alert("Please login to continue...");
       router.push("/")
-      triggerLoginModal();
     } else {
       setLoading(false); // Stop loading once authenticated
     }

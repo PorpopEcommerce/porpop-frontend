@@ -57,7 +57,11 @@ const ProductContent: React.FC<ProductContentProps> = ({
       <div className="justify-self-center">
         <Link href={`/product/${item.ProductID}`}>
           <div className="relative w-[70px] aspect-square">
-            {/* <Image src={item.Images} alt={item.Name} fill className="object-contain" /> */}
+            <img
+              src={item.Images?.[0]?.URL || "/placeholder.jpg"}
+              alt={item.Name || "No Image"}
+              className="object-contain"
+            />{" "}
           </div>
         </Link>
       </div>
@@ -94,9 +98,7 @@ const ProductContent: React.FC<ProductContentProps> = ({
       </div>
       <div className="">{item.ProductStatus}</div>
       <div className="">{item.StockType}</div>
-      <div className="">
-        {formatPrice(item.RegularPrice)}
-      </div>
+      <div className="">{formatPrice(item.RegularPrice)}</div>
       <div className="">{item.Type}</div>
       <div className="">View</div>
       <div className="">

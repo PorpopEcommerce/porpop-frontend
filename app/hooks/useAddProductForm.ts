@@ -110,7 +110,7 @@ export const useAddProductForm = () => {
         stock_type: initialProduct.stock_type,
         is_only_one: initialProduct.is_only_one,
       },
-      // image_urls: initialProduct.image_urls,
+      image_urls: initialProduct.image_urls,
       // category_ids: ["d1c7c5c7-5086-4e3a-a6c5-3457f3e6e5a1"],
       // tag_ids: ["f1b1e2d3-4567-4e8a-9123-567c9b0a8a6c"],
       // attributes: [
@@ -162,8 +162,13 @@ export const useAddProductForm = () => {
     }));
   };
 
-  const handleImagesChange = (images: string) => {
-    setFormData((prev) => ({ ...prev, images }));
+  const handleImagesChange = (files: File[]) => {
+    const imageUrls = files.map((file) => URL.createObjectURL(file)); // Convert files to preview URLs (for frontend use)
+
+    setFormData((prev) => ({
+      ...prev,
+      image_urls: imageUrls, // Store the image URLs in formData
+    }));
   };
 
   const handleMinMaxChange = (
