@@ -98,11 +98,11 @@ const PaymentInitiate: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100 py-12">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
+    <div className="flex justify-center items-center h-screen bg-[#111827] py-12">
+      <div className="bg-[#1f2937] shadow-lg rounded-lg w-full max-w-md p-8 text-white">
         {/* Header Section */}
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-2xl font-semibold">
             Payment Initialization
           </h1>
         </div>
@@ -110,15 +110,15 @@ const PaymentInitiate: React.FC = () => {
         {/* Plan Info */}
         <div className="mt-6 space-y-4">
           <div className="flex justify-between">
-            <span className="text-gray-600">Plan Name:</span>
+            <span>Plan Name:</span>
             <span className="font-semibold">{planName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Email:</span>
+            <span>Email:</span>
             <span className="font-semibold">{user.email}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Amount:</span>
+            <span>Amount:</span>
             <span className="font-semibold">{`₦${amount}`}</span>{" "}
             {/* Adjust currency based on the amount */}
           </div>

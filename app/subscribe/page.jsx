@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import SubHeading from "@/app/components/product/SubHeading";
 import Button from "@/app/components/product/Button";
 import { useRouter } from "next/navigation"; // For route navigation
 import Spinner from "@/app/components/Spinner"; // Import the Spinner component
+import { TiTick } from "react-icons/ti";
 
 const Subscribe = () => {
   const [plans, setPlans] = useState([]); // Holds the fetched plans
@@ -108,10 +109,10 @@ const Subscribe = () => {
   };
 
   return (
-    <div className="p-6 bg-[#f4f5ff] h-full">
+    <div className="p-6 bg-[#111827] h-full text-white">
       <div className="w-full max-w-[100rem] mx-auto">
         {/* Billing cycle toggle */}
-        <div className="grid grid-cols-2 p-1 mb-6 w-full max-w-[20rem] mx-auto rounded-full bg-[#dad9da]">
+        <div className="grid grid-cols-2 p-1 mb-6 w-full max-w-[20rem] mx-auto rounded-full bg-[#1f2937]">
           <button
             onClick={() => handleToggle("monthly")}
             className={`rounded-full p-2 font-semibold ${
@@ -145,22 +146,29 @@ const Subscribe = () => {
                     key={plan.PlanID}
                     className="flex-shrink-0 w-full sm:w-[calc(100%/3)] md:w-[calc(100%/2)] lg:w-[calc(100%/3)] px-3"
                   >
-                    <h3 className="text-lg font-bold text-center mb-3">
-                      {plan.Name}
-                    </h3>
-                    <div className="border rounded-md shadow-md">
-                      <div className="h-20 w-full flex justify-center items-center bg-[#9bf618] mb-3">
-                        <p className="text-xl font-semibold">
-                          NGN {plan.Price.toLocaleString()}
-                        </p>
+                    <div className="border h-full flex flex-col justify-between rounded-md shadow-md bg-[#1f2937] p-3">
+                      <div>
+                        <h3 className="text-lg font-bold mb-3">{plan.Name}</h3>
+                        <div className="h-20 w-full flex justify-center items-center rounded-2xl bg-[#9bf618] mb-3">
+                          <p className="text-xl font-semibold">
+                            NGN {plan.Price.toLocaleString()}
+                          </p>
+                        </div>
+                        <ul className="pl-6  text-white">
+                          {getFeaturesForPlan(plan.Name)?.map(
+                            (feature, index) => (
+                              <li
+                                key={index}
+                                className=" flex gap-2 mb-3 text-left"
+                              >
+                                <TiTick className="text-xl text-[#9bf618] mr-2" />
+
+                                {feature}
+                              </li>
+                            )
+                          )}
+                        </ul>
                       </div>
-                      <ul className="pl-6 border-b text-gray-600 px-3">
-                        {getFeaturesForPlan(plan.Name)?.map((feature, index) => (
-                          <li key={index} className="border-b p-4 text-center">
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
                       <div className="py-4 flex items-center justify-center">
                         <button
                           className="bg-[#9bf618] text-white py-2 px-4 rounded"
