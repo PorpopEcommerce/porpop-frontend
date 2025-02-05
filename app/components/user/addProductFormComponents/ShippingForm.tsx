@@ -35,7 +35,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Shipping and Tax{" "}
           <span className="text-[10px] font-light italic">
             Manage shipping and tax for this product
@@ -49,7 +49,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
           checked={isShippingRequired}
           onChange={(e) => setIsShippingRequired(e.target.checked)}
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           This product requires shipping
         </label>
       </div>
@@ -58,7 +58,8 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
         <>
           {/* Dimensions Inputs */}
           <div className="grid grid-cols-4 p-3 gap-3">
-            {[{ field: "weight", value: weight, placeholder: "Weight (kg)" },
+            {[
+              { field: "weight", value: weight, placeholder: "Weight (kg)" },
               { field: "length", value: length, placeholder: "Length (cm)" },
               { field: "width", value: width, placeholder: "Width (cm)" },
               { field: "height", value: height, placeholder: "Height (cm)" },
@@ -69,57 +70,62 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
                 min="0"
                 value={value || ""}
                 onChange={(e) =>
-                  onChange(field as keyof FormProduct, parseFloat(e.target.value) || 0)
+                  onChange(
+                    field as keyof FormProduct,
+                    parseFloat(e.target.value) || 0
+                  )
                 }
                 placeholder={placeholder}
-                className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                className="mt-1 w-full p-2 bg-[#111827] border border-gray-300 rounded-md focus:outline-none"
               />
             ))}
           </div>
 
           {/* Shipping Class */}
-          <div className="p-3 relative">
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
-              Shipping Class
-            </label>
-            <input
-              type="text"
-              value={shippingClass}
-              readOnly
-              onClick={() => setIsShippingClassDropdownOpen((prev) => !prev)}
-              className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
-            />
-            {isShippingClassDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
-                {[
-                  "No shipping class",
-                  "TVs",
-                  "Refrigeration",
-                  "Sewing Machine",
-                  "Center Table",
-                  "Engine",
-                  "Generator",
-                  "T-Shirts",
-                ].map((type) => (
-                  <div
-                    key={type}
-                    onClick={() => {
-                      handleDropdownSelection("shipping_class", type);
-                      setIsShippingClassDropdownOpen(false);
-                    }}
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
-                  >
-                    {type}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="p-3">
+            <div className="relative">
+              <label className="block text-[12px] font-medium text-white mb-2">
+                Shipping Class
+              </label>
+              <input
+                type="text"
+                value={shippingClass}
+                readOnly
+                onClick={() => setIsShippingClassDropdownOpen((prev) => !prev)}
+                className="mt-1 block bg-[#111827] w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+              />
+              {isShippingClassDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
+                  {[
+                    "No shipping class",
+                    "TVs",
+                    "Refrigeration",
+                    "Sewing Machine",
+                    "Center Table",
+                    "Engine",
+                    "Generator",
+                    "T-Shirts",
+                  ].map((type) => (
+                    <div
+                      key={type}
+                      onClick={() => {
+                        handleDropdownSelection("shipping_class", type);
+                        setIsShippingClassDropdownOpen(false);
+                      }}
+                      className="p-2 hover:bg-[#1f2937] cursor-pointer"
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tax Status */}
           <div className="grid grid-cols-2 p-3 gap-3">
             <div className="relative">
-              <label className="block text-[12px] font-medium text-gray-700 mb-2">
+              <label className="block text-[12px] font-medium text-white mb-2">
                 Tax Status
               </label>
               <input
@@ -127,10 +133,10 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
                 value={taxStatus}
                 readOnly
                 onClick={() => setIsTaxStatusDropdownOpen((prev) => !prev)}
-                className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+                className="mt-1 block bg-[#111827] w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
               />
               {isTaxStatusDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
                   {["Taxable", "Non-taxable", "Shipping only"].map((type) => (
                     <div
                       key={type}
@@ -138,7 +144,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
                         handleDropdownSelection("tax_status", type);
                         setIsTaxStatusDropdownOpen(false);
                       }}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      className="p-2 hover:bg-[#1f2937] cursor-pointer"
                     >
                       {type}
                     </div>
@@ -149,7 +155,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
 
             {/* Tax Class */}
             <div className="relative">
-              <label className="block text-[12px] font-medium text-gray-700 mb-2">
+              <label className="block text-[12px] font-medium text-white mb-2">
                 Tax Class
               </label>
               <input
@@ -157,10 +163,10 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
                 value={taxClass}
                 readOnly
                 onClick={() => setIsTaxClassDropdownOpen((prev) => !prev)}
-                className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+                className="mt-1 block bg-[#111827] w-full p-2 border text-white border-gray-300 rounded-md focus:outline-none cursor-pointer"
               />
               {isTaxClassDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
                   {["Standard", "Reduced rate", "Zero rate"].map((type) => (
                     <div
                       key={type}
@@ -168,7 +174,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({
                         handleDropdownSelection("tax_class", type);
                         setIsTaxClassDropdownOpen(false);
                       }}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      className="p-2 hover:bg-[#1f2937] cursor-pointer"
                     >
                       {type}
                     </div>

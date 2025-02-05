@@ -17,7 +17,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Discount Options{" "}
           <span className="text-[10px] font-light italic">
             Set your discount for this product
@@ -30,7 +30,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
           checked={isDiscountEnabled}
           onChange={(e) => setIsDiscountEnabled(e.target.checked)}
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Enable bulk discount
         </label>
       </div>
@@ -39,7 +39,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
         <div className="p-3 grid grid-cols-2 gap-3">
           {/* Minimum Quantity Input */}
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Minimum quantity
             </label>
             <input
@@ -53,13 +53,13 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
                 )
               }
               placeholder="Minimum Quantity"
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
 
           {/* Discount Percentage Input */}
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Discount %
             </label>
             <input
@@ -74,7 +74,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
                 )
               }
               placeholder="Discount Percentage"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
         </div>

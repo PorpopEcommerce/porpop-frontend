@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Product } from "../types/product";
+import { Product } from "../checkout/page";
 import { useRouter } from "next/navigation";
 
 type CheckoutForm = {
@@ -67,13 +67,13 @@ const useCheckout = () => {
 
   const transformToRequestBody = (
     form: CheckoutForm,
-    products: any[],
+    products: Product[],
     subtotal: number
   ) => {
     return {
       order: {
         buyer_id: user.user_id,
-        total_amount: subtotal,
+        total_amount: Number(subtotal),
         shipping_address: form.streetAddress,
         first_name: form.firstName,
         last_name: form.lastName,
@@ -81,22 +81,27 @@ const useCheckout = () => {
         address: form.streetAddress,
         postal_code: form.postalCode,
         email: form.email,
+        phone: form.phoneNumber, // Add phone field to match the backend
       },
       items: products.map((product) => ({
         product_id: product.id,
-        quantity: product.quantity,
-        price: product.price,
+        quantity: Number(product.quantity), // Ensure quantity is an integer
+        price: Number(product.price),
       })),
     };
   };
 
-  const handleSubmit = async (products: any[], subtotal: number) => {
+  
+  
+  const handleSubmit = async (products: Product[], subtotal: number) => {
     if (!validate()) return;
 
     setIsSubmitting(true);
     try {
       // Example of a POST request
       const requestBody = transformToRequestBody(form, products, subtotal);
+
+      console.log(requestBody)
 
       const response = await fetch(
         "https://backend-porpop.onrender.com/api/v1/order/create?gatewayType=paystack",

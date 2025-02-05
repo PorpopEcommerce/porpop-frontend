@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 
-export const useLoginForm = () => {
+export const useLoginForm = (onSuccess?: () => void) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
@@ -49,14 +49,21 @@ export const useLoginForm = () => {
         { withCredentials: true }
       );
 
-      console.log(response);
-
       // Call login function from AuthContext
       login(response.data);
 
+      console.log(response.data)
+
       setFormData({ email: "", password: "" });
       setIsSuccessfull("Logged in successfully");
-      router.push("/my_account");
+
+       // Trigger the onSuccess callback to close the modal
+       if (onSuccess) {
+        onSuccess();
+      }
+
+
+      router.push("/");
     } catch (err: any) {
       setIsLoading(false);
       if (err.response && err.response.status === 403) {

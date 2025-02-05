@@ -29,7 +29,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Other Options{" "}
           <span className="text-[10px] font-light italic">
             Set your extra product options
@@ -40,7 +40,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
       <div className="p-3 grid grid-cols-2 gap-3">
         {/* Product Status Dropdown */}
         <div className="relative">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
+          <label className="block text-[12px] font-medium text-white mb-2">
             Product Status
           </label>
           <input
@@ -49,10 +49,10 @@ const ProductOption: React.FC<ProductOptionProps> = ({
             value={productStatusType}
             readOnly
             onClick={() => setProductStatusTypeDropdown((prev) => !prev)}
-            className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+            className="mt-1 block bg-[#111827] w-full p-2 border text-white border-gray-300 rounded-md focus:outline-none cursor-pointer"
           />
           {productStatusTypeDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+            <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
               {["Online", "Draft"].map((type) => (
                 <div
                   key={type}
@@ -60,7 +60,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
                     handleTypeSelection("product_status", type);
                     setProductStatusTypeDropdown(false);
                   }}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  className="p-2 hover:bg-[#1f2937] cursor-pointer"
                 >
                   {type}
                 </div>
@@ -80,10 +80,10 @@ const ProductOption: React.FC<ProductOptionProps> = ({
             value={visibilityType}
             readOnly
             onClick={() => setVisibilityTypeDropdown((prev) => !prev)}
-            className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+            className="mt-1 block bg-[#111827] w-full p-2 border text-white border-gray-300 rounded-md focus:outline-none cursor-pointer"
           />
           {visibilityTypeDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+            <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
               {["Visible", "Catalog", "Search", "Hidden"].map((type) => (
                 <div
                   key={type}
@@ -91,7 +91,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
                     handleTypeSelection("visibility", type);
                     setVisibilityTypeDropdown(false);
                   }}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  className="p-2 hover:bg-[#1f2937] cursor-pointer"
                 >
                   {type}
                 </div>
@@ -103,14 +103,14 @@ const ProductOption: React.FC<ProductOptionProps> = ({
 
       {/* Product Note */}
       <div className="p-3">
-        <label className="block text-[12px] font-medium text-gray-700 mb-2">
+        <label className="block text-[12px] font-medium text-white mb-2">
           Product Note
         </label>
         <textarea
           cols={30}
           rows={5}
           placeholder="Customer will get this info in their order email"
-          className="block w-full px-4 py-2 mb-4 rounded-md border border-gray-300 focus:outline-none"
+          className="block w-full px-4 py-2 mb-4 bg-[#111827] rounded-md border border-gray-300 focus:outline-none"
           value={purchase_note || ""}
           onChange={(e) => onChange("purchase_note", e.target.value)}
         ></textarea>
@@ -123,7 +123,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
           checked={reviewType}
           onChange={(e) => onReviewTypeChange(e.target.checked)}
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Enable product reviews
         </label>
       </div>

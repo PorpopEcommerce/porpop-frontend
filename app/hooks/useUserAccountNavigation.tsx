@@ -4,13 +4,13 @@ import { useAuth } from "@/app/context/AuthContext";
 import { IconType } from "react-icons"; // Import IconType to type icons
 import { FaShoppingCart, FaUser, FaLock, FaComments, FaHeadset, FaSignOutAlt } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
-import Dashboard from "../my_account/profile/userDashboard/components/Dashboard";
+import Dashboard from "@/app/(authenticate)/my_account/profile/userDashboard/components/Dashboard";
 import VendorForm from "@/app/components/user/VendorRegisterationForm";
-import CVListing from "../my_account/profile/userDashboard/components/CVListing";
-import RequestQuotes from "../my_account/profile/userDashboard/components/RequestQuotes";
-import Orders from "../my_account/profile/userDashboard/components/Orders";
-import ReturnAndRefund from "../my_account/profile/userDashboard/components/ReturnAndRefund";
-import PaymentMethod from "../my_account/profile/userDashboard/components/PaymentMethod";
+import CVListing from "@/app/(authenticate)/my_account/profile/userDashboard/components/CVListing";
+import RequestQuotes from "@/app/(authenticate)/my_account/profile/userDashboard/components/RequestQuotes";
+import Orders from "@/app/(authenticate)/my_account/profile/userDashboard/components/Orders";
+import ReturnAndRefund from "@/app/(authenticate)/my_account/profile/userDashboard/components/ReturnAndRefund";
+import PaymentMethod from "@/app/(authenticate)/my_account/profile/userDashboard/components/PaymentMethod";
 
 interface DashboardOption {
   label: string;

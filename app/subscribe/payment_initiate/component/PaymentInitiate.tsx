@@ -28,44 +28,59 @@ const PaymentInitiate: React.FC = () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(
-        "https://backend-porpop.onrender.com/api/v1/payment/initiate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-            vendor_id: vendor?.vendor_id,
-            amount: parseInt(amount, 10), // Convert to a number
-            gateway: "paystack",
-            plan_id: planId,
-            email: user.email,
-            name: user.first_name,
-          }),
+    const response = await fetch(
+      `https://backend-porpop.onrender.com/api/v1/billing/subscriptions?vendorID=${vendor.vendor_id}`
+    );
+    const data = await response.json();
+
+    // Since the API response is an array, access the first item
+    const subscription = data[0]?.subscription;
+
+    if (subscription?.IsActive === true) {
+      alert(
+        "You are currently on a subscription, please visit dashboard for more information."
+      );
+      return router.push("/dashboard");
+    } else {
+      try {
+        const response = await fetch(
+          "https://backend-porpop.onrender.com/api/v1/payment/initiate",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: user.user_id,
+              vendor_id: vendor?.vendor_id,
+              amount: parseInt(amount, 10), // Convert to a number
+              gateway: "paystack",
+              plan_id: planId,
+              email: user.email,
+              name: user.first_name,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to initiate payment");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to initiate payment");
+        const data: { payment: any } = await response.json();
+
+        if (data.payment.payment_url) {
+          // Redirect to the payment gateway
+          router.push(data.payment.payment_url);
+        } else {
+          throw new Error("Payment URL not received from the backend");
+        }
+      } catch (err) {
+        setError(
+          (err as Error).message || "An error occurred while initiating payment"
+        );
+      } finally {
+        setLoading(false);
       }
-
-      const data: { payment: any } = await response.json();
-
-      if (data.payment.payment_url) {
-        // Redirect to the payment gateway
-        router.push(data.payment.payment_url);
-      } else {
-        throw new Error("Payment URL not received from the backend");
-      }
-    } catch (err) {
-      setError(
-        (err as Error).message || "An error occurred while initiating payment"
-      );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,7 +98,7 @@ const PaymentInitiate: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-full bg-gray-100 py-12">
+    <div className="flex justify-center items-center h-screen bg-gray-100 py-12">
       <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
         {/* Header Section */}
         <div className="text-center">

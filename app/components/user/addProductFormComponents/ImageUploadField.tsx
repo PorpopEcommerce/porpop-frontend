@@ -1,56 +1,76 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { BsFileImageFill } from "react-icons/bs";
 
 interface ImageUploadFieldProps {
-  onImageUpload: (imageUrl: string) => void;
+  onImageUpload?: ((files: File[]) => void | undefined) | undefined;
 }
 
-const ImageUploadField: React.FC<ImageUploadFieldProps> = ({ onImageUpload }) => {
-  const [preview, setPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
+  onImageUpload,
+}) => {
+  const [images, setImages] = useState<File[]>([]);
 
-  // Handle file selection
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imagePreviewUrl = URL.createObjectURL(file);
-      setPreview(imagePreviewUrl);
-
-      // Send image URL to parent
-      onImageUpload(imagePreviewUrl);
+  const handleFiles = (files: FileList | null) => {
+    if (files) {
+      const newImages = Array.from(files);
+      setImages((prev) => [...prev, ...newImages]);
+  
+      if (onImageUpload) {
+        onImageUpload([...images, ...newImages]); // Ensure updated state is passed
+      }
     }
   };
-
-  // Trigger file input on container click
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  
 
   return (
-    <div className="mb-3 flex w-full max-h-[300px]">
-      {/* Image Container */}
+    <div className="flex flex-col gap-2">
       <div
-        onClick={triggerFileInput}
-        className="w-full h-full border-2 border-dashed border-gray-300 flex items-center justify-center rounded-md cursor-pointer transition"
+        className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-dark-500 border-dark-400 space-y-4"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          handleFiles(e.dataTransfer.files);
+        }}
       >
-        {preview ? (
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-full h-full object-cover rounded-md"
-          />
+        {images.length > 0 ? (
+          <div className="flex gap-4 mt-4 flex-wrap">
+            {images.map((image, index) => (
+              <div key={index} className="relative w-24 h-24">
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Uploaded Preview"
+                  className="w-full h-full object-cover rounded"
+                />
+              </div>
+            ))}
+          </div>
         ) : (
-          <span className="text-gray-500 text-sm">Click to upload</span>
+          <div className="bg-primary-500 p-2 rounded-lg">
+            <BsFileImageFill className="text-white text-xl" />
+          </div>
         )}
+        <p className="text-grey-200 text-center">
+          Drag and drop images here or click to add images
+        </p>
+        <button
+          type="button"
+          className="mt-2 bg-primary-50 text-primary-700 hover:opacity-80 flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors border text-sm"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById("fileInput")?.click();
+          }}
+        >
+          Add Images
+        </button>
+        <input
+          id="fileInput"
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) => handleFiles(e.target.files)}
+          className="hidden"
+        />
       </div>
-
-      {/* Hidden File Input */}
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        onChange={handleImageChange}
-        className="hidden"
-      />
     </div>
   );
 };

@@ -107,8 +107,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <div></div>
-      {/* <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} /> */}
+      {/* <ProductImage cartProduct={cartProduct} product={product} 
+       /> */}
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold">{product.Name}</h1>
         <div>

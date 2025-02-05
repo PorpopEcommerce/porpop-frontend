@@ -6,9 +6,9 @@ import { FcGoogle } from "react-icons/fc";
 import { useLoginForm } from "../../hooks/useLoginForm";
 import Button from "../product/Button";
 
-const LoginForm = () => {
+const LoginForm = ({ toggleSignIn }: { toggleSignIn: () => void }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const { formData, errors, errMsg, handleChange, handleSubmit, isLoading, isSuccessfull } = useLoginForm();
+    const { formData, errors, errMsg, handleChange, handleSubmit, isLoading, isSuccessfull } = useLoginForm(toggleSignIn);
 
     const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 

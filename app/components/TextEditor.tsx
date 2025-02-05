@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css"; // Import ReactQuill styles
+import "react-quill/dist/quill.snow.css";
 
-// Dynamically import ReactQuill for Next.js SSR compatibility
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface TextEditorProps {
@@ -13,7 +12,14 @@ interface TextEditorProps {
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({ value, onChange, placeholder, className }) => {
-  // Define default modules for the editor
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // Ensures component loads only in the client
+  }, []);
+
+  if (!isClient) return <p>Loading editor...</p>; // Prevents errors on SSR
+
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -36,7 +42,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange, placeholder, c
       onChange={onChange}
       modules={modules}
       placeholder={placeholder || "Write something here..."}
-      className={`border border-gray-300 rounded-md ${className || ""}`}
+      className={`border border-gray-300 rounded-md text-white bg-[#111827] ${className || ""}`}
     />
   );
 };

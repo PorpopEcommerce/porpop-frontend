@@ -38,7 +38,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Inventory{" "}
           <span className="text-[10px] font-light italic">
             Manage inventory for this product
@@ -51,7 +51,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
 
         {!isStockManagementEnabled && (
           <div className="relative">
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Stock Status
             </label>
             <input
@@ -60,15 +60,15 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
               value={stockType}
               readOnly
               onClick={() => setStockTypeDropdown((prev) => !prev)}
-              className="mt-1 block w-full p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none cursor-pointer"
+              className="mt-1 block w-full p-2 border text-white bg-[#111827] border-gray-300 rounded-md focus:outline-none cursor-pointer"
             />
             {stockTypeDropdown && (
-              <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div className="absolute top-full left-0 mt-1 w-full bg-[#111827] border border-gray-300 rounded-md shadow-lg z-10">
                 {["In Stock", "Out of Stock", "On Backorder"].map((type) => (
                   <div
                     key={type}
                     onClick={() => handleStockTypeSelect(type)}
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    className="p-2 hover:bg-[#1f2937] cursor-pointer"
                   >
                     {type}
                   </div>
@@ -84,8 +84,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
           type="checkbox"
           checked={isStockManagementEnabled}
           onChange={onStockManagementToggle}
+          className="bg-[#111827]"
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Enable Product Stock Management
         </label>
       </div>
@@ -93,7 +94,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       {isStockManagementEnabled && (
         <div className="p-3 grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Stock Quantity
             </label>
             <input
@@ -101,11 +102,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
               min="0"
               value={stockQuantity}
               onChange={(e) => onStockQuantityChange(Number(e.target.value))}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Low Stock Threshold
             </label>
             <input
@@ -113,7 +114,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
               min="0"
               value={lowStockThreshold}
               onChange={(e) => onLowStockThresholdChange(Number(e.target.value))}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
         </div>
@@ -124,8 +125,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
           type="checkbox"
           checked={allowType}
           onChange={(e) => onAllowTypeChange(e.target.checked)}
+          className="bg-[#111827]"
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Allow only one quantity of this product to be bought in a single order
         </label>
       </div>

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NavBar from "./NavBar";
-import MenuSideComponent from "./components/nav/MenuSideComponent";
-import CartSideComponent from "./components/nav/CartSideComponent";
-import Login_RegistrationSideComponent from "./components/nav/Login_RegistrationSideComponent";
+import NavBar from "@/app/components/header/NavBar";
+import MenuSideComponent from "./components/header/nav/MenuSideComponent";
+import CartSideComponent from "./components/header/nav/CartSideComponent";
+import Login from "./components/header/nav/Login";
 import ScrollToTop from "./components/ScrollToTop";
 import CartProvider from "./provider/CartProvider";
 import { AuthProvider } from "./context/AuthContext";
@@ -14,56 +14,79 @@ import Footer from "./LandingPage/Footer";
 import { usePathname } from "next/navigation";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
-  const pathname = usePathname();
-
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
+  const [previousPath, setPreviousPath] = useState("");
+
+  const pathName = usePathname();
+  const isHome = pathName === "/"
 
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
   const toggleSignIn = () => setSignInDisplay((prev) => !prev);
 
+  useEffect(() => {
+    if (signInDisplay || menuDisplay || cartDisplay) {
+      // Disable scrolling when a modal is active
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scrolling when no modal is active
+      document.body.style.overflow = "auto";
+    }
+  }, [signInDisplay, menuDisplay, cartDisplay]);
+
+  useEffect(() => {
+    // Listen for the custom login trigger event
+    const handleLoginTrigger = () => {
+      setSignInDisplay(true);
+    };
+
+    window.addEventListener("triggerLogin", handleLoginTrigger);
+
+    // return () => {
+    //   window.removeEventListener('triggerLogin', handleLoginTrigger);
+    // };
+  }, []);
+
   return (
     <Provider store={store}>
       <AuthProvider>
         <CartProvider>
-          <section className="flex overflow-hidden w-full">
+          <section className="flex w-full">
             <main className="relative w-full">
-              <div className="relative">
-                {pathname.includes("dashboard") ? (
-                  children
-                ) : (
-                  <>
-                    <header>
-                      <NavBar
-                      // toggleMenu={toggleMenu}
-                      // toggleCart={toggleCart}
-                      // toggleSignIn={toggleSignIn}
-                      />
-                    </header>
-                    {menuDisplay && (
-                      <MenuSideComponent
-                        toggleMenu={toggleMenu}
-                        toggleSignIn={toggleSignIn}
-                      />
-                    )}
-                    {cartDisplay && (
-                      <CartSideComponent toggleCart={toggleCart} />
-                    )}
-                    {signInDisplay && (
-                      <Login_RegistrationSideComponent
-                        toggleSignIn={toggleSignIn}
-                      />
-                    )}
-                    <ScrollToTop />
-                    {children}
-                    <section className="bg-black">
-                      <Footer />
-                    </section>
-                  </>
-                )}
-              </div>
+              {pathName.includes("/dashboard") ||
+              pathName.includes("/my_account") ||
+              pathName.includes("/subscribe") ? (
+                children
+              ) : (
+                <div className="relative">
+                  <header
+                    className={`${
+                      isHome ? "absolute top-0" : "bg-[#255200]"
+                    } w-full z-10`}
+                  >
+                    <NavBar
+                      toggleMenu={toggleMenu}
+                      toggleCart={toggleCart}
+                      toggleSignIn={toggleSignIn}
+                    />
+                  </header>
+                  {menuDisplay && (
+                    <MenuSideComponent
+                      toggleMenu={toggleMenu}
+                      toggleSignIn={toggleSignIn}
+                    />
+                  )}
+                  {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
+                  {signInDisplay && <Login toggleSignIn={toggleSignIn} />}
+                  <ScrollToTop />
+                  {children}
+                  <section className="bg-black">
+                    <Footer />
+                  </section>
+                </div>
+              )}
             </main>
           </section>
         </CartProvider>
