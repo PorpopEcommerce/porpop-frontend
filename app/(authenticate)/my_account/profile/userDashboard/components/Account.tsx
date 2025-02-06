@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { useState } from "react";
-import Button from "../../../../components/product/Button"; // Reusable Button component
-import Heading from "../../../../components/product/Heading"; // Reusable Heading component
+import Button from "@/app/components/product/Button"; // Reusable Button component
+import Heading from "@/app/components/product/Heading"; // Reusable Heading component
 
 
 const AccountDashboard = () => {
