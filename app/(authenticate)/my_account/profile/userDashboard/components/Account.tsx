@@ -7,16 +7,15 @@ import Heading from "@/app/components/product/Heading"; // Reusable Heading comp
 
 
 const AccountDashboard = () => {
-  const { activeUser } = useAuth(); // Fetch active user data
+  const { user } = useAuth(); // Fetch active user data
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEditProfile = () => setIsEditing((prev) => !prev);
 
-  if (!activeUser) {
+  if (!user) {
     return <div className="text-center text-lg">No user logged in.</div>;
   }
 
-  console.log(activeUser)
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-6 border rounded-lg shadow-lg bg-white">
@@ -25,39 +24,39 @@ const AccountDashboard = () => {
         {/* User Details */}
         <div className="flex flex-col gap-2">
           <span className="font-bold">First Name:</span>
-          <span>{activeUser.firstName}</span>
+          <span>{user.first_name}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Last Name:</span>
-          <span>{activeUser.lastName}</span>
+          <span>{user.last_name}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Role:</span>
-          <span>{activeUser.role}</span>
+          <span>{user.role}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Username:</span>
-          <span>{activeUser.username}</span>
+          <span>{user.username}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Email:</span>
-          <span>{activeUser.email}</span>
+          <span>{user.email}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Address:</span>
-          <span>{activeUser.address}</span>
+          <span>{user.address}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">City:</span>
-          <span>{activeUser.city}</span>
+          <span>{user.city}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Postal Code:</span>
-          <span>{activeUser.postalcode}</span>
+          <span>{user.postalcode}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold">Country:</span>
-          <span>{activeUser.country}</span>
+          <span>{user.country}</span>
         </div>
       </div>
 
