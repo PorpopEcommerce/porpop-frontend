@@ -54,7 +54,7 @@ const NavBar: React.FC<NavBarProps> = ({
                     className={classNames({
                       underline: link.href === currentPath,
                       "font-semibold": link.href !== currentPath,
-                      "text-sm hover:text-zinc-500": true,
+                      "text-sm hover:text-white": true,
                     })}
                     href={link.href}
                   >

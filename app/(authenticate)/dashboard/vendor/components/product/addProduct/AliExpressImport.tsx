@@ -57,7 +57,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${backendUrl}/api/v1/import/search/aliexpress`,
+        `https://backend-porpop.onrender.com/api/v1/import/search/aliexpress`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

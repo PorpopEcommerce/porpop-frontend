@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { fetchAllProducts } from "@/app/redux/features/products/productSlice";
 import { useRouter } from "next/router";
+import Spinner from "@/app/components/Spinner";
 
 // import { products } from "@/app/utils/Products";
 
@@ -43,7 +44,7 @@ const Product: React.FC<ProductPageProps> = ({ params }) => {
   );
 
   if (isLoading) {
-    return <p>Loading...</p>; // Show loading state while fetching data
+    return <Spinner />; // Show loading state while fetching data
   }
 
   if (!product) return <p>Product not found!</p>;

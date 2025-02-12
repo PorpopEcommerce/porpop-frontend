@@ -12,7 +12,6 @@ const VendorAccount = () => {
   const router = useRouter();
   const { vendor } = useAuth(); // Assuming vendor details come from AuthContext
   const [loading, setLoading] = useState(true);
-  const [hasSubscription, setHasSubscription] = useState(false);
 
   useEffect(() => {
     if (!vendor) return; // Wait until vendor is available
@@ -27,7 +26,6 @@ const VendorAccount = () => {
         const subscription = data[0]?.subscription;
 
         if (subscription?.IsActive === true) {
-          setHasSubscription(true);
           router.push("/dashboard");
         } else {
           router.push("/subscribe");

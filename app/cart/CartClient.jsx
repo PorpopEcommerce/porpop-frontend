@@ -18,7 +18,7 @@ const CartClient = () => {
     const router = useRouter();
 
     if (!cartProducts || cartProducts.length === 0) {
-        return <div className='flex flex-col items-center'>
+        return <div className='flex flex-col items-center h-screen'>
             <div className='text-2xl'>
                 Your cart is empty
             </div>

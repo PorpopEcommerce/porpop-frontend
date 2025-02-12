@@ -8,6 +8,7 @@ import Orders from "@/app/components/vendor/Orders";
 import Reviews from "@/app/components/vendor/Reviews";
 import Products from "@/app/components/vendor/Products";
 import { useAuth } from "@/app/context/AuthContext";
+import TrafficProgress from "@/app/components/vendor/TrafficProgress";
 
 const calculateCompletion = (vendor: any): number => {
   if (!vendor) return 0; // Handle undefined vendorData
@@ -50,33 +51,37 @@ const DashboardComponent = () => {
 
   return (
     <div className="p-4">
-      <div className="p-4 mb-4 bg-[#1f2937] rounded-xl">
-        <div className="relative flex items-center gap-3 mb-2">
-          <div className="flex-grow">
-            <LinearProgress
-              variant="determinate"
-              value={completion}
-              sx={{
-                width: "100%",
-                height: 10,
-                borderRadius: 2,
-                backgroundColor: "#374151",
-                "& .MuiLinearProgress-bar": { backgroundColor: "#a4cd3a" },
-              }}
-            />
-          </div>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-4 flex-1 bg-[#1f2937] rounded-xl">
+          <div className="relative flex items-center gap-3 mb-2">
+            <div className="flex-grow">
+              <LinearProgress
+                variant="determinate"
+                value={completion}
+                sx={{
+                  width: "100%",
+                  height: 10,
+                  borderRadius: 2,
+                  backgroundColor: "#374151",
+                  "& .MuiLinearProgress-bar": { backgroundColor: "#a4cd3a" },
+                }}
+              />
+            </div>
 
-          <p className="text-[12px] font-medium whitespace-nowrap">
-            {completion}% profile completed
-          </p>
+            <p className="text-[12px] font-medium whitespace-nowrap">
+              {completion}% profile completed
+            </p>
+          </div>
+          <div className="w-full text-red-600 flex items-center gap-2">
+            <AiOutlineExclamationCircle />
+            Add profile picture to gain 15% progress
+          </div>
         </div>
-        <div className="w-full text-red-600 flex items-center gap-2">
-          <AiOutlineExclamationCircle />
-          Add profile picture to gain 15% progress
-        </div>
+        <TrafficProgress />
       </div>
       <div>
         <Earnings />
+
         <div className="grid grid-cols-2 gap-4">
           <Orders />
           <div>
