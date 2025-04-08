@@ -58,6 +58,15 @@ export const useAddProductForm = () => {
   const handleChange = (field: keyof FormProduct, value: any) => {
     setFormData((prev) => {
       if (prev[field] === value) return prev; // Avoid redundant updates
+
+      // Convert string values to numbers for price fields
+      if (field === 'price' || field === 'discounted_price') {
+        return {
+          ...prev,
+          [field]: value === '' ? 0 : Number(value),
+        };
+      }
+
       return {
         ...prev,
         [field]: value,
@@ -121,12 +130,12 @@ export const useAddProductForm = () => {
         );
 
         // Check if the response is successful
-        if (response.status !== 201) {
-          const errorData = await response.data.message;
-          console.error("Error Response:", errorData);
-          toast.error(errorData)
-          return;
-        }
+        // if (response.status !== 200) {
+        //   const errorData = await response.data.message;
+        //   console.error("Error Response:", errorData);
+        //   toast.error(errorData)
+        //   return;
+        // }
 
         // Parse the response
         const responseData = await response.data;
