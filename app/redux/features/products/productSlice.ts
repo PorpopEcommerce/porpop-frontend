@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Product } from "@/app/types/product";
+import Cookies from "js-cookie";
 
 interface ProductState {
-  allProducts: Product[];
-  vendorProducts: Product[];
-  filteredProducts: Product[]; //
+  allProducts: any[];
+  vendorProducts: any[];
+  filteredProducts: any[]; //
   status: "idle" | "loading" | "succeeded" | "failed";
   deleteStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
-  priceRange?: { min: number; max: number }; // Price filter range
+  priceRange?: { min: number }; // Price filter range
 }
 
 const initialState: ProductState = {
@@ -19,18 +19,21 @@ const initialState: ProductState = {
   status: "idle",
   deleteStatus: "idle",
   error: null,
-  priceRange: { min: 0, max: 0 }, // Default price range
+  priceRange: { min: 0 }, // Default price range
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+const token = Cookies.get('access_token')
+
 // Async thunk to fetch all products
-export const fetchAllProducts = createAsyncThunk<Product[], void>(
+export const fetchAllProducts = createAsyncThunk<any[], void>(
   "products/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "https://backend-porpop.onrender.com/api/v1/products"
+        `${BASE_URL}/v1/product/view`
       );
-      return response.data.products;
+      return response.data.body.products;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch all products"
@@ -40,20 +43,20 @@ export const fetchAllProducts = createAsyncThunk<Product[], void>(
 );
 
 // Async thunk to fetch products by vendor ID
-export const fetchProductsByVendorId = createAsyncThunk<Product[], string>(
+export const fetchProductsByVendorId = createAsyncThunk<any[], string>(
   "products/fetchByVendorId",
   async (vendorId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://backend-porpop.onrender.com/api/v1/products/vendor/`,
+        `${BASE_URL}/v1/products/vendor/${vendorId}`,
         {
-          params: { vendor_id: vendorId },
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
         }
       );
-      return response.data.products;
+      return response.data.body;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch products by vendor ID"
@@ -69,7 +72,39 @@ export const deleteProductByVendor = createAsyncThunk<
 >("products/deleteByVendor", async (productId, { rejectWithValue }) => {
   try {
     const response = await axios.delete(
-      `https://backend-porpop.onrender.com/api/v1/product?product_id=${productId}`
+      `${BASE_URL}/v1/products/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      }
+    );
+    if (response.status === 200) {
+      return productId; // Return the deleted product's ID
+    } else {
+      return rejectWithValue("Failed to delete the product.");
+    }
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to delete the product."
+    );
+  }
+});
+export const editProductByVendor = createAsyncThunk<
+  string, // This is the returned payload (product ID)
+  string, // This is the input (product ID)
+  { rejectValue: string }
+>("products/editByVendor", async (productId, { rejectWithValue }) => {
+  try {
+    const response = await axios.patch(
+      `${BASE_URL}/v1/products/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      }
     );
     if (response.status === 200) {
       return productId; // Return the deleted product's ID
@@ -97,11 +132,11 @@ const productSlice = createSlice({
       state,
       action: PayloadAction<{ min: number; max: number }>
     ) => {
-      const { min, max } = action.payload;
+      const { min } = action.payload;
       state.filteredProducts = state.allProducts.filter(
-        (product) => product.RegularPrice >= min && product.RegularPrice <= max
+        (product) => product.Price <= min 
       );
-      state.priceRange = { min, max }; // Update the price range
+      state.priceRange = { min }; // Update the price range
     },
   },
   extraReducers: (builder) => {
@@ -112,7 +147,7 @@ const productSlice = createSlice({
       })
       .addCase(
         fetchAllProducts.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
+        (state, action: PayloadAction<any[]>) => {
           state.status = "succeeded";
           state.allProducts = action.payload;
         }
@@ -127,7 +162,7 @@ const productSlice = createSlice({
       })
       .addCase(
         fetchProductsByVendorId.fulfilled,
-        (state, action: PayloadAction<Product[]>) => {
+        (state, action: PayloadAction<any[]>) => {
           state.status = "succeeded";
           state.vendorProducts = action.payload;
         }

@@ -17,7 +17,7 @@ const nextConfig = {
         return [
           {
             source: "/api/:path*",
-            destination: "https://backend-porpop.onrender.com/api/:path*",
+            destination: "https://backend-porpop-1ih6.onrender.com/v1/:path*",
           },
         ];
       },

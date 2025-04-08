@@ -2,7 +2,7 @@ import { FormProduct } from "@/app/types/formProduct";
 import { useState } from "react";
 
 interface PriceFormProps {
-  regular_price: number;
+  price: number;
   discounted_price: number;
   discount_scheduled_from: string;
   discount_scheduled_to: string;
@@ -10,7 +10,7 @@ interface PriceFormProps {
 }
 
 const PriceForm: React.FC<PriceFormProps> = ({
-  regular_price,
+  price,
   discounted_price,
   discount_scheduled_from,
   discount_scheduled_to,
@@ -27,14 +27,14 @@ const PriceForm: React.FC<PriceFormProps> = ({
           </label>
           <div className="flex">
             <div className="flex px-2 border bg-[#111827] items-center justify-center">
-              <p className="text-[12px] text-white">US$</p>
+              <p className="text-[12px] text-white">NGN</p>
             </div>
             <input
               type="text"
               placeholder="0.00"
-              value={regular_price.toString()}
+              value={price}
               onChange={(e) =>
-                onChange("regular_price", parseFloat(e.target.value) || 0)
+                onChange("price", parseFloat(e.target.value) || 0)
               }
               className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
             />
@@ -48,12 +48,12 @@ const PriceForm: React.FC<PriceFormProps> = ({
           </label>
           <div className="flex">
             <div className="flex px-2 border bg-[#111827] items-center justify-center">
-              <p className="text-[12px] text-white">US$</p>
+              <p className="text-[12px] text-white">NGN</p>
             </div>
             <input
               type="text"
               placeholder="0.00"
-              value={discounted_price.toString()}
+              value={discounted_price}
               onChange={(e) =>
                 onChange("discounted_price", parseFloat(e.target.value) || 0)
               }

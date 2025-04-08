@@ -4,8 +4,13 @@ import { z } from "zod";
 export const registerSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  username: z.string().min(1, "Username is required"),
+  username: z.string().optional(),
   email: z.string().email("Invalid email format"),
+  phone_number: z.string().optional(),
+  address: z.string().optional(),
+  postal_code: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -13,6 +18,7 @@ export const registerSchema = z.object({
     .regex(/[a-z]/, "Password must include at least one lowercase letter")
     .regex(/[0-9]/, "Password must include at least one number")
     .regex(/[@$!%*?&#]/, "Password must include at least one special character"),
+
 });
 
 

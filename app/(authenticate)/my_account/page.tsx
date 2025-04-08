@@ -1,38 +1,44 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/app/provider/ProtectedRoute";
 import { useAuth } from "@/app/context/AuthContext";
-import AccountPage from "./profile/page";
 import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/Spinner";
-import { triggerLoginModal } from "@/app/events/modalEvents";
+import UserDashboard from "./profile/userDashboard/UserDashboard";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+
 const AccountPageWithProtection = () => {
-  const { user } = useAuth(); // Check authentication state
+  const { user } = useAuth(); // Fetch auth state
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user === undefined) {
-      // Wait for authentication to resolve
+    const token = Cookies.get("access_token");
+
+    if (!token) {
+      toast.error("Please login to continue");
+      router.push("/");
       return;
     }
 
-    if (!user) {
-      router.push("/")
-    } else {
-      setLoading(false); // Stop loading once authenticated
+    if (user) {
+      setLoading(false);
     }
   }, [user, router]);
 
   if (loading) {
-    // Optionally render a loading spinner or placeholder
-    return <div><Spinner /></div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
     <ProtectedRoute>
-      <AccountPage />
+      <UserDashboard />
     </ProtectedRoute>
   );
 };

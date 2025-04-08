@@ -33,8 +33,6 @@ const Product = () => {
     setProductSelectedOption("editComponent");
   };
 
-  console.log(editingProductId);
-
   const handleCancelEditClick = () =>
     setProductSelectedOption("importComponent");
 

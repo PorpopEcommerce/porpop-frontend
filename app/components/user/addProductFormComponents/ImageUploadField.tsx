@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BsFileImageFill } from "react-icons/bs";
 
 interface ImageUploadFieldProps {
-  onImageUpload?: ((files: File[]) => void | undefined) | undefined;
+  onImageUpload?: (files: File[]) => void;
 }
 
 const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
@@ -14,7 +14,7 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     if (files) {
       const newImages = Array.from(files);
       setImages((prev) => [...prev, ...newImages]);
-  
+
       if (onImageUpload) {
         onImageUpload([...images, ...newImages]); // Ensure updated state is passed
       }

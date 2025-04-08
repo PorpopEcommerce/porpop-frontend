@@ -1,7 +1,5 @@
 "use client";
 
-import { useAuth } from "@/app/context/AuthContext";
-import SubHeading from "@/app/components/product/SubHeading";
 import { useAccountNavigation } from "@/app/hooks/useUserAccountNavigation";
 import Logo from "/public/images/logo.png";
 import { FaTimes } from "react-icons/fa";
@@ -10,12 +8,13 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/app/components/header/Header";
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const UserDashboard = () => {
   const { renderContent, handleOptionClick, dashboardOptions, selectedOption } =
     useAccountNavigation();
 
-  const { user } = useAuth();
+  const token = Cookies.get('access_token');
 
   const [menuDisplay, setMenuDisplay] = useState(false);
 
@@ -29,7 +28,7 @@ const UserDashboard = () => {
     }
   }, [menuDisplay]);
 
-  if (!user) {
+  if (!token) {
     return null;
   }
 

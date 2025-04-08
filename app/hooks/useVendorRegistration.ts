@@ -1,17 +1,21 @@
 import { useState, useCallback, useMemo } from "react";
 import { vendorRegisterSchema, validateField } from "./validation";
 import * as z from "zod";
-import { useDispatch } from "react-redux";
-import {
-  setRegistrationStatus,
-  setError,
-} from "@/app/redux/features/users/userSlice";
 import { VendorData } from "../types/vendor";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { uploadImageToCloudinary } from "../utils/imageUpload";
+import Cookies from "js-cookie";
+
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+const authToken = Cookies.get("access_token");
 
 export const useVendorRegistration = () => {
-  const dispatch = useDispatch();
-  const { user, vendor } = useAuth();
+
+  const { user } = useAuth();
+
 
   const [formData, setFormData] = useState<VendorData>({
     shop_name: "",
@@ -26,6 +30,8 @@ export const useVendorRegistration = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleInputChange = useCallback(
     (fieldName: keyof VendorData, value: string) => {
@@ -54,51 +60,66 @@ export const useVendorRegistration = () => {
     );
   }, [formData, agreeToTerms]);
 
+  // Handle Image Selection
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file)); // Generate a preview URL
+    }
+  };
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setIsSubmitting(true);
-      dispatch(setRegistrationStatus("loading"));
-
+  
       try {
-        // Validate form data
+        // 1. Validate data with Zod
         vendorRegisterSchema.parse(formData);
         setFormErrors({});
-
-        // Payload structure for the API
-        const vendorData = {
-          user_id: user.user_id,
-          vendor_info: { ...formData },
-        };
-
-        // API call
-        const response = await fetch(
-          `https://backend-porpop.onrender.com/api/v1/user/become-vendor`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(vendorData),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error response from backend:", errorData);
-          throw new Error(errorData.message || "Failed to register vendor");
+  
+        // 2. Ensure user + token exists
+        if (!user || !user.id || !authToken) {
+          toast.error("You must be logged in to register as a vendor.");
+          setIsSubmitting(false);
+          return;
         }
-
-        
-
-        // Update session storage with new user and vendor data
-        sessionStorage.setItem("user", JSON.stringify(user));
-        sessionStorage.setItem("vendor", JSON.stringify(vendor));
-
-        const result = await response.json();
-        console.log("Vendor successfully registered:", result);
-
+  
+        // 3. Optional image upload
+        let uploadedImageUrl = "";
+        if (selectedImage) {
+          uploadedImageUrl = await uploadImageToCloudinary(selectedImage);
+          if (!uploadedImageUrl) {
+            toast.error("Image upload failed. Try again.");
+            setIsSubmitting(false);
+            return;
+          }
+        }
+  
+        // 4. Construct payload without nesting
+        const payload = {
+          user_id: user.id,
+          ...formData,
+          shop_logo: uploadedImageUrl || "", // blank if no image
+        };
+  
+        console.log("Payload to send:", payload);
+  
+        // 5. Submit to backend
+        const response = await axios.post(`${BASE_URL}/v1/vendors`, payload, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+  
+        console.log("Vendor successfully registered:", response.data);
+        toast.success("Vendor successfully registered!");
+  
+        // 6. Reset form
         setSubmitSuccess(true);
+        setSelectedImage(null);
         setFormData({
           shop_name: "",
           shop_url: "",
@@ -115,23 +136,30 @@ export const useVendorRegistration = () => {
             errors[err.path[0]] = err.message;
           });
           setFormErrors(errors);
+          toast.error("Please correct the highlighted fields.");
+        } else if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.message;
+  
+          if (message === "subscription not found") {
+            toast.error("You need an active subscription to become a vendor.");
+          } else {
+            toast.error(message || "Something went wrong. Try again.");
+          }
+  
+          console.error("Axios error:", error.response?.data);
         } else {
           console.error("Unexpected error:", error);
-          dispatch(
-            setError(
-              error.message || "An error occurred during vendor registration"
-            )
-          );
+          toast.error("An unexpected error occurred.");
         }
+  
         setSubmitSuccess(false);
-        dispatch(setRegistrationStatus("failed"));
       } finally {
         setIsSubmitting(false);
       }
     },
-    [formData, user, dispatch]
+    [formData, user, authToken, selectedImage]
   );
-
+  
   return {
     formData,
     formErrors,
@@ -141,6 +169,8 @@ export const useVendorRegistration = () => {
     handleInputChange,
     handleSubmit,
     setAgreeToTerms,
+    previewUrl,
+    handleImageChange,
     agreeToTerms,
   };
 };

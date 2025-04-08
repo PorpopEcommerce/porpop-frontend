@@ -7,6 +7,8 @@ import DashboardComponent from "@/app/(authenticate)/dashboard/vendor/components
 import OrderComponent from "@/app/(authenticate)/dashboard/vendor/components/OrderComponent";
 import WithDraw from "@/app/(authenticate)/dashboard/vendor/components/WithDraw";
 import ReverseWithdraw from "@/app/(authenticate)/dashboard/vendor/components/ReverseWithdraw";
+import VendorForm from "../components/user/VendorRegisterationForm";
+import VendorAccount from "../(authenticate)/dashboard/vendor/components/VendorAccount";
 
 
 
@@ -33,6 +35,7 @@ export const useAccountNavigation = () => {
     { label: "Reverse Withdraw", key: "revWithdraw" },
     { label: "Product Q&A", key: "productQ/A" },
     { label: "Support", key: "support" },
+    { label: "Account", key: "account" },
     { label: "Settings", key: "settings" },
   ];
 
@@ -45,12 +48,16 @@ export const useAccountNavigation = () => {
     setVendorSelectedOption(key);
   };
 
+  const handleVendorFormClick = () => {
+    setVendorSelectedOption("vendorForm");
+  }
+
 
 
   const renderContent = (): JSX.Element | null => {
     switch (vendorSelectedOption) {
       case "dashboard":
-        return <DashboardComponent />;
+        return <DashboardComponent handleVendorForm={handleVendorFormClick}/>;
       case "pof":
         return <p>POF Layout</p>;
       case "product":
@@ -63,6 +70,10 @@ export const useAccountNavigation = () => {
         return <ReverseWithdraw />;
       case "":
         return <ManageProduct />;
+      case "vendorForm":
+        return <VendorForm />;
+      case "account":
+        return <VendorAccount handleVendorForm={handleVendorFormClick}/>;
       default:
         return <p>Parent</p>;
     }

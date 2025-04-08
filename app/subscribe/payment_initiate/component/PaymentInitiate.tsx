@@ -5,82 +5,81 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import Button from "@/app/components/product/Button";
 import Spinner from "@/app/components/Spinner";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const PaymentInitiate: React.FC = () => {
   const searchParams = useSearchParams();
   const planId = searchParams.get("planId");
   const amount = searchParams.get("amount");
   const planName = searchParams.get("planName");
-  const { user, vendor } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(planName);
-
   const initiatePayment = async () => {
-    if (!user || !planId || !amount) {
-      setError("Missing required information for payment.");
-      return;
-    }
+    const token = Cookies.get("access_token");
 
     setLoading(true);
     setError(null);
 
-    const response = await fetch(
-      `https://backend-porpop.onrender.com/api/v1/billing/subscriptions?vendorID=${vendor.vendor_id}`
-    );
-    const data = await response.json();
-
-    // Since the API response is an array, access the first item
-    const subscription = data[0]?.subscription;
-
-    if (subscription?.IsActive === true) {
-      alert(
-        "You are currently on a subscription, please visit dashboard for more information."
+    try {
+      // Step 1: Check if user already has an active subscription
+      const response = await axios.get(
+        `${BASE_URL}/v1/billing/subscriptions?user_id=${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      return router.push("/dashboard");
-    } else {
-      try {
-        const response = await fetch(
-          "https://backend-porpop.onrender.com/api/v1/payment/initiate",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_id: user.user_id,
-              vendor_id: vendor?.vendor_id,
-              amount: parseInt(amount, 10), // Convert to a number
-              gateway: "paystack",
-              plan_id: planId,
-              email: user.email,
-              name: user.first_name,
-            }),
-          }
-        );
 
-        if (!response.ok) {
-          throw new Error("Failed to initiate payment");
-        }
+      const subscription = response.data?.body;
 
-        const data: { payment: any } = await response.json();
-
-        if (data.payment.payment_url) {
-          // Redirect to the payment gateway
-          router.push(data.payment.payment_url);
-        } else {
-          throw new Error("Payment URL not received from the backend");
-        }
-      } catch (err) {
-        setError(
-          (err as Error).message || "An error occurred while initiating payment"
-        );
-      } finally {
-        setLoading(false);
+      if (subscription?.has_subscription === true) {
+        toast.warning("You are currently on a subscription. Please visit the dashboard for more information.");
+        return router.push("/dashboard");
       }
+
+      // Step 2: Initiate Payment Subscription
+      const res = await fetch(`${BASE_URL}/v1/billing/subscribe`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          User_id: user.id,
+          Provider: "paystack",
+          Plan_id: planId,
+        }),
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to initiate payment");
+      }
+      
+      const data = await res.json();
+
+      const paymentUrl = data.body.link;
+
+      if (!paymentUrl) {
+        throw new Error("Payment URL not received from the backend");
+      }
+
+      // Redirect user to the Paystack payment page
+      router.push(paymentUrl);
+
+    } catch (err: any) {
+      toast.error(err?.message || "An error occurred while initiating payment");
+      setError(err?.message || "An error occurred while initiating payment");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,18 +92,12 @@ const PaymentInitiate: React.FC = () => {
     );
   }
 
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
-  }
-
   return (
     <div className="flex justify-center items-center h-screen bg-[#111827] py-12">
       <div className="bg-[#1f2937] shadow-lg rounded-lg w-full max-w-md p-8 text-white">
         {/* Header Section */}
         <div className="text-center">
-          <h1 className="text-2xl font-semibold">
-            Payment Initialization
-          </h1>
+          <h1 className="text-2xl font-semibold">Payment Initialization</h1>
         </div>
 
         {/* Plan Info */}
@@ -119,15 +112,9 @@ const PaymentInitiate: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>Amount:</span>
-            <span className="font-semibold">{`₦${amount}`}</span>{" "}
-            {/* Adjust currency based on the amount */}
+            <span className="font-semibold">{`₦${amount}`}</span>
           </div>
         </div>
-
-        {/* Paystack Logo */}
-        {/* <div className="mt-6 flex justify-center">
-          <img src={paystackLogo} alt="Paystack" className="w-32 h-auto" />
-        </div> */}
 
         {/* Action Button */}
         <div className="mt-8">

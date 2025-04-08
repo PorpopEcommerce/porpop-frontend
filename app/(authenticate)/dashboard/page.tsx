@@ -6,26 +6,33 @@ import ProtectedRoute from "@/app/provider/ProtectedRoute";
 import VendorDashboard from "./vendor/VendorDashboard";
 import { useAuth } from "@/app/context/AuthContext";
 import Spinner from "@/app/components/Spinner";
-import { triggerLoginModal } from "@/app/events/modalEvents";
+import axios from "axios";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const VendorAccount = () => {
   const router = useRouter();
-  const { vendor } = useAuth(); // Assuming vendor details come from AuthContext
-  const [loading, setLoading] = useState(true);
+  const { user, authToken } = useAuth(); // Assuming vendor details come from AuthContext
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!vendor) return; // Wait until vendor is available
+    if (!user) return; // Wait until vendor is available
 
     const checkSubscription = async () => {
       try {
-        const response = await fetch(
-          `https://backend-porpop.onrender.com/api/v1/billing/subscriptions?vendorID=${vendor.vendor_id}`
+        const response = await axios.get(
+          `${BASE_URL}/v1/billing/subscriptions?user_id=${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`, // Assuming authToken comes from AuthContext
+            },
+          }
         );
-        const data = await response.json();
+        const data = await response.data.body;
 
-        const subscription = data[0]?.subscription;
+        const subscription = data.has_subscription;
 
-        if (subscription?.IsActive === true) {
+        if (subscription === true) {
           router.push("/dashboard");
         } else {
           router.push("/subscribe");
@@ -39,7 +46,7 @@ const VendorAccount = () => {
     };
 
     checkSubscription();
-  }, [vendor, router]);
+  }, [user, router]);
 
   if (loading) {
     return (

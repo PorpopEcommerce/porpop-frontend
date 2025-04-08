@@ -7,21 +7,21 @@ import Image from "next/image";
 interface ProductImageProps {
     cartProduct: CartProductType,
     product: any,
-    handleColorSelect?: (value: SelectedImageType) => void
+    handleSelect?: (value: SelectedImageType) => void 
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ cartProduct, product, handleColorSelect }) => {
+const ProductImage: React.FC<ProductImageProps> = ({ cartProduct, product, handleSelect }) => {
     return (
         <div className="grid grid-cols-6 gap-2 h-full max-h-[500px] min-h-[300px] sm:min-h-[400px]">
             <div className="flex flex-col items-center justify-center gap-4 cursor-pointer border h-full max-h-[500px] min-h-[300px] sm:min-h-[400px]">
                 {product.images.map((image: SelectedImageType) => {
                     return <div
-                        key={image.color}
-                        // onClick={() => { handleColorSelect(image) }}
+                        key={image.url}
+                        onClick={() => handleSelect?.(image)}
                         className={`relative w-[80%] aspect-square rounded border-teal-300 `}>
                         <Image
                             src={image.image || "placeholder"}
-                            alt={image.color || 'no color'}
+                            alt={image.url}
                             fill
                             className="object-contain"
                         />
@@ -31,11 +31,11 @@ const ProductImage: React.FC<ProductImageProps> = ({ cartProduct, product, handl
             </div>
 
             <div className="col-span-5 relative aspect-square ">
-                {/* <Image
-                    src={cartProduct.selectedImg.image}
-                    alt={cartProduct.name}
+                <Image
+                    src={cartProduct.selectedImg?.image || 'placeholder'}
+                    alt={cartProduct.title}
                     fill
-                    className="w-full h-full object-contain max-h-[500px] min-h-[300px] sm:min-h-[400px]" /> */}
+                    className="w-full h-full object-contain max-h-[500px] min-h-[300px] sm:min-h-[400px]" />
             </div>
 
         </div>

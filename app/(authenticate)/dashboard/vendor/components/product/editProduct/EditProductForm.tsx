@@ -1,7 +1,6 @@
 import Button from '@/app/components/product/Button';
 import Heading from '@/app/components/product/Heading';
 import AddProductForm from '@/app/components/user/AddProductForm'
-import React, { VoidFunctionComponent } from 'react'
 
 
 interface EditProductFormProps {

@@ -1,39 +1,32 @@
 import { useState, useCallback, useMemo } from "react";
-import { registerSchema, validateField } from "./validation"; 
+import { registerSchema, validateField } from "./validation";
+import { UserData } from "../types/user";
 import * as z from "zod";
-import { useDispatch } from "react-redux";
-import { addUser, setRegistrationStatus, setError } from "@/app/redux/features/users/userSlice";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-type Role = "buyer";
 
-interface FormData {
-  first_name: string;
-  last_name: string;
-  username: string;
-  email: string;
-  password: string;
-}
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+
+console.log(BASE_URL);
 
 export const useRegisterForm = () => {
-  const dispatch = useDispatch();
-  
-  const [role, setRole] = useState<Role>("buyer");
-  const [formData, setFormData] = useState<FormData>({
+  // const [role, setRole] = useState<Role>("customer");
+  const [formData, setFormData] = useState<UserData>({
     first_name: "",
     last_name: "",
-    username: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
-
+  const [verificationToken, setVerificationToken] = useState(false);
 
   const handleInputChange = useCallback(
-    (fieldName: keyof FormData, value: string) => {
+    (fieldName: keyof UserData, value: string) => {
       setFormData((prev) => ({ ...prev, [fieldName]: value }));
       setFormErrors((prev) => ({
         ...prev,
@@ -44,100 +37,74 @@ export const useRegisterForm = () => {
   );
 
   const isFormValid = useMemo(() => {
-    const requiredFields = [
-      "first_name",
-      "last_name",
-      "username",
-      "email",
-      "password",
-    ];
+    const requiredFields = ["first_name", "last_name", "email", "password"];
 
     return (
-      requiredFields.every((field) => formData[field as keyof FormData]) &&
+      requiredFields.every((field) => formData[field as keyof UserData]) &&
       agreeToTerms
     );
-  }, [formData, role, agreeToTerms]);
+  }, [formData, agreeToTerms]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setIsSubmitting(true);
-      dispatch(setRegistrationStatus("loading"));
-  
+      
       try {
-        // Validate the form data
+        // Validate form data using Zod schema
         registerSchema.parse(formData);
         setFormErrors({});
+        console.log("form is submitting", formData);
   
-        // Create a new user object
-        const newUser = { user: { ...formData, role } };
+        // Send the new user data to the API endpoint
+        const response = await axios.post(`${BASE_URL}/v1/user/register`, {
+          user: { ...formData }, 
+        });
   
-        // Debugging: Log the new user before sending the request
-        console.log("New User:", newUser);
+        // Handle successful response
+        console.log("User successfully registered:", response.data);
   
-        // Send the new user data to the API endpoint using fetch
-        const response = await fetch(
-          "https://backend-porpop.onrender.com/api/v1/user/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              
-            },
-            body: JSON.stringify(newUser), // Ensure proper payload structure
-          }
-        );
-  
-        // Check if the response is successful
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error response from backend:", errorData);
-          throw new Error(errorData.message || "Failed to submit user data");
-        }
-  
-        const result = await response.json();
-        console.log("User successfully registered:", result);
-  
-        // Dispatch to Redux store
-        dispatch(addUser(newUser.user));
-  
-        // Indicate success and reset the form
         setSubmitSuccess(true);
         setFormData({
           first_name: "",
           last_name: "",
-          username: "",
           email: "",
           password: "",
         });
         setAgreeToTerms(false);
-        dispatch(setRegistrationStatus("succeeded"));
+        setVerificationToken(true); // Debugging: Set verification token to true for now
+        toast.success("Registration successful!");
       } catch (error: any) {
+        // Handle Zod validation errors
         if (error instanceof z.ZodError) {
           const errors: Record<string, string> = {};
           error.errors.forEach((err) => {
             errors[err.path[0]] = err.message;
           });
           setFormErrors(errors);
-        } else {
+        } 
+        // Handle Axios request errors
+        else if (axios.isAxiosError(error)) {
+          console.error("Axios error:", error.response?.data || error.message);
+          toast.error(error.response?.data?.message || "Registration failed");
+        } 
+        // Handle unexpected errors
+        else {
           console.error("Unexpected error:", error);
-          dispatch(setError(error.message || "An error occurred during registration"));
+          toast.error("An unexpected error occurred");
         }
         setSubmitSuccess(false);
-        dispatch(setRegistrationStatus("failed"));
       } finally {
         setIsSubmitting(false);
       }
     },
-    [formData, agreeToTerms, role, dispatch]
+    [formData, agreeToTerms]
   );
-  
   
 
   return {
-    role,
-    setRole,
     formData,
+    verificationToken,
     formErrors,
     agreeToTerms,
     isFormValid,

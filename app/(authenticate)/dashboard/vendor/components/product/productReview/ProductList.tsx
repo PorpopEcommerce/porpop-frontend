@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useAuth } from "@/app/context/AuthContext";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
+import { fetchProductsByVendorId } from "@/app/redux/features/products/productSlice";
+import ProductHeader from "../ProductHeader";
 import ProductContent from "./ProductContent";
 import Spinner from "@/app/components/Spinner";
 
-import axios from "axios";
-import { Product } from "@/app/types/product";
-import ProductHeader from "../ProductHeader";
-
 interface ProductListProps {
-  // product: Product[]
   handleEditClick: (productId: string) => void;
   handleAddProductClick: () => void;
   handleViewProductClick: () => void;
@@ -19,53 +18,36 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({
   handleEditClick,
-  handleImportAliProduct,
-  handleViewProductClick,
   handleAddProductClick,
+  handleViewProductClick,
+  handleImportAliProduct,
 }) => {
-  const { vendor } = useAuth();
-
-  // Local state management
-  const [vendorProducts, setVendorProducts] = useState<Product[]>([]);
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "succeeded" | "failed"
-  >("idle");
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const { activeUser } = useSelector((state: RootState) => state.user);
+  const {user, vendor} = activeUser
+  const vendorProducts =
+    useSelector((state: RootState) => state.products.vendorProducts) || [];
+  const productStatus = useSelector(
+    (state: RootState) => state.products.status
+  );
+  const error = useSelector((state: RootState) => state.products.error);
 
   useEffect(() => {
-    if (!vendor?.vendor_id) {
-      return;
+    if (!user) {
+      dispatch(fetchUserThunk());
     }
+  }, [user, dispatch]);
 
-    const fetchVendorProducts = async () => {
-      setStatus("loading");
-      setError(null); // Reset error before fetching
+  useEffect(() => {
+    console.log(vendor?.id)
+    if (vendor?.id) {
+      dispatch(fetchProductsByVendorId(vendor?.id));
+    }
+  }, [vendor?.id, dispatch]);
 
-      try {
-        const response = await axios.get(
-          `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`
-        );
-        setVendorProducts(response.data.products || []);
-        console.log(vendorProducts);
-        setStatus("succeeded");
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch products by vendor."
-        );
-        setStatus("failed");
-      }
-    };
 
-    fetchVendorProducts();
-  }, [vendor?.vendor_id]);
-
-  const removeProductFromUI = (productId: string) => {
-    setVendorProducts((prevProducts) =>
-      prevProducts.filter((product) => product.ProductID !== productId)
-    );
-  };
-
-  console.log(vendorProducts);
+  console.log("Product status:", productStatus);
+  console.log("Vendor Products:", vendorProducts);
 
   return (
     <div className="flex-1">
@@ -74,51 +56,54 @@ const ProductList: React.FC<ProductListProps> = ({
         handleViewProductClick={handleViewProductClick}
         handleImportAliProduct={handleImportAliProduct}
       />
-      {status === "loading" && (
-        <div>
-          <Spinner />
+
+      {productStatus === "loading" && <Spinner />}
+      {productStatus === "failed" && (
+        <p className="text-red-500">Error: {error}</p>
+      )}
+
+      {productStatus === "succeeded" && vendorProducts.length > 0 && (
+        <>
+          <div className="grid grid-cols-10 text-xs gap-4 pb-2 items-center mt-8">
+            <div>IMAGE</div>
+            <div className="col-span-2 justify-self-start">NAME</div>
+            <div className="justify-self-start">STATUS</div>
+            <div className="justify-self-start">STOCK</div>
+            <div className="justify-self-start">PRICE</div>
+            <div className="justify-self-start">TYPE</div>
+            <div className="justify-self-start">VIEWS</div>
+            <div className="justify-self-start">DATE</div>
+          </div>
+          <div>
+            {vendorProducts.map((item) => (
+              <ProductContent
+                key={item.id}
+                item={item}
+                handleEditClick={handleEditClick}
+                vendorId={vendor?.id}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {productStatus === "succeeded" && vendorProducts.length === 0 && (
+        <div className="flex justify-center mt-[150px]">
+          <p className="text-sm text-white text-center mt-3">
+            No Products Found!! Ready to start selling something awesome? Add a
+            product now!
+          </p>
         </div>
       )}
 
-      {/* {status === "failed" && <p className="text-red-500">Error: {error}</p>} */}
-
-      {status === "succeeded" && (
-        <>
-          {vendorProducts.length > 0 ? (
-            <>
-              <div className="grid grid-cols-10 text-xs gap-4 pb-2 items-center mt-8">
-                <div>IMAGE</div>
-                <div className="col-span-2 justify-self-start">NAME</div>
-                <div className="justify-self-start">STATUS</div>
-                <div className="justify-self-start">STOCK</div>
-                <div className="justify-self-start">PRICE</div>
-                <div className="justify-self-start">TYPE</div>
-                <div className="justify-self-start">VIEWS</div>
-                <div className="justify-self-start">DATE</div>
-              </div>
-
-              <div>
-                {vendorProducts.map((item) => (
-                  <ProductContent
-                    key={item.ProductID}
-                    item={item}
-                    handleEditClick={handleEditClick}
-                    removeProductFromUI={removeProductFromUI}
-                  />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="flex justify-center mt-[150px]">
-              <div>
-                <p className="text-sm text-gray-500 text-center mt-3">
-                  No Products Found!! Ready to start selling something awesome?
-                  Add a product now!.
-                </p>
-              </div>
-            </div>
-          )}
-        </>
+      {/* Handle if user is not a vendor or vendor is undefined */}
+      {!vendor?.id && productStatus === "idle" && (
+        <div className="flex justify-center mt-[150px]">
+          <p className="text-sm text-yellow-300 text-center mt-3">
+            Vendor account not found. Please register as a vendor to start
+            adding products.
+          </p>
+        </div>
       )}
     </div>
   );

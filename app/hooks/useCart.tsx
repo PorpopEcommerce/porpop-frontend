@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { CartProductType } from "../components/product/ProductDetails";
-import { Product } from "../types/product";
 
 type CartContextType = {
     cartTotalQty: number
@@ -129,30 +128,20 @@ export const CartContextProvider = (props: Props) => {
             }
 
             setCartProducts(updatedCart)
-            localStorage.setItem('shopCartItems', JSON.stringify(updatedCart))
+            sessionStorage.setItem('shopCartItems', JSON.stringify(updatedCart))
 
         }
     }, [cartProducts])
 
 
-    const handleClearCart = useCallback((product: CartProductType) => {
+    const handleClearCart = useCallback(() => {
 
         setCartProducts(null);
         setCartTotalQty(0);
         setCartTotalAmount(0);
-        localStorage.setItem('shopCartItems', JSON.stringify(null))
+        sessionStorage.setItem('shopCartItems', JSON.stringify(null))
 
     }, [cartProducts])
-
-    const handleAddToUserProfile = useCallback((product: CartProductType) => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
-
-    if (!loggedInUser) {
-        alert("You need to log in to add items to your profile cart.");
-        return;
-    }
-
-}, []);
 
     
 

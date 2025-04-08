@@ -1,32 +1,8 @@
 import React, { useState } from "react";
 import Button from "@/app/components/product/Button";
 import { truncateText } from "@/app/utils/truncateText";
+import { Modal } from "@/app/components/Modal";
 
-// Modal Component
-const Modal = ({
-  isOpen,
-  onClose,
-  children,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
-      <div className="bg-[#1f2937] p-6 rounded shadow-lg w-[80%] max-w-[60rem] h-[100%] max-h-[30rem]">
-        <Button
-          onClick={onClose}
-          label="CLOSE"
-          custom="absolute max-w-fit top-2 right-2 bg-red-700"
-        />
-        <div className="h-full p-4 overflow-y-auto">{children}</div>{" "}
-      </div>
-    </div>
-  );
-};
 
 // Define the product type
 interface Product {
@@ -47,8 +23,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
-  // Get backend URL from environment variable
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
   // Handle AliExpress search
   const handleSearch = async () => {
@@ -83,14 +58,14 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
 
   // Handle importing selected products
   const handleImport = async (selectedProducts: Product[]) => {
-    if (!backendUrl) {
-      alert("Backend URL is not configured. Please contact support.");
-      return;
-    }
+    // if (!backendUrl) {
+    //   alert("Backend URL is not configured. Please contact support.");
+    //   return;
+    // }
 
     setLoading(true);
     try {
-      const response = await fetch(`${backendUrl}/api/v1/import/products`, {
+      const response = await fetch(`https://backend-porpop.onrender.com/api/v1/import/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -142,6 +117,8 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         <p className="text-gray-500 text-center col-span-3">
           No products found? Try a different keyword.
         </p>{" "}
+
+
         {/* Modal for showing search results */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <h3 className="text-lg font-bold mb-4">Select Products</h3>

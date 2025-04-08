@@ -1,18 +1,13 @@
 import { useAuth } from "../context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import Cookies from "js-cookie";
+
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, vendor } = useAuth();
-  const router = useRouter();
+  const { user } = useAuth();
+  const authToken = Cookies.get("access_token");
 
-  useEffect(() => {
-    if (!user || !vendor) {
-      alert("please login to continue")
-    }
-  }, [user, router]);
 
-  if (!user) {
+  if (!user && !authToken) {
     // Prevent rendering protected content before redirect
     return null;
   }

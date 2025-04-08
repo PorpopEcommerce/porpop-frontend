@@ -6,7 +6,7 @@ interface ProductOptionProps {
   onReviewTypeChange: (type: boolean) => void;
   productStatusType: string;
   visibilityType: string;
-  purchase_note?: string;
+  product_notes?: string;
   onChange: (field: keyof FormProduct, value: any) => void;
 }
 
@@ -14,7 +14,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
   productStatusType,
   visibilityType,
   onChange,
-  purchase_note,
+  product_notes,
   reviewType,
   onReviewTypeChange,
 }) => {
@@ -71,7 +71,7 @@ const ProductOption: React.FC<ProductOptionProps> = ({
 
         {/* Visibility Dropdown */}
         <div className="relative">
-          <label className="block text-[12px] font-medium text-gray-700 mb-2">
+          <label className="block text-[12px] font-medium text-white mb-2">
             Visibility
           </label>
           <input
@@ -111,8 +111,8 @@ const ProductOption: React.FC<ProductOptionProps> = ({
           rows={5}
           placeholder="Customer will get this info in their order email"
           className="block w-full px-4 py-2 mb-4 bg-[#111827] rounded-md border border-gray-300 focus:outline-none"
-          value={purchase_note || ""}
-          onChange={(e) => onChange("purchase_note", e.target.value)}
+          value={product_notes || ""}
+          onChange={(e) => onChange("product_notes", e.target.value)}
         ></textarea>
       </div>
 

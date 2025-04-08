@@ -2,13 +2,13 @@ import { FormProduct } from "@/app/types/formProduct";
 import React, { useState } from "react";
 
 interface WholesaleFormProps {
-  wholesales_min_order?: number;
+  min_quantity_for_wholesales?: number;
   wholesales_price?: number;
   onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const WholesaleForm: React.FC<WholesaleFormProps> = ({
-  wholesales_min_order,
+  min_quantity_for_wholesales,
   wholesales_price,
   onChange,
 }) => {
@@ -45,10 +45,10 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
             <input
               type="number"
               min="0" // Ensure the minimum value is 0
-              value={wholesales_min_order || ""}
+              value={min_quantity_for_wholesales || ""}
               onChange={(e) =>
                 onChange(
-                  "wholesales_min_order",
+                  "min_quantity_for_wholesales",
                   parseInt(e.target.value, 10) || 0
                 )
               }

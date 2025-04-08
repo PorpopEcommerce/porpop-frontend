@@ -1,15 +1,12 @@
 "use client";
 
-import { useAuth } from "@/app/context/AuthContext";
-import SubHeading from "@/app/components/product/SubHeading";
-import { useRouter } from "next/navigation";
 import { useAccountNavigation } from "@/app/hooks/useVendorAccountNavigation";
+import Header from "@/app/components/header/Header";
 import Logo from "/public/images/logo.png";
 import { CiMenuBurger } from "react-icons/ci";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "@/app/components/header/Header";
 import { useState, useEffect } from "react";
 const VendorDashboard = () => {
   const {
@@ -31,11 +28,7 @@ const VendorDashboard = () => {
     }
   }, [menuDisplay]);
 
-  const { user, vendor } = useAuth();
 
-  // if (!user && !vendor) {
-  //   return null;
-  // }
 
   return (
     <div className="flex min-h-screen text-white">

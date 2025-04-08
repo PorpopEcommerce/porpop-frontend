@@ -13,14 +13,15 @@ import { store } from "./redux/store";
 import Footer from "./LandingPage/Footer";
 import { usePathname } from "next/navigation";
 
+
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
-  const [previousPath, setPreviousPath] = useState("");
 
+  
   const pathName = usePathname();
-  const isHome = pathName === "/"
+  const isHome = pathName === "/";
 
   const toggleMenu = () => setMenuDisplay((prev) => !prev);
   const toggleCart = () => setCartDisplay((prev) => !prev);
@@ -44,9 +45,6 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
 
     window.addEventListener("triggerLogin", handleLoginTrigger);
 
-    // return () => {
-    //   window.removeEventListener('triggerLogin', handleLoginTrigger);
-    // };
   }, []);
 
   return (
@@ -57,7 +55,8 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
             <main className="relative w-full">
               {pathName.includes("/dashboard") ||
               pathName.includes("/my_account") ||
-              pathName.includes("/subscribe") ? (
+              pathName.includes("/forget_password") ||
+              pathName.includes("/reset_password") ? (
                 children
               ) : (
                 <div className="relative">
@@ -79,7 +78,11 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
                     />
                   )}
                   {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
-                  {signInDisplay && <Login toggleSignIn={toggleSignIn} />}
+                  {signInDisplay && (
+                    <Login
+                      toggleSignIn={toggleSignIn}
+                    />
+                  )}
                   <ScrollToTop />
                   {children}
                   <section className="bg-black">

@@ -2,12 +2,10 @@
 
 import { Rating } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import SetColor from "./SetColor";
 import SetQuantity from "./SetQuantity";
 import Button from "./Button";
 import ProductImage from "./ProductImage";
 import { useCart } from "@/app/hooks/useCart";
-import { Product } from "@/app/types/product";
 import { formatPrice } from "@/app/utils/formatter";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
@@ -28,7 +26,7 @@ export type CartProductType = {
 };
 
 export type SelectedImageType = {
-  color: string;
+  url: string;
   colorCode: string;
   image: string;
 };
@@ -47,10 +45,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     id: product.ProductID,
     title: product.Name,
     description: product.Description,
-    // brand: product.brand,
-    // selectedImg: { ...product.images[0] },
+    selectedImg: { ...product.images[0] },
     quantity: 1,
-    price: product.RegularPrice,
+    price: product.Price,
   });
 
   useEffect(() => {
@@ -100,6 +97,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     });
   }, []);
 
+  const handleSelect = (image: SelectedImageType) => {
+    setCartProduct((prev) => ({
+      ...prev,
+      selectedImg: image,
+    }));
+  };
+
   const handleAddToCart = () => {
     handleAddProductToCart(cartProduct);
     setIsProductInCart(true); // Update state to reflect the product is now in the cart
@@ -107,15 +111,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      {/* <ProductImage cartProduct={cartProduct} product={product} 
-       /> */}
+      <ProductImage
+        cartProduct={cartProduct}
+        product={product}
+        handleSelect={handleSelect}
+      />
       <div className="flex flex-col gap-1">
         <h1 className="text-4xl font-bold">{product.Name}</h1>
         <div>
-          <h2>{formatPrice(product.RegularPrice)}</h2>
+          <h2>{formatPrice(product.Price)}</h2>
         </div>
-
-        <div className="text-justify">{product.Description}</div>
+        <div
+          className="text-justify"
+          dangerouslySetInnerHTML={{ __html: product.Description }}
+        />
 
         <div className="text-xl font-normal">{product.StockType}</div>
 

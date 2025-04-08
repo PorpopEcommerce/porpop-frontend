@@ -1,4 +1,3 @@
-import { useState } from "react";
 import TextEditor from "../../TextEditor";
 import { FormProduct } from "@/app/types/formProduct";
 

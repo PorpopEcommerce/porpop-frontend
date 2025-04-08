@@ -1,20 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import SubHeading from "@/app/components/product/SubHeading";
-import Button from "@/app/components/product/Button";
-import { useRouter } from "next/navigation"; // For route navigation
-import Spinner from "@/app/components/Spinner"; // Import the Spinner component
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import Spinner from "@/app/components/Spinner";
 import { TiTick } from "react-icons/ti";
 
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+
 const Subscribe = () => {
-  const [plans, setPlans] = useState([]); // Holds the fetched plans
-  const [filteredPlans, setFilteredPlans] = useState([]); // Holds the plans filtered by billing cycle
-  const [selectedCycle, setSelectedCycle] = useState("monthly"); // Tracks the selected billing cycle
-  const [loading, setLoading] = useState(true); // Tracks loading state
-  const [scrollPosition, setScrollPosition] = useState(0); // For managing scroll position
-  const [isScrollable, setIsScrollable] = useState(false); // Tracks if the container is scrollable
-  const router = useRouter(); // For navigation
+  const [plans, setPlans] = useState([]);
+  const [filteredPlans, setFilteredPlans] = useState([]);
+  const [selectedCycle, setSelectedCycle] = useState("monthly");
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false); // Tracks screen size
+  const router = useRouter();
 
   const featuresMap = {
     Starter: [
@@ -56,18 +57,14 @@ const Subscribe = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await fetch(
-          "https://backend-porpop.onrender.com/api/v1/billing/plans"
-        );
-        const data = await response.json();
+        const response = await axios.get(`${BASE_URL}/v1/billing/plans/list`);
+        const data = response.data.body.plans;
         setPlans(data);
-        setFilteredPlans(
-          data.filter((plan) => plan.BillingCycle === "monthly")
-        );
+        setFilteredPlans(data.filter((plan) => plan.billing_cycle === "monthly"));
       } catch (error) {
         console.error("Failed to fetch plans:", error);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }
     };
 
@@ -82,14 +79,26 @@ const Subscribe = () => {
     }
   }, [filteredPlans]);
 
+  useEffect(() => {
+    // Detect screen size
+    const handleResize = () => {
+      setIsMobileOrTablet(window.innerWidth < 1024); // Mobile & tablet < 1024px
+    };
+
+    handleResize(); // Check on mount
+    window.addEventListener("resize", handleResize); // Listen for window resize
+
+    return () => window.removeEventListener("resize", handleResize); // Cleanup
+  }, []);
+
   const handleToggle = (cycle) => {
     setSelectedCycle(cycle);
-    setFilteredPlans(plans.filter((plan) => plan.BillingCycle === cycle));
+    setFilteredPlans(plans.filter((plan) => plan.billing_cycle === cycle));
   };
 
   const handleSelectPlan = (plan) => {
     router.push(
-      `/subscribe/payment_initiate?planId=${plan.PlanID}&amount=${plan.Price}&planName=${plan.Name}`
+      `/subscribe/payment_initiate?planId=${plan.id}&amount=${plan.amount}&planName=${plan.name}`
     );
   };
 
@@ -140,33 +149,27 @@ const Subscribe = () => {
           <div className="w-full">
             {/* Scrollable container */}
             <div className="relative">
-              <div className="flex overflow-x-auto" id="plans-container">
+              <div className="flex overflow-x-auto scrollbar-hide p-3" id="plans-container">
                 {filteredPlans.map((plan) => (
                   <div
-                    key={plan.PlanID}
+                    key={plan.id}
                     className="flex-shrink-0 w-full sm:w-[calc(100%/3)] md:w-[calc(100%/2)] lg:w-[calc(100%/3)] px-3"
                   >
                     <div className="border h-full flex flex-col justify-between rounded-md shadow-md bg-[#1f2937] p-3">
                       <div>
-                        <h3 className="text-lg font-bold mb-3">{plan.Name}</h3>
+                        <h3 className="text-lg font-bold mb-3">{plan.name}</h3>
                         <div className="h-20 w-full flex justify-center items-center rounded-2xl bg-[#9bf618] mb-3">
                           <p className="text-xl font-semibold">
-                            NGN {plan.Price.toLocaleString()}
+                            NGN {plan.amount}
                           </p>
                         </div>
-                        <ul className="pl-6  text-white">
-                          {getFeaturesForPlan(plan.Name)?.map(
-                            (feature, index) => (
-                              <li
-                                key={index}
-                                className=" flex gap-2 mb-3 text-left"
-                              >
-                                <TiTick className="text-xl text-[#9bf618] mr-2" />
-
-                                {feature}
-                              </li>
-                            )
-                          )}
+                        <ul className="pl-6 text-white">
+                          {getFeaturesForPlan(plan.name)?.map((feature, index) => (
+                            <li key={index} className="flex gap-2 mb-3 text-left">
+                              <TiTick className="text-xl text-[#9bf618] mr-2" />
+                              {feature}
+                            </li>
+                          ))}
                         </ul>
                       </div>
                       <div className="py-4 flex items-center justify-center">
@@ -182,8 +185,8 @@ const Subscribe = () => {
                 ))}
               </div>
 
-              {/* Navigation Arrows */}
-              {isScrollable && (
+              {/* Navigation Arrows (only on mobile & tablet) */}
+              {isScrollable && isMobileOrTablet && (
                 <>
                   <button
                     onClick={() => handleScroll("left")}

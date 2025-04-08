@@ -75,9 +75,9 @@ const Page = () => {
     }
   }, []);
 
-  if (!products || products.length === 0) {
-    return <div>Loading...</div>;
-  }
+  // if (!products || products.length === 0) {
+  //   return <div>Loading...</div>;
+  // }
 
   const handleCountryChange = (selectedCountry: string) => {
     setCountry(selectedCountry);

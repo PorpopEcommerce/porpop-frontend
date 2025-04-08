@@ -7,47 +7,48 @@ import Earnings from "@/app/components/vendor/Earnings";
 import Orders from "@/app/components/vendor/Orders";
 import Reviews from "@/app/components/vendor/Reviews";
 import Products from "@/app/components/vendor/Products";
-import { useAuth } from "@/app/context/AuthContext";
-import TrafficProgress from "@/app/components/vendor/TrafficProgress";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
+import Button from "@/app/components/product/Button";
+import { calculateCompletion } from "@/app/utils/vendor";
 
-const calculateCompletion = (vendor: any): number => {
-  if (!vendor) return 0; // Handle undefined vendorData
+interface DashboardComponentProps {
+  handleVendorForm: () => void;
+}
 
-  const requiredFields = [
-    "shop_name",
-    "shop_url",
-    "city",
-    "street",
-    "shop_description",
-    "country",
-    "shop_logo",
-  ];
+const DashboardComponent: React.FC<DashboardComponentProps> = ({
+  handleVendorForm,
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
 
-  // Count filled required fields
-  const filledFields = requiredFields.filter((field) => vendor[field]);
+  const { activeUser } = useSelector((state: RootState) => state.user);
+  const vendorDetails = activeUser?.vendor;
 
-  // Calculate completion percentage
-  return Math.min(
-    Math.round((filledFields.length / requiredFields.length) * 100),
-    100
-  );
-};
-
-const DashboardComponent = () => {
-  const { vendor } = useAuth();
+  useEffect(() => {
+    if (!vendorDetails) {
+      dispatch(fetchUserThunk()); // Fetch user details if not available
+    }
+  }, [dispatch, vendorDetails]);
   // Ensure currentUser and vendorData exist
-  if (!vendor) {
+  if (!vendorDetails) {
     return (
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
         <p className="text-red-500">
-          No vendor profile found for the current user.
+          No vendor profile found for the current user. Please Register here!
         </p>
+        <Button
+          label="Register Here"
+          custom="max-w-fit mt-3"
+          onClick={handleVendorForm}
+        />
       </div>
     );
   }
 
-  const completion = calculateCompletion(vendor);
+  const completion = calculateCompletion(vendorDetails);
 
   return (
     <div className="p-4">
@@ -72,12 +73,13 @@ const DashboardComponent = () => {
               {completion}% profile completed
             </p>
           </div>
-          <div className="w-full text-red-600 flex items-center gap-2">
-            <AiOutlineExclamationCircle />
-            Add profile picture to gain 15% progress
-          </div>
+          {completion < 100 && (
+            <div className="w-full text-red-600 flex items-center gap-2">
+              <AiOutlineExclamationCircle />
+              Add profile picture to gain 15% progress
+            </div>
+          )}
         </div>
-        <TrafficProgress />
       </div>
       <div>
         <Earnings />

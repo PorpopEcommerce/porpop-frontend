@@ -2,15 +2,17 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 export const useLoginForm = (onSuccess?: () => void) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [errMsg, setErrMsg] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccessfull, setIsSuccessfull] = useState("");
+
   const router = useRouter();
   const { login } = useAuth();
 
@@ -31,45 +33,47 @@ export const useLoginForm = (onSuccess?: () => void) => {
       ...errors,
       [e.target.name]: "",
     });
-    setErrMsg("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    console.log(BASE_URL);
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "https://backend-porpop.onrender.com/api/v1/user/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        },
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${BASE_URL}/v1/user/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.status === 200) {
+        toast.success("Login successfully");
+      }
 
       // Call login function from AuthContext
       login(response.data);
 
-      console.log(response.data)
+      // Extract access_token and user details
+      const { access_token, ...userData } = response.data.body;
 
-      setFormData({ email: "", password: "" });
-      setIsSuccessfull("Logged in successfully");
+      // Call login function from AuthContext
+      login({ access_token, user: userData });
 
-       // Trigger the onSuccess callback to close the modal
-       if (onSuccess) {
+      // Trigger the onSuccess callback to close the modal
+      if (onSuccess) {
         onSuccess();
       }
-
+      setFormData({ email: "", password: "" });
 
       router.push("/");
     } catch (err: any) {
       setIsLoading(false);
       if (err.response && err.response.status === 403) {
-        setErrMsg("Invalid email or password");
+        toast.error("Invalid email or password");
       } else {
-        setErrMsg("An unexpected error occurred. Please try again later.");
+        // setErrMsg("An unexpected error occurred. Please try again later.");
+        toast.error(err.response.status);
       }
     } finally {
       setIsLoading(false);
@@ -79,9 +83,7 @@ export const useLoginForm = (onSuccess?: () => void) => {
   return {
     formData,
     errors,
-    errMsg,
     isLoading,
-    isSuccessfull,
     handleChange,
     handleSubmit,
   };

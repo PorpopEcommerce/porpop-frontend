@@ -1,102 +1,144 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { User } from '@/app/types/user';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import { UserData } from "@/app/types/user";
+import Cookies from "js-cookie"; // Import js-cookie
 
 interface UserState {
-  users: User[];
-  registrationStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
-  loginStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  users: UserData[];
+  fetchStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
-  activeUser: User | null;
+  activeUser: any | null;
 }
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const initialState: UserState = {
   users: [],
-  registrationStatus: 'idle',
-  loginStatus: 'idle',
+  fetchStatus: "idle",
   error: null,
   activeUser: null,
 };
 
-// Register user thunk
-export const registerUserThunk = createAsyncThunk(
-  'users/register',
-  async (userData: Partial<User>, { rejectWithValue }) => {
+export const fetchUserThunk = createAsyncThunk(
+  "user/fetchDetails",
+  async () => {
     try {
-      const response = await axios.post(
-        'https://backend-porpop.onrender.com/api/v1/user/register',
-        userData
-      );
-      return response.data; // Assuming the response contains the registered user
+      const token = Cookies.get("access_token"); // Get token from Cookies
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      const response = await axios.get(`${BASE_URL}/v1/auth`, { headers });
+
+      console.log("API Response:", response.data.body);
+      return JSON.parse(JSON.stringify(response.data.body));
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+      console.error("Fetch User Error:", error.response?.data || error.message);
     }
   }
 );
 
-// Login user thunk
-export const loginUserThunk = createAsyncThunk(
-  'users/login',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+export const updateUserThunk = createAsyncThunk(
+  "user/updateUserDetails",
+  async (updatedUser: UserData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        'https://backend-porpop.onrender.com/api/v1/user/login',
-        credentials
-      );
-      return response.data; // Assuming the response contains the logged-in user
+      const token = Cookies.get("access_token");
+
+      const response = await axios.put(`${BASE_URL}/v1/auth`, updatedUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      return response.data.body; // Return updated user data
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+      return rejectWithValue(error.response?.data || "Failed to update user.");
     }
   }
 );
+
+export const deleteUserThunk = createAsyncThunk("user/deleteUser", async (_, {rejectWithValue}) => {
+  try {
+    const token = Cookies.get("access_token");
+
+    const response = await axios.delete(`${BASE_URL}/v1/auth`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    Cookies.remove("access_token"); // Clear auth token after deletion
+
+    return response.data.body; // Return updated user data
+  } catch (error: any) {
+    console.error(error.response?.data || "Failed to update user.");
+    return rejectWithValue(error.response?.data || "Failed to update user.");
+
+  }
+});
 
 const userSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState,
   reducers: {
-    addUser: (state, action: PayloadAction<User>) => {
-      state.users.push(action.payload);
-    },
-    setRegistrationStatus: (state, action: PayloadAction<UserState['registrationStatus']>) => {
-      state.registrationStatus = action.payload;
-    },
-    setLoginStatus: (state, action: PayloadAction<UserState['loginStatus']>) => {
-      state.loginStatus = action.payload;
-    },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
   },
   extraReducers: (builder) => {
-    // Registration
-    builder.addCase(registerUserThunk.pending, (state) => {
-      state.registrationStatus = 'loading';
+    // Fetch user details
+    builder.addCase(fetchUserThunk.pending, (state) => {
+      state.fetchStatus = "loading";
       state.error = null;
     });
-    builder.addCase(registerUserThunk.fulfilled, (state, action: PayloadAction<User>) => {
-      state.registrationStatus = 'succeeded';
-      state.users.push(action.payload);
-    });
-    builder.addCase(registerUserThunk.rejected, (state, action) => {
-      state.registrationStatus = 'failed';
+    builder.addCase(
+      fetchUserThunk.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.fetchStatus = "succeeded";
+        state.activeUser = action.payload;
+      }
+    );
+    builder.addCase(fetchUserThunk.rejected, (state, action) => {
+      state.fetchStatus = "failed";
       state.error = action.payload as string;
     });
 
-    // Login
-    builder.addCase(loginUserThunk.pending, (state) => {
-      state.loginStatus = 'loading';
-      state.error = null;
-    });
-    builder.addCase(loginUserThunk.fulfilled, (state, action: PayloadAction<User>) => {
-      state.loginStatus = 'succeeded';
-      state.activeUser = action.payload;
-    });
-    builder.addCase(loginUserThunk.rejected, (state, action) => {
-      state.loginStatus = 'failed';
-      state.error = action.payload as string;
-    });
+    // Handle update user
+    builder
+      .addCase(updateUserThunk.pending, (state) => {
+        state.fetchStatus = "loading";
+      })
+      .addCase(
+        updateUserThunk.fulfilled,
+        (state, action: PayloadAction<UserData>) => {
+          state.fetchStatus = "succeeded";
+          state.activeUser = action.payload; // Update user in the Redux state
+        }
+      )
+      .addCase(updateUserThunk.rejected, (state, action) => {
+        state.fetchStatus = "failed";
+        state.error = action.payload as string;
+      });
+
+    // Handle delete user
+    builder
+      .addCase(deleteUserThunk.pending, (state) => {
+        state.fetchStatus = "loading";
+      })
+      .addCase(deleteUserThunk.fulfilled, (state) => {
+        state.fetchStatus = "succeeded";
+        state.activeUser = null; // Clear active user after deletion
+      })
+      .addCase(deleteUserThunk.rejected, (state, action) => {
+        state.fetchStatus = "failed";
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const { addUser, setRegistrationStatus, setLoginStatus, setError } = userSlice.actions;
+export const { setError } = userSlice.actions;
 export default userSlice.reducer;

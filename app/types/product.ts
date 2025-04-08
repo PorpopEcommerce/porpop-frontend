@@ -17,18 +17,7 @@ export interface ShippingInfo {
   Width: number;
 }
 
-export interface Tag {
-  Name: string;
-  Slug: string;
-  TagID: string;
-}
 
-interface Images {
-  ImageID: string;
-  Position: number;
-  ProductID: string;
-  URL: string;
-}
 
 export type Product = {
   AllowBackOrder: boolean;
@@ -36,7 +25,7 @@ export type Product = {
   AllowReview: boolean;
   Attributes: ProductAttribute[];
   BackOrderDeliveryTime: number;
-  Categories: string[];
+  Categories: string;
   CreatedAt: string;
   DeliveryTime: number;
   Description: string;
@@ -44,7 +33,7 @@ export type Product = {
   DiscountScheduledFrom: string;
   DiscountScheduledTo: string;
   DiscountedPrice: number;
-  Images: Images[];
+  images: string[];
   IsDiscountEnabled: boolean;
   IsDownloadable: boolean;
   IsFeatured: boolean;
@@ -55,23 +44,21 @@ export type Product = {
   LowStockThreshold: number;
   MinQuantityForDiscount: number;
   MinQuantityForWholesales: number;
-  Name: string;
-  ProductID: string;
+  name: string;
+  id: string;
   ProductNotes: string;
   ProductStatus: string;
   Published: boolean;
   RegionalPricing: null;
-  RegularPrice: number;
+  Price: number;
   SKU: string;
   SaleEndDate: string | null;
   SalePrice: number;
   SaleStartDate: string | null;
   ShippingInfo: ShippingInfo;
-  ShortDescription: string;
   Stock: number;
   StockType: string;
-  Tags: Tag[];
-  Type: string;
+  ProductType: string;
   UpdatedAt: string;
   VendorID: string;
   Visibility: boolean;

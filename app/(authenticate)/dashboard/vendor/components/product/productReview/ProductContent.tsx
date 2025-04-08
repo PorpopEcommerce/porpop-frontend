@@ -1,30 +1,24 @@
 "use client";
-import { useEffect } from "react";
+
 import Link from "next/link";
 import { formatDate, formatPrice } from "@/app/utils/formatter";
 import { truncateText } from "@/app/utils/truncateText";
 import { useRouter } from "next/navigation";
-import { AppDispatch, RootState } from "@/app/redux/store";
-import {
-  deleteProductByVendor,
-  fetchProductsByVendorId,
-} from "@/app/redux/features/products/productSlice";
-import { Product } from "@/app/types/product";
+import { AppDispatch } from "@/app/redux/store";
+import { deleteProductByVendor, fetchProductsByVendorId } from "@/app/redux/features/products/productSlice";
 import SubHeading from "@/app/components/product/SubHeading";
-import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "@/app/context/AuthContext";
+import { useDispatch } from "react-redux";
 
 interface ProductContentProps {
-  item: Product;
+  item: any;
   handleEditClick: (productId: string) => void;
-  removeProductFromUI: (productId: string) => void;
-  // handleDeleteClick: (ProductID: string) => void;
+  vendorId: string;
 }
 
 const ProductContent: React.FC<ProductContentProps> = ({
   item,
   handleEditClick,
-  removeProductFromUI,
+  vendorId
 }) => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -38,7 +32,7 @@ const ProductContent: React.FC<ProductContentProps> = ({
         // Check if the delete operation was successful
         if (deleteProductByVendor.fulfilled.match(resultAction)) {
           // Call the removeProductFromUI function to update the UI
-          removeProductFromUI(productId);
+          dispatch(fetchProductsByVendorId(vendorId));
         } else {
           // Handle the rejected case
           alert(
@@ -55,11 +49,11 @@ const ProductContent: React.FC<ProductContentProps> = ({
   return (
     <div className="grid grid-cols-10 text-sm md:text-sm gap-4 border-t-[1.5px] border-slate-200 py-4">
       <div className="justify-self-center">
-        <Link href={`/product/${item.ProductID}`}>
+        <Link href={`/product/${item.id}`}>
           <div className="relative w-[70px] aspect-square">
             <img
-              src={item.Images?.[0]?.URL || "/placeholder.jpg"}
-              alt={item.Name || "No Image"}
+              src={item.Images?.[0] || "/placeholder.jpg"}
+              alt={item.name || "No Image"}
               className="object-contain"
             />{" "}
           </div>
@@ -67,14 +61,14 @@ const ProductContent: React.FC<ProductContentProps> = ({
       </div>
       <div className="col-span-2 justify-self-start flex gap-2 md:gap-4">
         <div className="flex flex-col justify-between">
-          <Link href={`/product/${item.ProductID}`}>
-            <SubHeading title={truncateText(item.Name)} />
+          <Link href={`/product/${item.id}`}>
+            <SubHeading title={truncateText(item.name)} />
           </Link>
           <div className="flex flex-wrap gap-1">
             <button
               className="text-slate-400 text-[10px]"
               onClick={() => {
-                handleEditClick(item.ProductID);
+                handleEditClick(item.id);
               }}
             >
               Edit
@@ -82,27 +76,27 @@ const ProductContent: React.FC<ProductContentProps> = ({
             <button
               className="text-slate-400 text-[10px]"
               onClick={() => {
-                handleDeleteClick(item.ProductID);
+                handleDeleteClick(item.id);
               }}
             >
               Delete Permanently
             </button>
             <button
               className="text-slate-400 text-[10px]"
-              onClick={() => router.push(`/product/${item.ProductID}`)}
+              onClick={() => router.push(`/product/${item.id}`)}
             >
               View
             </button>
           </div>
         </div>
       </div>
-      <div className="">{item.ProductStatus}</div>
-      <div className="">{item.StockType}</div>
-      <div className="">{formatPrice(item.RegularPrice)}</div>
-      <div className="">{item.Type}</div>
+      <div className="">{item.product_status}</div>
+      <div className="">{item.stock_type}</div>
+      <div className="">{formatPrice(item.price)}</div>
+      <div className="">{item.product_type}</div>
       <div className="">View</div>
       <div className="">
-        {formatDate(item.UpdatedAt)}
+        {formatDate(item.updated_at)}
         <p>Published</p>
       </div>
     </div>

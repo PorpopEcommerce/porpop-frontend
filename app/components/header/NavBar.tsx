@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "/public/images/logo.png";
@@ -10,6 +11,7 @@ import SearchBar from "@/app/components/header/nav/SearchBar";
 import Cart from "@/app/components/header/nav/Cart";
 import NavAccountComponent from "@/app/components/header/nav/NavAccountComponent";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface NavBarProps {
   toggleMenu: () => void;
@@ -23,7 +25,9 @@ const NavBar: React.FC<NavBarProps> = ({
   toggleSignIn,
 }) => {
   const currentPath = usePathname();
-  const { user } = useAuth();
+  const { authToken } = useAuth();
+
+  
 
   const navigationLinks = [
     { label: "BLOG", href: "/blog" },
@@ -68,24 +72,21 @@ const NavBar: React.FC<NavBarProps> = ({
           <div className="flex items-center gap-4 w-fit">
             <Cart toggleCart={toggleCart} />
 
-            {user ? (
+            {/* Avoid hydration mismatch by only rendering after client has loaded */}
+            {authToken ? (
               <NavAccountComponent />
             ) : (
               <div className="w-fit">
-                <div>
-                  <button
-                    className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
-                    onClick={toggleSignIn}
-                  >
-                    Sign in
-                  </button>
-                </div>
+                <button
+                  className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
+                  onClick={toggleSignIn}
+                >
+                  Sign in
+                </button>
               </div>
             )}
           </div>
         </div>
-
-        {/* Page and Social Links Navigation routes */}
       </div>
 
       {/* small size view */}

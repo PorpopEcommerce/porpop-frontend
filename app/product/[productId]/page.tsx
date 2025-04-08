@@ -9,7 +9,7 @@ import { fetchAllProducts } from "@/app/redux/features/products/productSlice";
 import { useRouter } from "next/router";
 import Spinner from "@/app/components/Spinner";
 
-// import { products } from "@/app/utils/Products";
+import { products } from "@/app/utils/Products";
 
 interface ProductPageProps {
   params: { productId: string };
