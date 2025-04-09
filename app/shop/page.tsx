@@ -23,17 +23,11 @@ const ProductList = () => {
   }, [dispatch]);
 
   const productBelowPrice = allProducts.filter(
-    (product) => product.Price <= priceAmount
+    (product) => product.price <= priceAmount
   );
 
-  const filteredProducts = selectedCategory
-    ? allProducts.filter(
-        (product: any) => product.category === selectedCategory
-      )
-    : allProducts;
-
   // Get the first 100 products if category has more than 100
-  const displayedProducts = filteredProducts.slice(0, 100);
+  const displayedProducts = allProducts.slice(0, 100);
 
   // Get only the first `visibleCount` products
   const productsToShow = displayedProducts.slice(0, visibleCount);
@@ -72,37 +66,8 @@ const ProductList = () => {
         </div>
       )}
       <div className="flex gap-3 items-center- w-full overflow-auto scroll-smooth py-5 scrollbar-none hover:scrollbar-thin hover:scrollbar-thumb-[#a4cd3a] hover:scrollbar-track-gray-100">
-        <div
-          onClick={() => setSelectedCategory(null)}
-          className={`cursor-pointer whitespace-nowrap ${
-            selectedCategory === null ? "underline" : "hover:underline"
-          }`}
-        >
-          <p>All</p>
-        </div>
-
-        <div className="">
-          <ul className="flex gap-3">
-            {categories.map((category: any) => {
-              return (
-                <li
-                  key={category.id}
-                  className={`cursor-pointer whitespace-nowrap ${
-                    selectedCategory === category.name
-                      ? "underline"
-                      : "hover:underline"
-                  }`}
-                  onClick={() =>
-                    setSelectedCategory(
-                      category.name === selectedCategory ? null : category.name
-                    )
-                  }
-                >
-                  {category.name}
-                </li>
-              );
-            })}
-          </ul>
+        <div>
+          <p>All Products</p>
         </div>
       </div>
       <div className="py-6">

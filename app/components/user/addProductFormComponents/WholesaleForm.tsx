@@ -45,11 +45,11 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
             <input
               type="number"
               min="0" // Ensure the minimum value is 0
-              value={min_quantity_for_wholesales || ""}
+              value={min_quantity_for_wholesales}
               onChange={(e) =>
                 onChange(
                   "min_quantity_for_wholesales",
-                  parseInt(e.target.value, 10) || 0
+                  parseFloat(e.target.value) || 0
                 )
               }
               placeholder="minimum quantity"
@@ -63,7 +63,7 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
             <input
               type="number"
               min="0"
-              value={wholesales_price || 0}
+              value={wholesales_price}
               onChange={(e) =>
                 onChange(
                   "wholesales_price",

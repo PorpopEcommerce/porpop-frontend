@@ -46,9 +46,6 @@ const ProductList: React.FC<ProductListProps> = ({
   }, [vendor?.id, dispatch]);
 
 
-  console.log("Product status:", productStatus);
-  console.log("Vendor Products:", vendorProducts);
-
   return (
     <div className="flex-1">
       <ProductHeader

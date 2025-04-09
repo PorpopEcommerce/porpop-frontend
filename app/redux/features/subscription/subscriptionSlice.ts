@@ -3,7 +3,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
-const token = Cookies.get('access_token');
 
 // 1. Fetch all billing plans
 export const fetchPlans = createAsyncThunk('subscription/fetchPlans', async () => {
@@ -14,20 +13,31 @@ export const fetchPlans = createAsyncThunk('subscription/fetchPlans', async () =
 // 2. Fetch subscriptions for a user
 export const fetchUserSubscriptions = createAsyncThunk(
   'subscription/fetchUserSubscriptions',
-  async (userId: string) => {
-    const response = await axios.get(`${BASE_URL}/v1/billing/subscriptions?user_id=${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data.body; // Assuming this is an object with 'has_subscription' and other data
+  async (userId: string, { rejectWithValue }) => {
+    if (!userId) {
+      return rejectWithValue('User ID is required');
+    }
+    
+    const token = Cookies.get('access_token');
+
+
+    const response = await axios.get(
+      `${BASE_URL}/v1/billing/subscriptions?user_id=${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.body;
   }
 );
+
 
 interface SubscriptionState {
   plans: any[];
   subscriptions: {
-    has_subscription: boolean;
+    has_subscription: boolean | null;
     // Other subscription-related properties can go here, e.g., subscription type, status, etc.
   };
   loading: boolean;
@@ -37,7 +47,7 @@ interface SubscriptionState {
 const initialState: SubscriptionState = {
   plans: [],
   subscriptions: {
-    has_subscription: false, // Default to false if not subscribed
+    has_subscription: null, // Default to false if not subscribed
   },
   loading: false,
   error: null,
@@ -77,7 +87,7 @@ const subscriptionSlice = createSlice({
     });
     builder.addCase(fetchUserSubscriptions.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message || 'Failed to fetch subscriptions';
+      state.error = action.payload as string || 'Failed to fetch subscriptions';
     });
   },
 });

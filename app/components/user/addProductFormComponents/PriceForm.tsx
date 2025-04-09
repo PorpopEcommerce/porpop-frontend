@@ -34,7 +34,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
               placeholder="0.00"
               value={price}
               onChange={(e) =>
-                onChange("price", (e.target.value) || 0)
+                onChange("price", parseFloat(e.target.value) || 0)
               }
               className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
             />
@@ -55,7 +55,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
               placeholder="0.00"
               value={discounted_price}
               onChange={(e) =>
-                onChange("discounted_price", (e.target.value) || 0)
+                onChange("discounted_price", parseFloat(e.target.value) || 0)
               }
               className="block w-full p-2 border bg-[#111827] border-gray-300 rounded-r-md focus:outline-none"
             />

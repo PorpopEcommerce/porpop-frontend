@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Product } from "../checkout/page";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 type CheckoutForm = {
   country: string;
@@ -20,6 +23,8 @@ type CheckoutError = {
 };
 
 const useCheckout = () => {
+  const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+
   const [form, setForm] = useState<CheckoutForm>({
     country: "Nigeria",
     state: "",
@@ -37,6 +42,8 @@ const useCheckout = () => {
 
   const [errors, setErrors] = useState<CheckoutError>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [isOrderLoading, setIsOrderLoading] = useState(true); // new
 
   const validate = (): boolean => {
     const newErrors: CheckoutError = {};
@@ -65,83 +72,145 @@ const useCheckout = () => {
     }
   };
 
-  const transformToRequestBody = (
-    form: CheckoutForm,
-    products: Product[],
-    subtotal: number
-  ) => {
-    return {
-      order: {
-        buyer_id: user.user_id,
-        total_amount: Number(subtotal),
-        shipping_address: form.streetAddress,
-        first_name: form.firstName,
-        last_name: form.lastName,
-        country: form.country,
-        address: form.streetAddress,
-        postal_code: form.postalCode,
-        email: form.email,
-        phone: form.phoneNumber, // Add phone field to match the backend
-      },
-      items: products.map((product) => ({
+  const createOrder = async (
+    token: string,
+    orderData: any
+  ): Promise<string | null> => {
+    try {
+      const response = await axios.post(`${BASE_URL}/v1/orders`, orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const id = response.data?.body?.order_id;
+      if (id) {
+        return id;
+      } else {
+        toast.error("Order ID not found in order details.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Failed to create order:", error);
+      toast.error("Failed to create order.");
+      return null;
+    }
+  };
+  
+
+  const handleSubmit = async (products: Product[], subtotal: number) => {
+    const token = Cookies.get("access_token");
+    if (!token) {
+      toast.error("No User found. Please login.");
+      return;
+    }
+  
+    if (!validate()) return;
+  
+    setIsSubmitting(true);
+  
+    const orderData = {
+      buyer_id: user.id,
+      products: products.map((product) => ({
         product_id: product.id,
-        quantity: Number(product.quantity), // Ensure quantity is an integer
+        quantity: Number(product.quantity),
         price: Number(product.price),
       })),
+      total_amount: subtotal,
+      shipping_address: form.streetAddress,
+      payment_method: "paystack",
     };
-  };
-
   
+    const id = await createOrder(token, orderData);
   
-  const handleSubmit = async (products: Product[], subtotal: number) => {
-    if (!validate()) return;
-
-    setIsSubmitting(true);
+    if (!id) {
+      setIsSubmitting(false);
+      return;
+    }
+  
+    const paymentRequest = {
+      user_id: user.id,
+      amount: subtotal,
+      gateway: "paystack",
+      email: form.email,
+      order_id: id,
+    };
+  
     try {
-      // Example of a POST request
-      const requestBody = transformToRequestBody(form, products, subtotal);
-
-      console.log(requestBody)
-
-      const response = await fetch(
-        "https://backend-porpop.onrender.com/api/v1/order/create?gatewayType=paystack",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to submit data");
-      }
-
-      const data: { payment: any } = await response.json();
-      console.log("Checkout successful:", data);
-
-      if (data.payment.payment_url) {
-        // Redirect to the payment gateway
+      const response = await fetch(`${BASE_URL}/v1/payments/initiate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(paymentRequest),
+      });
+  
+      if (!response.ok) throw new Error("Payment initialization failed");
+  
+      const data = await response.json();
+  
+      if (data.payment?.payment_url) {
         router.push(data.payment.payment_url);
       } else {
-        throw new Error("Payment URL not received from the backend");
+        toast.error("Payment URL not found.");
       }
-
-      // Handle success (e.g., redirect to confirmation page)
     } catch (error) {
-      console.error("Error during checkout:", error);
-      alert("An error occurred during checkout.");
+      console.error("Checkout error:", error);
+      toast.error("Checkout failed.");
     } finally {
       setIsSubmitting(false);
     }
+
+
   };
+
+  const verifyAndCreateShipping = async (reference: string, gateway: string) => {
+    const token = Cookies.get("access_token");
+  
+    if (!reference || !gateway || !token) return;
+  
+    try {
+      // Step 1: Verify payment
+      const verifyRes = await axios.get(`${BASE_URL}/v1/payments/verify`, {
+        params: { reference, gateway },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const payment = verifyRes.data?.payment;
+  
+      if (payment?.status === "success") {
+        const orderId = payment?.order_id;
+  
+        // Step 2: Create shipping
+        const shippingRes = await axios.post(`${BASE_URL}/v1/shipping/${orderId}`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+  
+        toast.success("Shipping created successfully.");
+        return { success: true, orderId };
+      } else {
+        toast.error("Payment failed or not verified.");
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error verifying payment or creating shipping:", error);
+      toast.error("Something went wrong post-payment.");
+      return { success: false };
+    }
+  };
+  
 
   return {
     form,
     errors,
     isSubmitting,
     handleChange,
+    verifyAndCreateShipping,
     handleSubmit,
   };
 };
+
+
 
 export default useCheckout;

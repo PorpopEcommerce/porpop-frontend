@@ -45,11 +45,11 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
             <input
               type="number"
               min="0"
-              value={min_quantity_for_discount || ""}
+              value={min_quantity_for_discount}
               onChange={(e) =>
                 onChange(
                   "min_quantity_for_discount",
-                  parseInt(e.target.value, 10) || 0
+                  parseFloat(e.target.value) || 0
                 )
               }
               placeholder="Minimum Quantity"
@@ -66,7 +66,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({
               type="number"
               min="0"
               max="100"
-              value={discount_percentage || ""}
+              value={discount_percentage}
               onChange={(e) =>
                 onChange(
                   "discount_percentage",

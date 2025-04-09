@@ -10,7 +10,8 @@ const nextConfig = {
             'm.media-amazon.com',
             'lh3.googleusercontent.com',
             'porpop.com',
-            'ae-pic-a1.aliexpress-media.com'
+            'ae-pic-a1.aliexpress-media.com',
+            'res.cloudinary.com'
         ],
     },
     async rewrites() {

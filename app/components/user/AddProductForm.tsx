@@ -3,7 +3,7 @@
 import DescriptionForm from "./addProductFormComponents/DescriptionForm";
 import InventoryForm from "./addProductFormComponents/InventoryForm";
 import ProductTypeForm from "./addProductFormComponents/ProductTypeForm";
-// import ShippingForm from "./addProductFormComponents/ShippingForm";
+import ShippingForm from "./addProductFormComponents/ShippingForm";
 // import Category from "./addProductFormComponents/Category";
 import PriceForm from "./addProductFormComponents/PriceForm";
 import DiscountForm from "./addProductFormComponents/DiscountForm";
@@ -71,7 +71,7 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
 
         <div className="bg-[#1f2937] p-5 rounded-xl mb-4">
           {/* Inventory Management */}
-          {/* <InventoryForm
+          <InventoryForm
             stockType={formData.stock_type}
             allowType={formData.is_only_one}
             isStockManagementEnabled={formData.is_stock_management_enabled}
@@ -86,11 +86,11 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
             onLowStockThresholdChange={(value) =>
               handleChange("low_stock_threshold", value)
             }
-          /> */}
+          />
 
           {/* Other Fields */}
           {/* <GeolocationForm /> */}
-          {/* <ShippingForm
+          <ShippingForm
             weight={formData.weight}
             length={formData.length}
             width={formData.width}
@@ -99,21 +99,21 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
             taxStatus={formData.tax_status}
             taxClass={formData.tax_class}
             onChange={handleChange}
-          /> */}
+          />
         </div>
 
         <div className="bg-[#1f2937] p-5 rounded-xl mb-4">
-          {/* <DiscountForm
+          <DiscountForm
             min_quantity_for_discount={formData.min_quantity_for_discount}
-            // discount_percentage={formData.discount_percentage}
+            discount_percentage={formData.discount_percentage}
             onChange={handleChange}
-          /> */}
+          />
 
-          {/* <WholesaleForm
+          <WholesaleForm
             min_quantity_for_wholesales={formData.min_quantity_for_wholesales}
             wholesales_price={formData.wholesales_price}
             onChange={handleChange}
-          /> */}
+          />
 
           {/* <MinMaxForm
             max_order={formData.max_order}
@@ -123,14 +123,14 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
         </div>
 
         <div className="bg-[#1f2937] p-5 rounded-xl mb-4">
-          {/* <ProductOption
+          <ProductOption
             productStatusType={formData.product_status}
             visibilityType={formData.visibility}
             product_notes={formData.product_notes}
             reviewType={formData.allow_review}
             onReviewTypeChange={(value) => handleChange("allow_review", value)}
             onChange={handleChange}
-          /> */}
+          />
 
           {/* <CatalogForm
             productPriceToggle={formData.hide_price}

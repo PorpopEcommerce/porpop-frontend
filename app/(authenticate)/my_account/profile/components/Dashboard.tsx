@@ -20,7 +20,7 @@ const Dashboard = () => {
   const { activeUser } = useSelector((state: RootState) => state.user);
   const user = activeUser?.user;
   const vendor = activeUser?.vendor;
-  const {loading, subscriptions } = useSelector(
+  const { subscriptions } = useSelector(
     (state: RootState) => state.subscription
   );
 
@@ -50,8 +50,8 @@ const Dashboard = () => {
     }
   };
 
-  if (loading || !user?.id || subscriptions === null) {
-    return <Spinner />;
+  if (!user?.id) {
+    return;
   }
 
   return (

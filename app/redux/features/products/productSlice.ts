@@ -23,7 +23,6 @@ const initialState: ProductState = {
 };
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
-const token = Cookies.get('access_token')
 
 // Async thunk to fetch all products
 export const fetchAllProducts = createAsyncThunk<any[], void>(
@@ -46,6 +45,9 @@ export const fetchAllProducts = createAsyncThunk<any[], void>(
 export const fetchProductsByVendorId = createAsyncThunk<any[], string>(
   "products/fetchByVendorId",
   async (vendorId, { rejectWithValue }) => {
+   
+    const token = Cookies.get('access_token')
+
     try {
       const response = await axios.get(
         `${BASE_URL}/v1/products/vendor/${vendorId}`,
@@ -70,6 +72,9 @@ export const deleteProductByVendor = createAsyncThunk<
   string, // This is the input (product ID)
   { rejectValue: string }
 >("products/deleteByVendor", async (productId, { rejectWithValue }) => {
+  
+  const token = Cookies.get('access_token')
+
   try {
     const response = await axios.delete(
       `${BASE_URL}/v1/products/${productId}`,
@@ -96,6 +101,9 @@ export const editProductByVendor = createAsyncThunk<
   string, // This is the input (product ID)
   { rejectValue: string }
 >("products/editByVendor", async (productId, { rejectWithValue }) => {
+  
+  const token = Cookies.get('access_token')
+
   try {
     const response = await axios.patch(
       `${BASE_URL}/v1/products/${productId}`,
@@ -134,7 +142,7 @@ const productSlice = createSlice({
     ) => {
       const { min } = action.payload;
       state.filteredProducts = state.allProducts.filter(
-        (product) => product.Price <= min 
+        (product) => product.Price <= min
       );
       state.priceRange = { min }; // Update the price range
     },

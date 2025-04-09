@@ -1,15 +1,11 @@
 "use client";
 
 import ProductDetails from "@/app/components/product/ProductDetails";
-import ListRating from "./ListRating";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { fetchAllProducts } from "@/app/redux/features/products/productSlice";
-import { useRouter } from "next/router";
 import Spinner from "@/app/components/Spinner";
-
-import { products } from "@/app/utils/Products";
 
 interface ProductPageProps {
   params: { productId: string };
@@ -39,7 +35,7 @@ const Product: React.FC<ProductPageProps> = ({ params }) => {
 
   const product = useSelector((state: RootState) =>
     state.products.allProducts.find(
-      (product) => product.ProductID === String(productId)
+      (product) => product.id === String(productId)
     )
   );
 
@@ -52,9 +48,6 @@ const Product: React.FC<ProductPageProps> = ({ params }) => {
   return (
     <div className="p-5 mx-auto">
       <ProductDetails product={product} />
-      <div className="flex flex-col mt-20 gap-4">
-        {/* <ListRating product={product} /> */}
-      </div>
     </div>
   );
 };

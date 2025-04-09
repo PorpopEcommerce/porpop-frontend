@@ -210,7 +210,7 @@ const Page = () => {
                 </label>
                 <select
                   value={form.state}
-                  onChange={(e) => handleChange("state", e.target.value)}
+                  onChange={(e) => handleStateChange(e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select a state</option>
@@ -225,15 +225,20 @@ const Page = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   City
                 </label>
-                <input
-                  type="text"
+                <select
                   value={form.city}
                   onChange={(e) => handleChange("city", e.target.value)}
+                  disabled={!state || cities.length === 0}
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.lastName && (
-                  <p className="text-red-500">{errors.city}</p>
-                )}
+                >
+                  <option value="">Select a city</option>
+                  {cities.map((cityOption) => (
+                    <option key={cityOption} value={cityOption}>
+                      {cityOption}
+                    </option>
+                  ))}
+                </select>
+                {errors.city && <p className="text-red-500">{errors.city}</p>}
               </div>
             </div>
             <div>
@@ -266,7 +271,10 @@ const Page = () => {
             <p>{formatPrice(subtotal)}</p>
           </div>
           <div className="mt-6">
-            <Button label="Proceed to Payment" onClick={() => handleSubmit(products, subtotal)} />
+            <Button
+              label="Proceed to Payment"
+              onClick={() => handleSubmit(products, subtotal)}
+            />
           </div>
         </div>
       </div>

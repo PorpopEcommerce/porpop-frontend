@@ -52,8 +52,8 @@ const ProductContent: React.FC<ProductContentProps> = ({
         <Link href={`/product/${item.id}`}>
           <div className="relative w-[70px] aspect-square">
             <img
-              src={item.Images?.[0] || "/placeholder.jpg"}
-              alt={item.name || "No Image"}
+              src={item.images?.[0] || "/placeholder.jpg"}
+              alt={truncateText(item.name) || "No Image"}
               className="object-contain"
             />{" "}
           </div>

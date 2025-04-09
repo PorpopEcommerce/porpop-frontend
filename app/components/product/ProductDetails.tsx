@@ -19,15 +19,12 @@ export type CartProductType = {
   title: string;
   description: string;
   category?: string;
-  // brand: string,
   selectedImg?: SelectedImageType;
   quantity: number;
   price: number;
 };
 
 export type SelectedImageType = {
-  url: string;
-  colorCode: string;
   image: string;
 };
 
@@ -42,21 +39,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [isProductInCart, setIsProductInCart] = useState(false);
 
   const [cartProduct, setCartProduct] = useState<CartProductType>({
-    id: product.ProductID,
-    title: product.Name,
-    description: product.Description,
-    selectedImg: { ...product.images[0] },
+    id: product.id,
+    title: product.name,
+    description: product.description,
+    selectedImg: { image: product.images[0] },
     quantity: 1,
-    price: product.Price,
+    price: product.price,
   });
 
   useEffect(() => {
     // Check if the product is already in the cart
     const productExists = cartProducts?.some(
-      (item) => item.id === product.ProductID
+      (item) => item.id === product.id
     );
     setIsProductInCart(productExists || false);
-  }, [cartProducts, product.ProductID]);
+  }, [cartProducts, product.id]);
 
   const handleBuyProduct = () => {
     const orderDetails = {
@@ -117,16 +114,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         handleSelect={handleSelect}
       />
       <div className="flex flex-col gap-1">
-        <h1 className="text-4xl font-bold">{product.Name}</h1>
+        <h1 className="text-4xl font-bold">{product.name}</h1>
         <div>
-          <h2>{formatPrice(product.Price)}</h2>
+          <h2>{formatPrice(product.price)}</h2>
         </div>
         <div
           className="text-justify"
-          dangerouslySetInnerHTML={{ __html: product.Description }}
+          dangerouslySetInnerHTML={{ __html: product.description }}
         />
 
-        <div className="text-xl font-normal">{product.StockType}</div>
+        <div className="text-xl font-normal">{product.stock_type}</div>
 
         <Horizontal />
 
@@ -150,11 +147,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           </>
         ) : (
           <>
-            {/* <SetColor
-              cartProduct={cartProduct}
-              images={product.images}
-              handleColorSelect={handleColorSelect}
-            /> */}
             <Horizontal />
             <div className="flex gap-2">
               <SetQuantity
