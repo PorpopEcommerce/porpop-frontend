@@ -102,7 +102,7 @@ const NavBar: React.FC<NavBarProps> = ({
                     className={classNames({
                       underline: link.href === currentPath,
                       "font-semibold": link.href !== currentPath,
-                      "text-sm hover:text-white": true,
+                      "text-[11px] hover:text-white": true,
                     })}
                     href={link.href}
                   >
@@ -118,7 +118,7 @@ const NavBar: React.FC<NavBarProps> = ({
             ) : (
               <div className="w-fit">
                 <button
-                  className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
+                  className="text-[12px] font-semibold py-1 px-2 bg-[#9bf618] rounded-lg"
                   onClick={toggleSignIn}
                 >
                   Sign in
