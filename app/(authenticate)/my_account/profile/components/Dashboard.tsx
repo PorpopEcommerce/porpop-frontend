@@ -11,7 +11,6 @@ import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
 import { fetchUserSubscriptions } from "@/app/redux/features/subscription/subscriptionSlice";
 import Spinner from "@/app/components/Spinner";
 
-
 const Dashboard = () => {
   const { logout } = useAuth();
   const router = useRouter();
@@ -24,23 +23,16 @@ const Dashboard = () => {
     (state: RootState) => state.subscription
   );
 
-  
+  dispatch(fetchUserThunk());
 
-  useEffect(() => {
-    if (!user?.id) {
-      dispatch(fetchUserThunk());
-    }
-  }, [dispatch, user?.id]);
-  
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserSubscriptions(user.id));
     }
   }, [dispatch, user?.id]);
-  
 
   const hasSubscription = subscriptions?.has_subscription;
-  console.log(hasSubscription)
+  console.log(hasSubscription);
 
   const handleButtonClick = () => {
     if (hasSubscription === true) {
@@ -76,11 +68,7 @@ const Dashboard = () => {
       <section>
         <div className="w-full max-w-[200px]">
           <Button
-            label={
-              vendor !== null
-                ? "Vendor Dashboard"
-                : "Become a Vendor"
-            }
+            label={vendor !== null ? "Vendor Dashboard" : (hasSubscription ? "Vendor Dashboard" : "Become a Vendor")}
             onClick={handleButtonClick}
           />
         </div>
