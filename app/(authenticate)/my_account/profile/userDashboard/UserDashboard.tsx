@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccountNavigation } from "@/app/hooks/useUserAccountNavigation";
-import Logo from "/public/images/logo.png";
 import { FaTimes } from "react-icons/fa";
 import { CiMenuBurger } from "react-icons/ci";
 import Image from "next/image";
@@ -20,10 +19,8 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (menuDisplay) {
-      // Disable scrolling when a modal is active
       document.body.style.overflow = "hidden";
     } else {
-      // Enable scrolling when no modal is active
       document.body.style.overflow = "auto";
     }
   }, [menuDisplay]);
@@ -39,7 +36,7 @@ const UserDashboard = () => {
         <div className="w-56">
           <div className="p-5">
             <Link className="text-5xl font-bold" href="/">
-              <Image src={Logo} alt="Porpop Logo " />
+              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
             </Link>
           </div>
           <div className="h-full">
@@ -63,7 +60,6 @@ const UserDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      {/* Toggle between the vendor form and the sidebar content. */}
       <div className="flex-1 lg:ml-56">
         <div className="flex">
           <div
@@ -80,7 +76,8 @@ const UserDashboard = () => {
           <div className="p-8 max-w-[100rem] mx-auto">{renderContent()}</div>
         </div>
       </div>
-      {/* toogleMenu on small view */}
+
+      {/* toggleMenu on small view */}
       {menuDisplay && (
         <>
           <div
@@ -93,7 +90,7 @@ const UserDashboard = () => {
             >
               <div className="flex justify-between items-center p-4">
                 <Link className="text-5xl font-bold" href="/">
-                  <Image src={Logo} alt="Porpop Logo " />
+                  <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
                 </Link>
                 <button
                   onClick={() => setMenuDisplay(!menuDisplay)}

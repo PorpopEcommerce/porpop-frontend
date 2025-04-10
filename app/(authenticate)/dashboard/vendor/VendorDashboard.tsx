@@ -2,12 +2,12 @@
 
 import { useAccountNavigation } from "@/app/hooks/useVendorAccountNavigation";
 import Header from "@/app/components/header/Header";
-import Logo from "/public/images/logo.png";
 import { CiMenuBurger } from "react-icons/ci";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+
 const VendorDashboard = () => {
   const {
     renderContent,
@@ -20,15 +20,11 @@ const VendorDashboard = () => {
 
   useEffect(() => {
     if (menuDisplay) {
-      // Disable scrolling when a modal is active
       document.body.style.overflow = "hidden";
     } else {
-      // Enable scrolling when no modal is active
       document.body.style.overflow = "auto";
     }
   }, [menuDisplay]);
-
-
 
   return (
     <div className="flex min-h-screen text-white">
@@ -36,7 +32,7 @@ const VendorDashboard = () => {
         <div className="w-56">
           <div className="p-5">
             <Link className="text-5xl font-bold" href="/">
-              <Image src={Logo} alt="Porpop Logo " />
+              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
             </Link>
           </div>
           <div className="h-full">
@@ -62,7 +58,6 @@ const VendorDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      {/* Toggle between the vendor form and the sidebar content. */}
       <div className="flex-1 lg:ml-56">
         <div className="flex">
           <div
@@ -82,7 +77,7 @@ const VendorDashboard = () => {
         </div>
       </div>
 
-      {/* toogleMenu on small view */}
+      {/* toggleMenu on small view */}
       {menuDisplay && (
         <>
           <div
@@ -95,7 +90,7 @@ const VendorDashboard = () => {
             >
               <div className="flex justify-between items-center p-4">
                 <Link className="text-5xl font-bold" href="/">
-                  <Image src={Logo} alt="Porpop Logo " />
+                  <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
                 </Link>
                 <button onClick={() => setMenuDisplay(!menuDisplay)}>
                   <FaTimes className="text-xl text-white" />
