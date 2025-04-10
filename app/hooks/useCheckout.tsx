@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Product } from "../checkout/page";
 import { useRouter } from "next/navigation";
@@ -42,8 +42,6 @@ const useCheckout = () => {
 
   const [errors, setErrors] = useState<CheckoutError>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
-  const [isOrderLoading, setIsOrderLoading] = useState(true); // new
 
   const validate = (): boolean => {
     const newErrors: CheckoutError = {};
@@ -168,41 +166,6 @@ const useCheckout = () => {
       setIsSubmitting(false);
     }
   };
-
-  const verifyAndCreateShipping = async (reference: string, gateway: string) => {
-    const token = Cookies.get("access_token");
-  
-    if (!reference || !gateway || !token) return;
-  
-    try {
-      // Verify payment
-      const verifyRes = await axios.get(`${BASE_URL}/v1/payments/verify`, {
-        params: { reference, gateway },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      const payment = verifyRes.data?.payment;
-  
-      if (payment?.status === "success") {
-        const orderId = payment?.order_id;
-  
-        // Create shipping
-        const shippingRes = await axios.post(`${BASE_URL}/v1/shipping/${orderId}`, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-  
-        toast.success("Shipping created successfully.");
-        return { success: true, orderId };
-      } else {
-        toast.error("Payment failed or not verified.");
-        return { success: false };
-      }
-    } catch (error) {
-      console.error("Error verifying payment or creating shipping:", error);
-      toast.error("Something went wrong post-payment.");
-      return { success: false };
-    }
-  };
   
 
   return {
@@ -210,7 +173,6 @@ const useCheckout = () => {
     errors,
     isSubmitting,
     handleChange,
-    verifyAndCreateShipping,
     handleSubmit,
   };
 };

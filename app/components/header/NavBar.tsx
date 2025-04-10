@@ -27,8 +27,6 @@ const NavBar: React.FC<NavBarProps> = ({
   const currentPath = usePathname();
   const { authToken, user } = useAuth();
 
-  
-
   const navigationLinks = [
     { label: "BLOG", href: "/blog" },
     { label: "TRACK ORDER", href: "/track_order" },
@@ -72,8 +70,7 @@ const NavBar: React.FC<NavBarProps> = ({
           <div className="flex items-center gap-4 w-fit">
             <Cart toggleCart={toggleCart} />
 
-            {/* Avoid hydration mismatch by only rendering after client has loaded */}
-            {authToken && user  ? (
+            {authToken && user ? (
               <NavAccountComponent />
             ) : (
               <div className="w-fit">
@@ -92,19 +89,43 @@ const NavBar: React.FC<NavBarProps> = ({
       {/* small size view */}
       <div className="lg:hidden w-full py-2">
         <div className="flex justify-between items-center mb-3">
-          <div
-            className="cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500"
-            onClick={toggleMenu}
-          >
-            <CiMenuBurger />
-            <span className="text-lg">Menu</span>
-          </div>
           <div>
-            <Link className="text-5xl font-bold" href="/">
-              <Image src={Logo} alt="Porpop Logo" />
+            <Link href="/">
+              <Image src={Logo} className="w-32" alt="Porpop Logo" />
             </Link>
           </div>
-          <Cart toggleCart={toggleCart} />
+          <div className="flex space-x-6">
+              <ul className="flex gap-2 p-0 items-center">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    className={classNames({
+                      underline: link.href === currentPath,
+                      "font-semibold": link.href !== currentPath,
+                      "text-sm hover:text-white": true,
+                    })}
+                    href={link.href}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          <div className="flex items-center gap-2">
+            <Cart toggleCart={toggleCart} />
+            {authToken && user ? (
+              <NavAccountComponent />
+            ) : (
+              <div className="w-fit">
+                <button
+                  className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
+                  onClick={toggleSignIn}
+                >
+                  Sign in
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <SearchBar />
       </div>
