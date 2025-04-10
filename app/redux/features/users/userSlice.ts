@@ -32,7 +32,6 @@ export const fetchUserThunk = createAsyncThunk(
 
       const response = await axios.get(`${BASE_URL}/v1/auth`, { headers });
 
-      console.log("API Response:", response.data.body);
       return JSON.parse(JSON.stringify(response.data.body));
     } catch (error: any) {
       console.error("Fetch User Error:", error.response?.data || error.message);

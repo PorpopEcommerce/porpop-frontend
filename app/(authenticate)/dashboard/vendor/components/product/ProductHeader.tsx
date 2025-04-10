@@ -1,10 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Button from "@/app/components/product/Button";
-import { Product } from "@/app/types/product";
-import { useAuth } from "@/app/context/AuthContext";
-import axios from "axios";
+import { useState } from "react";
+
 
 interface ProductHeaderProp {
   handleAddProductClick: () => void;
@@ -17,14 +14,6 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleViewProductClick,
   handleImportAliProduct,
 }) => {
-  const { vendor } = useAuth();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [vendorProducts, setVendorProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "succeeded" | "failed"
-  >("idle");
-  const [error, setError] = useState<string | null>(null);
   const [counts, setCounts] = useState({
     all: 0,
     online: 0,
@@ -32,44 +21,6 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
     inStock: 0,
   });
 
-  useEffect(() => {
-    if (!vendor?.vendor_id) {
-      return;
-    }
-
-    const fetchVendorProducts = async () => {
-      setStatus("loading");
-      setError(null); // Reset error before fetching
-
-      try {
-        const response = await axios.get(
-          `https://backend-porpop.onrender.com/api/v1/products/vendor?vendor_id=${vendor.vendor_id}`
-        );
-        const products = response.data.products || [];
-        console.log(products);
-        setStatus("succeeded");
-
-        // Calculate counts dynamically
-        setCounts({
-          all: products.length,
-          online: products.filter(
-            (product: any) => product?.ProductStatus === "Online"
-          ).length,
-          draft: products.filter(
-            (product: any) => product?.ProductStatus === "Draft"
-          ).length,
-          inStock: products.filter((product: any) => product.Stock > 0).length,
-        });
-      } catch (err: any) {
-        setError(
-          err.response?.data?.message || "Failed to fetch products by vendor."
-        );
-        setStatus("failed");
-      }
-    };
-
-    fetchVendorProducts();
-  }, [vendor?.vendor_id]);
 
   return (
     <>

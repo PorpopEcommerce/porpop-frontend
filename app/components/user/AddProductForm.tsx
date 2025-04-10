@@ -10,7 +10,6 @@ import DiscountForm from "./addProductFormComponents/DiscountForm";
 import TitleField from "./addProductFormComponents/TitleField";
 import { useAddProductForm } from "@/app/hooks/useAddProductForm";
 import WholesaleForm from "./addProductFormComponents/WholesaleForm";
-// import MinMaxForm from "./addProductFormComponents/MinMaxForm";
 import ProductOption from "./addProductFormComponents/ProductOption";
 // import CatalogForm from "./addProductFormComponents/CatalogForm";
 import ImageUploadField from "./addProductFormComponents/ImageUploadField";
@@ -115,11 +114,6 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
             onChange={handleChange}
           />
 
-          {/* <MinMaxForm
-            max_order={formData.max_order}
-            min_order={formData.min_order}
-            onChange={handleChange}
-          /> */}
         </div>
 
         <div className="bg-[#1f2937] p-5 rounded-xl mb-4">
