@@ -5,13 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "/public/images/logo.png";
 import { useAuth } from "@/app/context/AuthContext";
-import { CiMenuBurger } from "react-icons/ci";
 import classNames from "classnames";
 import SearchBar from "@/app/components/header/nav/SearchBar";
 import Cart from "@/app/components/header/nav/Cart";
 import NavAccountComponent from "@/app/components/header/nav/NavAccountComponent";
 import Image from "next/image";
-import Cookies from "js-cookie";
 
 interface NavBarProps {
   toggleMenu: () => void;
