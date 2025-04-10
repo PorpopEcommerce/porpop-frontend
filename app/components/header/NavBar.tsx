@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "/public/images/logo.png";
 import { useAuth } from "@/app/context/AuthContext";
-import { CiMenuBurger } from "react-icons/ci";
 import classNames from "classnames";
 import SearchBar from "@/app/components/header/nav/SearchBar";
 import Cart from "@/app/components/header/nav/Cart";
 import NavAccountComponent from "@/app/components/header/nav/NavAccountComponent";
 import Image from "next/image";
-import Cookies from "js-cookie";
 
 interface NavBarProps {
   toggleMenu: () => void;
@@ -24,7 +23,7 @@ const NavBar: React.FC<NavBarProps> = ({
   toggleSignIn,
 }) => {
   const currentPath = usePathname();
-  const { authToken } = useAuth();
+  const { authToken, user } = useAuth();
 
   const navigationLinks = [
     { label: "BLOG", href: "/blog" },
@@ -39,7 +38,7 @@ const NavBar: React.FC<NavBarProps> = ({
         <div className="py-1 w-full flex justify-between items-center text-[10px] font-light">
           <div>
             <Link className="text-5xl font-bold" href="/">
-              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
+              <Image src={Logo} alt="Porpop Logo " />
             </Link>
           </div>
 
@@ -69,8 +68,7 @@ const NavBar: React.FC<NavBarProps> = ({
           <div className="flex items-center gap-4 w-fit">
             <Cart toggleCart={toggleCart} />
 
-            {/* Avoid hydration mismatch by only rendering after client has loaded */}
-            {authToken ? (
+            {authToken && user ? (
               <NavAccountComponent />
             ) : (
               <div className="w-fit">
@@ -89,19 +87,43 @@ const NavBar: React.FC<NavBarProps> = ({
       {/* small size view */}
       <div className="lg:hidden w-full py-2">
         <div className="flex justify-between items-center mb-3">
-          <div
-            className="cursor-pointer flex items-center gap-1 text-xl font-normal text-zinc-900 hover:text-zinc-500"
-            onClick={toggleMenu}
-          >
-            <CiMenuBurger />
-            <span className="text-lg">Menu</span>
-          </div>
           <div>
-            <Link className="text-5xl font-bold" href="/">
-              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
+            <Link href="/">
+              <Image src={Logo} className="w-32" alt="Porpop Logo" />
             </Link>
           </div>
-          <Cart toggleCart={toggleCart} />
+          <div className="flex space-x-6">
+              <ul className="flex gap-2 p-0 items-center">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    className={classNames({
+                      underline: link.href === currentPath,
+                      "font-semibold": link.href !== currentPath,
+                      "text-[11px] hover:text-white": true,
+                    })}
+                    href={link.href}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          <div className="flex items-center gap-2">
+            <Cart toggleCart={toggleCart} />
+            {authToken && user ? (
+              <NavAccountComponent />
+            ) : (
+              <div className="w-fit">
+                <button
+                  className="text-[12px] font-semibold py-1 px-2 bg-[#9bf618] rounded-lg"
+                  onClick={toggleSignIn}
+                >
+                  Sign in
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <SearchBar />
       </div>
