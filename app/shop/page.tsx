@@ -55,7 +55,7 @@ const ProductList = () => {
         </div>
       </div>
       {productBelowPrice.length > 0 ? (
-        <div className="py-6 grid lg:grid-cols-5 gap-8">
+        <div className="py-6 grid grid-cols-2 sm:grid-col-3 lg:grid-cols-5 gap-8">
           {productBelowPrice.map((product: any) => {
             return <ProductCard key={product.id} data={product} />;
           })}
@@ -72,7 +72,7 @@ const ProductList = () => {
       </div>
       <div className="py-6">
         {productsToShow.length > 0 ? (
-          <div className="grid lg:grid-cols-5 gap-8">
+        <div className="py-6 grid grid-cols-2 sm:grid-col-3 lg:grid-cols-5 gap-8">
             {productsToShow.map((product: any) => (
               <ProductCard key={product.id} data={product} />
             ))}
