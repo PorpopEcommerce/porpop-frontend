@@ -82,8 +82,10 @@ const useCheckout = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      console.log(response.data)
   
-      const id = response.data?.body?.order_id;
+      const id = response.data?.body?.id;
       if (id) {
         return id;
       } else {
@@ -111,10 +113,11 @@ const useCheckout = () => {
   
     const orderData = {
       buyer_id: user.id,
-      products: products.map((product) => ({
+      vendor_id: "bb3c394e-98e8-43a2-aee1-317e39120dea",
+      items: products.map((product) => ({
         product_id: product.id,
         quantity: Number(product.quantity),
-        price: Number(product.price),
+        // price: Number(product.price),
       })),
       total_amount: subtotal,
       shipping_address: form.streetAddress,
@@ -130,7 +133,7 @@ const useCheckout = () => {
   
     const paymentRequest = {
       user_id: user.id,
-      amount: subtotal,
+      amount: Number(subtotal),
       gateway: "paystack",
       email: form.email,
       order_id: id,
@@ -149,9 +152,12 @@ const useCheckout = () => {
       if (!response.ok) throw new Error("Payment initialization failed");
   
       const data = await response.json();
+
+      console.log(data)
   
-      if (data.payment?.payment_url) {
-        router.push(data.payment.payment_url);
+      if (data.body?.payment_url
+      ) {
+        router.push(data.body?.payment_url);
       } else {
         toast.error("Payment URL not found.");
       }
@@ -161,8 +167,6 @@ const useCheckout = () => {
     } finally {
       setIsSubmitting(false);
     }
-
-
   };
 
   const verifyAndCreateShipping = async (reference: string, gateway: string) => {
@@ -171,7 +175,7 @@ const useCheckout = () => {
     if (!reference || !gateway || !token) return;
   
     try {
-      // Step 1: Verify payment
+      // Verify payment
       const verifyRes = await axios.get(`${BASE_URL}/v1/payments/verify`, {
         params: { reference, gateway },
         headers: { Authorization: `Bearer ${token}` },
@@ -182,7 +186,7 @@ const useCheckout = () => {
       if (payment?.status === "success") {
         const orderId = payment?.order_id;
   
-        // Step 2: Create shipping
+        // Create shipping
         const shippingRes = await axios.post(`${BASE_URL}/v1/shipping/${orderId}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });

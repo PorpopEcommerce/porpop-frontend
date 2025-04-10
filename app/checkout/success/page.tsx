@@ -17,7 +17,7 @@ const SuccessPage = () => {
 
   return (
     <div className="text-center mt-10">
-      🎉 Processing your order...
+      Processing your order...
     </div>
   );
 };

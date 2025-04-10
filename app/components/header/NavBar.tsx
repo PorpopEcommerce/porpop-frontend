@@ -25,7 +25,7 @@ const NavBar: React.FC<NavBarProps> = ({
   toggleSignIn,
 }) => {
   const currentPath = usePathname();
-  const { authToken } = useAuth();
+  const { authToken, user } = useAuth();
 
   
 
@@ -73,7 +73,7 @@ const NavBar: React.FC<NavBarProps> = ({
             <Cart toggleCart={toggleCart} />
 
             {/* Avoid hydration mismatch by only rendering after client has loaded */}
-            {authToken ? (
+            {authToken && user  ? (
               <NavAccountComponent />
             ) : (
               <div className="w-fit">

@@ -272,7 +272,7 @@ const Page = () => {
           </div>
           <div className="mt-6">
             <Button
-              label="Proceed to Payment"
+              label={isSubmitting ? "Sending" : "Proceed to Payment"}
               onClick={() => handleSubmit(products, subtotal)}
             />
           </div>
