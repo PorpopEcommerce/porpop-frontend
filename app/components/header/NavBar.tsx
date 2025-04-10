@@ -37,7 +37,7 @@ const NavBar: React.FC<NavBarProps> = ({
         <div className="py-1 w-full flex justify-between items-center text-[10px] font-light">
           <div>
             <Link className="text-5xl font-bold" href="/">
-              <Image src="/images/logo.png" alt="Porpop Logo " />
+              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
             </Link>
           </div>
 
@@ -88,7 +88,7 @@ const NavBar: React.FC<NavBarProps> = ({
         <div className="flex justify-between items-center mb-3">
           <div>
             <Link href="/">
-              <Image src="/images/logo.png" className="w-32" alt="Porpop Logo" />
+              <Image src="/images/logo.png" alt="Porpop Logo" width={120} height={60} />
             </Link>
           </div>
           <div className="flex space-x-6">

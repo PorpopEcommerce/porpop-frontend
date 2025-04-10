@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import NavBar from "@/app/components/header/NavBar";
@@ -12,14 +12,13 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Footer from "./LandingPage/Footer";
 import { usePathname } from "next/navigation";
-
+import ChatButton from "./components/ChatWidget/ChatButton"; 
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [cartDisplay, setCartDisplay] = useState(false);
   const [signInDisplay, setSignInDisplay] = useState(false);
 
-  
   const pathName = usePathname();
   const isHome = pathName === "/";
 
@@ -29,22 +28,21 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (signInDisplay || menuDisplay || cartDisplay) {
-      // Disable scrolling when a modal is active
       document.body.style.overflow = "hidden";
     } else {
-      // Enable scrolling when no modal is active
       document.body.style.overflow = "auto";
     }
   }, [signInDisplay, menuDisplay, cartDisplay]);
 
   useEffect(() => {
-    // Listen for the custom login trigger event
     const handleLoginTrigger = () => {
       setSignInDisplay(true);
     };
-
     window.addEventListener("triggerLogin", handleLoginTrigger);
 
+    return () => {
+      window.removeEventListener("triggerLogin", handleLoginTrigger);
+    };
   }, []);
 
   return (
@@ -57,7 +55,10 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
               pathName.includes("/my_account") ||
               pathName.includes("/forget_password") ||
               pathName.includes("/reset_password") ? (
-                children
+                <>
+                  {children}
+                  <ChatButton /> 
+                </>
               ) : (
                 <div className="relative">
                   <header
@@ -71,20 +72,23 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
                       toggleSignIn={toggleSignIn}
                     />
                   </header>
+
                   {menuDisplay && (
                     <MenuSideComponent
                       toggleMenu={toggleMenu}
                       toggleSignIn={toggleSignIn}
                     />
                   )}
-                  {cartDisplay && <CartSideComponent toggleCart={toggleCart} />}
-                  {signInDisplay && (
-                    <Login
-                      toggleSignIn={toggleSignIn}
-                    />
+                  {cartDisplay && (
+                    <CartSideComponent toggleCart={toggleCart} />
                   )}
+                  {signInDisplay && (
+                    <Login toggleSignIn={toggleSignIn} />
+                  )}
+
                   <ScrollToTop />
                   {children}
+                  <ChatButton /> 
                   <section className="bg-black">
                     <Footer />
                   </section>
