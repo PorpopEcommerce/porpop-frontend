@@ -1,7 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-// import Sidebar from './components/Sidebar';
+import { ToastContainer } from "react-toastify";
+import ReactQueryProvider from "./provider/ReactQueryProvider";
 import ClientLayout from "./ClientLayout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,8 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ClientLayout>{children}</ClientLayout>
+      <body className={inter.className} suppressHydrationWarning={true}>
+        <ReactQueryProvider>
+          <ClientLayout>{children}</ClientLayout>
+          <ToastContainer position="bottom-left" autoClose={3000} />
+        </ReactQueryProvider>
       </body>
     </html>
   );

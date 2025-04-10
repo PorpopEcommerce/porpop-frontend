@@ -1,0 +1,66 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // For route navigation
+import ProtectedRoute from "@/app/provider/ProtectedRoute";
+import VendorDashboard from "./vendor/VendorDashboard";
+import { useAuth } from "@/app/context/AuthContext";
+import Spinner from "@/app/components/Spinner";
+import axios from "axios";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+
+const VendorAccount = () => {
+  const router = useRouter();
+  const { user, authToken } = useAuth(); // Assuming vendor details come from AuthContext
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!user) return; // Wait until vendor is available
+
+    const checkSubscription = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/v1/billing/subscriptions?user_id=${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`, // Assuming authToken comes from AuthContext
+            },
+          }
+        );
+        const data = await response.data.body;
+
+        const subscription = data.has_subscription;
+
+        if (subscription === true) {
+          router.push("/dashboard");
+        } else {
+          router.push("/subscribe");
+        }
+      } catch (error) {
+        console.error("Error fetching subscription details:", error);
+        router.push("/");
+      } finally {
+        setLoading(false); // Ensure loading is turned off
+      }
+    };
+
+    checkSubscription();
+  }, [user, router]);
+
+  if (loading) {
+    return (
+      <div>
+        <Spinner /> {/* Show a loading spinner while fetching subscription */}
+      </div>
+    );
+  }
+
+  return (
+    <ProtectedRoute>
+      <VendorDashboard />
+    </ProtectedRoute>
+  );
+};
+
+export default VendorAccount;

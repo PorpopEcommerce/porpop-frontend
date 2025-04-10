@@ -2,9 +2,13 @@
 
 import { useRegisterForm } from "../../hooks/useRegisterForm";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-const RegisterForm: React.FC = () => {
+interface RegisterFormProp {
+  setVerifyComponent: (value: boolean) => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProp> = ({ setVerifyComponent }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const {
@@ -14,12 +18,20 @@ const RegisterForm: React.FC = () => {
     isFormValid,
     isSubmitting,
     submitSuccess,
+    verificationToken,
     handleInputChange,
     setAgreeToTerms,
     handleSubmit,
   } = useRegisterForm();
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
+
+  // When the form submission is successful, update the parent state
+  useEffect(() => {
+    if (submitSuccess === true && verificationToken === true) {
+      setVerifyComponent(true);
+    }
+  }, [submitSuccess, verificationToken, setVerifyComponent]);
 
   // Memoized password validation checks
   const passwordValidation = useMemo(() => {
@@ -35,22 +47,7 @@ const RegisterForm: React.FC = () => {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Register</h2>
-      {submitSuccess !== null && (
-        <div
-          className={`w-full p-5 mb-4 ${
-            submitSuccess ? "bg-green-600" : "bg-red-600"
-          }`}
-        >
-          <p className={`text-white`}>
-            {submitSuccess
-              ? "Registration successful!"
-              : "Registration failed."}
-          </p>
-        </div>
-      )}
-
-      <form className="space-y-4 mb-8" onSubmit={handleSubmit}>
+      <form className="space-y-4 mb-8">
         <div className="grid grid-cols-2 gap-10">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -82,22 +79,6 @@ const RegisterForm: React.FC = () => {
               <p className="text-red-500 text-sm">{formErrors.last_name}</p>
             )}
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Username
-          </label>
-          <input
-            type="text"
-            placeholder="Username"
-            value={formData.username}
-            onChange={(e) => handleInputChange("username", e.target.value)}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none "
-          />
-          {formErrors.username && (
-            <p className="text-red-500 text-sm">{formErrors.username}</p>
-          )}
         </div>
 
         <div>
@@ -215,7 +196,7 @@ const RegisterForm: React.FC = () => {
       </div>
 
       <button
-        type="submit"
+        type="button"
         onClick={handleSubmit}
         disabled={!isFormValid || isSubmitting}
         className={`w-full py-2 px-4 font-semibold rounded-md focus:outline-none ${

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'; // For route navigation
 import PaymentInitiate from './component/PaymentInitiate'
 import ProtectedRoute from '@/app/provider/ProtectedRoute'
 import Spinner from '@/app/components/Spinner';
+import { toast } from 'react-toastify';
 
 const PaymentInitiatePage = () => {
 
@@ -21,7 +22,8 @@ const PaymentInitiatePage = () => {
 
         if (!user) {
             // Redirect to login page if not logged in
-            router.push("/login_signin");
+            toast.error('please login to continue');
+            router.push("/");
         } else {
             setLoading(false); // Stop loading once authenticated
         }

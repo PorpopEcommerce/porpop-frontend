@@ -5,65 +5,79 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import Button from "@/app/components/product/Button";
 import Spinner from "@/app/components/Spinner";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const PaymentInitiate: React.FC = () => {
   const searchParams = useSearchParams();
   const planId = searchParams.get("planId");
   const amount = searchParams.get("amount");
   const planName = searchParams.get("planName");
-  const { user, vendor } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(planName);
-
   const initiatePayment = async () => {
-    if (!user || !planId || !amount) {
-      setError("Missing required information for payment.");
-      return;
-    }
+    const token = Cookies.get("access_token");
 
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(
-        "https://backend-porpop.onrender.com/api/v1/payment/initiate",
+      // Step 1: Check if user already has an active subscription
+      const response = await axios.get(
+        `${BASE_URL}/v1/billing/subscriptions?user_id=${user.id}`,
         {
-          method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            user_id: user.user_id,
-            vendor_id: vendor?.vendor_id,
-            amount: parseInt(amount, 10), // Convert to a number
-            gateway: "paystack",
-            plan_id: planId,
-            email: user.email,
-            name: user.first_name,
-          }),
         }
       );
 
-      if (!response.ok) {
+      const subscription = response.data?.body;
+
+      if (subscription?.has_subscription === true) {
+        toast.warning("You are currently on a subscription. Please visit the dashboard for more information.");
+        return router.push("/dashboard");
+      }
+
+      // Step 2: Initiate Payment Subscription
+      const res = await fetch(`${BASE_URL}/v1/billing/subscribe`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          User_id: user.id,
+          Provider: "paystack",
+          Plan_id: planId,
+        }),
+      });
+      
+      if (!res.ok) {
         throw new Error("Failed to initiate payment");
       }
+      
+      const data = await res.json();
 
-      const data: { payment: any } = await response.json();
+      const paymentUrl = data.body.link;
 
-      if (data.payment.payment_url) {
-        // Redirect to the payment gateway
-        router.push(data.payment.payment_url);
-      } else {
+      if (!paymentUrl) {
         throw new Error("Payment URL not received from the backend");
       }
-    } catch (err) {
-      setError(
-        (err as Error).message || "An error occurred while initiating payment"
-      );
+
+      // Redirect user to the Paystack payment page
+      router.push(paymentUrl);
+
+    } catch (err: any) {
+      toast.error(err?.message || "An error occurred while initiating payment");
+      setError(err?.message || "An error occurred while initiating payment");
     } finally {
       setLoading(false);
     }
@@ -78,41 +92,29 @@ const PaymentInitiate: React.FC = () => {
     );
   }
 
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
-  }
-
   return (
-    <div className="flex justify-center items-center h-full bg-gray-100 py-12">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
+    <div className="flex justify-center items-center h-screen bg-[#111827] py-12">
+      <div className="bg-[#1f2937] shadow-lg rounded-lg w-full max-w-md p-8 text-white">
         {/* Header Section */}
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Payment Initialization
-          </h1>
+          <h1 className="text-2xl font-semibold">Payment Initialization</h1>
         </div>
 
         {/* Plan Info */}
         <div className="mt-6 space-y-4">
           <div className="flex justify-between">
-            <span className="text-gray-600">Plan Name:</span>
+            <span>Plan Name:</span>
             <span className="font-semibold">{planName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Email:</span>
+            <span>Email:</span>
             <span className="font-semibold">{user.email}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Amount:</span>
-            <span className="font-semibold">{`₦${amount}`}</span>{" "}
-            {/* Adjust currency based on the amount */}
+            <span>Amount:</span>
+            <span className="font-semibold">{`₦${amount}`}</span>
           </div>
         </div>
-
-        {/* Paystack Logo */}
-        {/* <div className="mt-6 flex justify-center">
-          <img src={paystackLogo} alt="Paystack" className="w-32 h-auto" />
-        </div> */}
 
         {/* Action Button */}
         <div className="mt-8">

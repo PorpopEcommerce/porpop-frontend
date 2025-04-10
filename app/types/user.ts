@@ -1,13 +1,12 @@
-export type User = {
+export type UserData = {
   first_name?: string;
   last_name?: string;
-  role: string;
-  username: string;
   email: string;
   password: string;
   address?: string;
+  username?: string;
   city?: string;
-  postalcode?: string;
-  phone?: string;
+  postal_code?: string;
+  phone_number?: string;
   country?: string;
 }

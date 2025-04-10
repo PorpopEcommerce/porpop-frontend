@@ -10,14 +10,15 @@ const nextConfig = {
             'm.media-amazon.com',
             'lh3.googleusercontent.com',
             'porpop.com',
-            'ae-pic-a1.aliexpress-media.com'
+            'ae-pic-a1.aliexpress-media.com',
+            'res.cloudinary.com'
         ],
     },
     async rewrites() {
         return [
           {
             source: "/api/:path*",
-            destination: "https://backend-porpop.onrender.com/api/:path*",
+            destination: "https://backend-porpop-1ih6.onrender.com/v1/:path*",
           },
         ];
       },

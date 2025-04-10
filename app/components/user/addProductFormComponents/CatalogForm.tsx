@@ -16,7 +16,7 @@ const CatalogForm: React.FC<CatalogFormProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Catalog Mode{" "}
           <span className="text-[10px] font-light italic">
             Enable/Disable Catalog Mode for this product
@@ -31,7 +31,7 @@ const CatalogForm: React.FC<CatalogFormProps> = ({
           checked={addToCartToggle}
           onChange={(e) => onAddToCartChange( e.target.checked)} // Update parent state
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Check to remove Add to Cart option from your products.
         </label>
       </div>
@@ -43,7 +43,7 @@ const CatalogForm: React.FC<CatalogFormProps> = ({
           checked={productPriceToggle}
           onChange={(e) => onAllowHidePriceChange(e.target.checked)} // Update parent state
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Check to hide product price from your products.
         </label>
       </div>

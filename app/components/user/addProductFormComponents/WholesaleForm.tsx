@@ -2,13 +2,13 @@ import { FormProduct } from "@/app/types/formProduct";
 import React, { useState } from "react";
 
 interface WholesaleFormProps {
-  wholesales_min_order?: number;
+  min_quantity_for_wholesales?: number;
   wholesales_price?: number;
   onChange: (field: keyof FormProduct, value: any) => void;
 }
 
 const WholesaleForm: React.FC<WholesaleFormProps> = ({
-  wholesales_min_order,
+  min_quantity_for_wholesales,
   wholesales_price,
   onChange,
 }) => {
@@ -17,7 +17,7 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
   return (
     <div className="mb-3 border">
       <div className="p-3 border-b">
-        <p className="block text-[14px] font-bold text-gray-700">
+        <p className="block text-[14px] font-bold text-white">
           Wholesale Options{" "}
           <span className="text-[10px] font-light italic">
             If you want to sell this product as wholesale then set your setting
@@ -31,7 +31,7 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
           checked={isWholesaleEnabled}
           onChange={(e) => setIsWholesaleEnabled(e.target.checked)}
         />
-        <label className="text-[12px] font-medium text-gray-700">
+        <label className="text-[12px] font-medium text-white">
           Enable wholesale for this product
         </label>
       </div>
@@ -39,38 +39,38 @@ const WholesaleForm: React.FC<WholesaleFormProps> = ({
       {isWholesaleEnabled && (
         <div className="p-3 grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Minimum quantity for wholesale
             </label>
             <input
               type="number"
               min="0" // Ensure the minimum value is 0
-              value={wholesales_min_order || ""}
+              value={min_quantity_for_wholesales}
               onChange={(e) =>
                 onChange(
-                  "wholesales_min_order",
-                  parseInt(e.target.value, 10) || 0
+                  "min_quantity_for_wholesales",
+                  parseFloat(e.target.value) || 0
                 )
               }
               placeholder="minimum quantity"
-              className="mt-1  w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-[12px] font-medium text-gray-700 mb-2">
+            <label className="block text-[12px] font-medium text-white mb-2">
               Wholesale price:
             </label>
             <input
               type="number"
               min="0"
-              value={wholesales_price || 0}
+              value={wholesales_price}
               onChange={(e) =>
                 onChange(
                   "wholesales_price",
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+              className="mt-1 bg-[#111827] block w-full p-2 border border-gray-300 rounded-md focus:outline-none"
             />
           </div>
         </div>

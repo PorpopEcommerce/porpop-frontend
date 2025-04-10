@@ -12,7 +12,7 @@ const orderData = [
 
 const Orders = () => {
   return (
-    <div className="border w-full p-3 mb-4">
+    <div className="w-full p-3 mb-4 bg-[#1f2937]">
       <div className="border-b w-full p-2">
         <h2>ORDERS</h2>
       </div>

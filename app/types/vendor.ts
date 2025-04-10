@@ -5,6 +5,5 @@ export type VendorData = {
   shop_url: string;
   shop_description: string;
   street: string;
-  country: string;
- 
+  country: string; 
 }

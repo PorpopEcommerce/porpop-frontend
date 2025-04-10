@@ -1,13 +1,10 @@
 "use client";
 
-import { Rating } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import SetColor from "./SetColor";
 import SetQuantity from "./SetQuantity";
 import Button from "./Button";
 import ProductImage from "./ProductImage";
 import { useCart } from "@/app/hooks/useCart";
-import { Product } from "@/app/types/product";
 import { formatPrice } from "@/app/utils/formatter";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
@@ -21,15 +18,12 @@ export type CartProductType = {
   title: string;
   description: string;
   category?: string;
-  // brand: string,
   selectedImg?: SelectedImageType;
   quantity: number;
   price: number;
 };
 
 export type SelectedImageType = {
-  color: string;
-  colorCode: string;
   image: string;
 };
 
@@ -44,22 +38,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [isProductInCart, setIsProductInCart] = useState(false);
 
   const [cartProduct, setCartProduct] = useState<CartProductType>({
-    id: product.ProductID,
-    title: product.Name,
-    description: product.Description,
-    // brand: product.brand,
-    // selectedImg: { ...product.images[0] },
+    id: product.id,
+    title: product.name,
+    description: product.description,
+    selectedImg: { image: product.images[0] },
     quantity: 1,
-    price: product.RegularPrice,
+    price: product.price,
   });
 
   useEffect(() => {
     // Check if the product is already in the cart
     const productExists = cartProducts?.some(
-      (item) => item.id === product.ProductID
+      (item) => item.id === product.id
     );
     setIsProductInCart(productExists || false);
-  }, [cartProducts, product.ProductID]);
+  }, [cartProducts, product.id]);
 
   const handleBuyProduct = () => {
     const orderDetails = {
@@ -100,6 +93,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     });
   }, []);
 
+  const handleSelect = (image: SelectedImageType) => {
+    setCartProduct((prev) => ({
+      ...prev,
+      selectedImg: image,
+    }));
+  };
+
   const handleAddToCart = () => {
     handleAddProductToCart(cartProduct);
     setIsProductInCart(true); // Update state to reflect the product is now in the cart
@@ -107,17 +107,22 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <div></div>
-      {/* <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} /> */}
+      <ProductImage
+        cartProduct={cartProduct}
+        product={product}
+        handleSelect={handleSelect}
+      />
       <div className="flex flex-col gap-1">
-        <h1 className="text-4xl font-bold">{product.Name}</h1>
+        <h1 className="text-4xl font-bold">{product.name}</h1>
         <div>
-          <h2>{formatPrice(product.RegularPrice)}</h2>
+          <h2>{formatPrice(product.price)}</h2>
         </div>
+        <div
+          className="text-justify"
+          dangerouslySetInnerHTML={{ __html: product.description }}
+        />
 
-        <div className="text-justify">{product.Description}</div>
-
-        <div className="text-xl font-normal">{product.StockType}</div>
+        <div className="text-xl font-normal">{product.stock_type}</div>
 
         <Horizontal />
 
@@ -141,11 +146,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           </>
         ) : (
           <>
-            {/* <SetColor
-              cartProduct={cartProduct}
-              images={product.images}
-              handleColorSelect={handleColorSelect}
-            /> */}
             <Horizontal />
             <div className="flex gap-2">
               <SetQuantity
