@@ -13,7 +13,6 @@ import Advantages from "./LandingPage/Advantages";
 import FeaturedProducts from "./LandingPage/FeaturedProducts";
 import Support from "./LandingPage/Support";
 import StartSelling from "./LandingPage/StartSelling";
-import Footer from "./LandingPage/Footer";
 
 const LandingPage = () => {
   return (

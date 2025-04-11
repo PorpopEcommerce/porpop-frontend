@@ -38,7 +38,6 @@ export const useLoginForm = (onSuccess?: () => void) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    console.log(BASE_URL);
 
     setIsLoading(true);
     try {
@@ -70,10 +69,11 @@ export const useLoginForm = (onSuccess?: () => void) => {
     } catch (err: any) {
       setIsLoading(false);
       if (err.response && err.response.status === 403) {
+
         toast.error("Invalid email or password");
       } else {
         // setErrMsg("An unexpected error occurred. Please try again later.");
-        toast.error(err.response.status);
+        toast.error(err.response.data.message);
       }
     } finally {
       setIsLoading(false);

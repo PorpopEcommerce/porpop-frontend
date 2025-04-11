@@ -45,13 +45,10 @@ const ProductList = () => {
       {/* <PriceFilter /> */}
       <div className="flex justify-between items-center">
         <div className="flex gap-5">
-          <p className="text-xl font-semibold">Exclusive offers</p>
-          <p className="text-xl text-green-700 font-semibold">
+          <p className="text-sm lg:text-xl font-semibold">Exclusive offers</p>
+          <p className="text-sm lg:text-xl text-green-700 font-semibold">
             Products under {formatPrice(priceAmount)}
           </p>
-        </div>
-        <div>
-          <p>See All</p>
         </div>
       </div>
       {productBelowPrice.length > 0 ? (

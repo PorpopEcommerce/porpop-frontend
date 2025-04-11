@@ -56,14 +56,13 @@ export const useVerify = (onSuccess?: () => void) => {
 
       if (response.status !== 200) throw new Error("Verification failed");
 
-      toast.success("Email Verified Successfully! ✅");
       if (onSuccess) {
         onSuccess();
       }
+      toast.success("Successful! Please login to continue...");
       router.push("/"); // Redirect after successful verification
-      toast.success("Please log in to continue...")
     } catch (error) {
-        toast.error("Invalid OTP, please try again. ❌");
+      toast.error("Invalid OTP, please try again. ❌");
     } finally {
       setLoading(false); // Stop loading
     }

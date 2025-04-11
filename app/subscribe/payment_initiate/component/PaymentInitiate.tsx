@@ -93,15 +93,15 @@ const PaymentInitiate: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen bg-[#111827] py-12">
+    <div className="flex justify-center items-center h-screen bg-[#111827] px-8 py-12">
       <div className="bg-[#1f2937] shadow-lg rounded-lg w-full max-w-md p-8 text-white">
         {/* Header Section */}
         <div className="text-center">
-          <h1 className="text-2xl font-semibold">Payment Initialization</h1>
+          <h1 className="text-lg lg:text-2xl font-semibold">Payment Initialization</h1>
         </div>
 
         {/* Plan Info */}
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-4 text-sm md:text-xl">
           <div className="flex justify-between">
             <span>Plan Name:</span>
             <span className="font-semibold">{planName}</span>

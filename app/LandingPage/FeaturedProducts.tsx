@@ -118,12 +118,6 @@ export default function FeaturedProducts() {
             height={130}
           />
         </div>
-
-        <div className="text-center">
-          <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
-            Get started
-          </button>
-        </div>
       </div>
     </section>
   );
