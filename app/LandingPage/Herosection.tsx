@@ -1,11 +1,23 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const HeroSection = () => {
-        
+  const token = Cookies.get('access_token')
+  const router = useRouter();
   const [currentImage, setCurrentImage] = useState(0);
   const [currentAnimation, setCurrentAnimation] = useState("animate-floating");
+
+  const getStartedClick = () => {
+    if(token) {
+      router.push('my_account')
+    } else {
+      toast.error('Please login or sign up to continue')
+    }
+  }
 
   const images = [
     "/Images/Hero/hero_1.png",
@@ -59,7 +71,11 @@ const HeroSection = () => {
           beautiful online store and start selling your product <br />
           to the world.
         </p>
-        <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
+
+        <button
+          className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold"
+          onClick={getStartedClick}
+        >
           Get started
         </button>
       </div>

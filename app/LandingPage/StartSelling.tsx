@@ -32,12 +32,6 @@ export default function StartSelling() {
               {data.map((item) => (
                 <Item key={item.id} id={item.id} text={item.text} />
               ))}
-
-              <div className="text-center">
-                <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
-                  Get started
-                </button>
-              </div>
             </div>
           </div>
         </div>

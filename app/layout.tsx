@@ -22,7 +22,11 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning={true}>
         <ReactQueryProvider>
           <ClientLayout>{children}</ClientLayout>
-          <ToastContainer position="bottom-left" autoClose={3000} />
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            toastClassName="w-[200px] sm:w-[250px] lg:w-[300px] text-sm lg:text-xl rounded-md"
+          />
         </ReactQueryProvider>
       </body>
     </html>

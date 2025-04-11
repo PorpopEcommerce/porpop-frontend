@@ -5,7 +5,6 @@ import Dashboard from "@/app/(authenticate)/my_account/profile/components/Dashbo
 import VendorForm from "@/app/components/user/VendorRegisterationForm";
 import Orders from "../(authenticate)/my_account/profile/components/Orders";
 import ReturnAndRefund from "@/app/(authenticate)/my_account/profile/components/ReturnAndRefund";
-import PaymentMethod from "@/app/(authenticate)/my_account/profile/components/PaymentMethod";
 import UserAccount from "../(authenticate)/my_account/profile/components/Account";
 
 interface DashboardOption {
@@ -25,7 +24,6 @@ export const useAccountNavigation = () => {
     { label: "Dashboard", key: "dashboard" },
     { label: "Orders", key: "order" },
     { label: "Returns and Refunds", key: "ret&ref" },
-    { label: "Payment methods", key: "paymentMethod" },
     { label: "Account details", key: "account" },
     { label: "Logout", key: "logout" },
   ];
@@ -52,8 +50,6 @@ export const useAccountNavigation = () => {
         return <Orders />;
       case "ret&ref":
         return <ReturnAndRefund />;
-      case "paymentMethod":
-        return <PaymentMethod />;
       case "account":
         return <UserAccount />;
       case "vendorForm":

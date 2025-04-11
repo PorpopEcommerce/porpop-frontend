@@ -23,8 +23,15 @@ const Dashboard = () => {
     (state: RootState) => state.subscription
   );
 
-  dispatch(fetchUserThunk());
+  
 
+  useEffect(() => {
+    if (!user?.id) {
+      dispatch(fetchUserThunk());
+    }
+  }, [dispatch, user?.id]);
+  
+  
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserSubscriptions(user.id));

@@ -121,9 +121,6 @@ const ReviewsSection: React.FC = () => {
             <span className="text-[#A4CD3A]">We&apos;re</span> always thrilled to hear Porpop has helped businesses thrive.
             Yours should be next!
           </p>
-          <button className="bg-[#A4CD3A] hover:bg-opacity-75 rounded py-3 px-10 text-[#006B6E] font-semibold">
-            Get started Now
-          </button>
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import { MdLogin } from "react-icons/md";
 import classNames from "classnames";
 import SearchBar from "@/app/components/header/nav/SearchBar";
 import Cart from "@/app/components/header/nav/Cart";
@@ -115,10 +116,10 @@ const NavBar: React.FC<NavBarProps> = ({
             ) : (
               <div className="w-fit">
                 <button
-                  className="text-[12px] font-semibold py-1 px-2 bg-[#9bf618] rounded-lg"
+                  className="text-xl font-semibold "
                   onClick={toggleSignIn}
                 >
-                  Sign in
+                  <MdLogin className="mt-[5px]"/>
                 </button>
               </div>
             )}
