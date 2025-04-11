@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import ChatBox from "./ChatBox";
+import { useAuth } from "@/app/context/AuthContext"; // ✅ corrected import
 
 const ChatButton = () => {
   const [open, setOpen] = useState(false);
+  const { user, authToken } = useAuth(); // ✅ corrected hook usage
 
   const toggleChat = () => setOpen(!open);
 
@@ -17,7 +19,7 @@ const ChatButton = () => {
       >
         <MessageCircle className="w-6 h-6" />
       </button>
-      {open && <ChatBox toggleChat={toggleChat} />}
+      {open && <ChatBox toggleChat={toggleChat} user={user} token={authToken} />}
     </>
   );
 };
