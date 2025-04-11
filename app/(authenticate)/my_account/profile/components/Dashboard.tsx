@@ -27,8 +27,11 @@ const Dashboard = () => {
   
 
   useEffect(() => {
+    if (!user?.id) {
       dispatch(fetchUserThunk());
-  }, [dispatch]);
+    }
+  }, [dispatch, user?.id]);
+  
   
   useEffect(() => {
     if (user?.id) {
