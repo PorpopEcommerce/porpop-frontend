@@ -24,8 +24,8 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
 
   return (
     <>
-      <div className="flex justify-between mb-3">
-        <div>
+      <div className="md:flex md:justify-between mb-3">
+        <div className="mb-3 md:mb-0">
           <ul className="flex gap-2 items-center text-sm text-[#84788c]">
             <li className="cursor-pointer" onClick={handleViewProductClick}>
               All ({counts.all})

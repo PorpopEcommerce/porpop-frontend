@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"; // For route navigation
 import ProtectedRoute from "@/app/provider/ProtectedRoute";
 import VendorDashboard from "./vendor/VendorDashboard";
 import { useAuth } from "@/app/context/AuthContext";
+import { Suspense } from "react";
 import Spinner from "@/app/components/Spinner";
 import axios from "axios";
 
@@ -57,9 +58,11 @@ const VendorAccount = () => {
   }
 
   return (
-    <ProtectedRoute>
-      <VendorDashboard />
-    </ProtectedRoute>
+    <Suspense fallback={<div>Loading Page....</div>}>
+      <ProtectedRoute>
+        <VendorDashboard />
+      </ProtectedRoute>
+    </Suspense>
   );
 };
 

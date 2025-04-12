@@ -147,7 +147,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         ) : (
           <>
             <Horizontal />
-            <div className="flex gap-2">
+            <div className="lg:flex lg:gap-2 space-y-2">
               <SetQuantity
                 cartProduct={cartProduct}
                 handleQtyIncrease={handleQtyIncrease}

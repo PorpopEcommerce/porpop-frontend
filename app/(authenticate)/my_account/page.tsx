@@ -8,6 +8,7 @@ import Spinner from "@/app/components/Spinner";
 import UserDashboard from "./profile/userDashboard/UserDashboard";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { Suspense } from "react";
 
 const AccountPageWithProtection = () => {
   const { user } = useAuth(); // Fetch auth state
@@ -37,9 +38,11 @@ const AccountPageWithProtection = () => {
   }
 
   return (
-    <ProtectedRoute>
-      <UserDashboard />
-    </ProtectedRoute>
+    <Suspense fallback={<div>Loading Page...</div>}>
+      <ProtectedRoute>
+        <UserDashboard />
+      </ProtectedRoute>
+    </Suspense>
   );
 };
 
