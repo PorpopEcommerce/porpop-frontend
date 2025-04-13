@@ -24,13 +24,10 @@ import { FiEdit2 } from "react-icons/fi";
 const UserAccount = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.activeUser?.user);
-  const vendorDetails = useSelector((state: RootState) => state.user.activeUser?.vendor);
   const fetchStatus = useSelector((state: RootState) => state.user.fetchStatus);
   const [isEditing, setIsEditing] = useState(false);
 
   const { logout } = useAuth();
-  console.log(user)
-  console.log(vendorDetails)
 
   useEffect(() => {
     if (!user) {
@@ -109,14 +106,14 @@ const UserAccount = () => {
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">
               Contact Info
             </h3>
-            <ul className="grid grid-cols-2 gap-4">
+            <ul className="lg:grid lg:grid-cols-2 gap-4">
               {userDetails.map((item, index) => (
                 <li
                   key={index}
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg shadow-sm"
                 >
                   <div className="text-gray-600 text-2xl">{item.icon}</div>
-                  <div className="flex flex-col">
+                  <div className="flex lg:flex-col gap-3">
                     <span className="text-gray-600 font-semibold text-lg">
                       {item.label}:
                     </span>

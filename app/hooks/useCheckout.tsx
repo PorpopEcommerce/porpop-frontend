@@ -115,7 +115,6 @@ const useCheckout = () => {
       items: products.map((product) => ({
         product_id: product.id,
         quantity: Number(product.quantity),
-        // price: Number(product.price),
       })),
       total_amount: subtotal,
       shipping_address: form.streetAddress,
