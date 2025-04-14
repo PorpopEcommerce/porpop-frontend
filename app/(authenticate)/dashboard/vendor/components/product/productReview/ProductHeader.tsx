@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
+import { fetchProductsByVendorId } from "@/app/redux/features/products/productSlice";
 
 interface ProductHeaderProp {
   handleAddProductClick: () => void;
@@ -14,13 +17,34 @@ const ProductHeader: React.FC<ProductHeaderProp> = ({
   handleViewProductClick,
   handleImportAliProduct,
 }) => {
-  const [counts, setCounts] = useState({
-    all: 0,
-    online: 0,
-    draft: 0,
-    inStock: 0,
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const { activeUser } = useSelector((state: RootState) => state.user);
+  const { user, vendor } = activeUser;
+  const vendorProducts =
+    useSelector((state: RootState) => state.products.vendorProducts) || [];
 
+  useEffect(() => {
+    if (!user) {
+      dispatch(fetchUserThunk());
+    }
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    console.log(vendor?.id);
+    if (vendor?.id) {
+      dispatch(fetchProductsByVendorId(vendor?.id));
+    }
+  }, [vendor?.id, dispatch]);
+
+
+  const onlineStatus = vendorProducts.filter((product) => product.visibility === true)
+
+  const [counts, setCounts] = useState({
+    all: vendorProducts.length,
+    online: onlineStatus.length,
+    draft: 0,
+    inStock: onlineStatus.length,
+  });
 
   return (
     <>

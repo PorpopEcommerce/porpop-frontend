@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/app/redux/store";
+import { useState } from "react";
 import AddProduct from "./addProduct/AddProduct";
-import { useAuth } from "@/app/context/AuthContext";
-import ProductHeader from "./ProductHeader";
-import ProductList from "./productReview/ProductList";
+import ProductList from "./ProductList";
 import EditProductForm from "./editProduct/EditProductForm";
-import Button from "@/app/components/product/Button";
 import AliExpressImport from "./addProduct/AliExpressImport";
 
 const Product = () => {

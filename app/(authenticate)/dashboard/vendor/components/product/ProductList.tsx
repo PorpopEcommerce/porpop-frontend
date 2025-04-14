@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
 import { fetchProductsByVendorId } from "@/app/redux/features/products/productSlice";
-import ProductHeader from "../ProductHeader";
-import ProductContent from "./ProductContent";
+import ProductHeader from "./productReview/ProductHeader";
+import ProductContent from "./productReview/ProductContent";
 import Spinner from "@/app/components/Spinner";
 
 interface ProductListProps {

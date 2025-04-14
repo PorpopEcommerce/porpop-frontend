@@ -4,18 +4,19 @@ import { useAuth } from "@/app/context/AuthContext";
 import SubHeading from "@/app/components/product/SubHeading";
 import Button from "@/app/components/product/Button";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
 import { fetchUserSubscriptions } from "@/app/redux/features/subscription/subscriptionSlice";
 import Spinner from "@/app/components/Spinner";
 
-
 const Dashboard = () => {
   const { logout } = useAuth();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
+  const [loading, setLoading] = useState(false);
 
   const { activeUser } = useSelector((state: RootState) => state.user);
   const user = activeUser?.user;
@@ -24,36 +25,34 @@ const Dashboard = () => {
     (state: RootState) => state.subscription
   );
 
-  
-
   useEffect(() => {
     if (!user?.id) {
       dispatch(fetchUserThunk());
     }
   }, [dispatch, user?.id]);
-  
-  
+
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserSubscriptions(user.id));
     }
   }, [dispatch, user?.id]);
-  
 
   const hasSubscription = subscriptions?.has_subscription;
-  console.log(hasSubscription)
 
   const handleButtonClick = () => {
-    if (hasSubscription === true) {
-      router.push("/dashboard");
-    } else {
-      router.push("/subscribe");
-    }
+    setLoading(true);
+
+    // simulate async nav delay or let the router push happen first
+    setTimeout(() => {
+      if (hasSubscription === true) {
+        router.push("/dashboard");
+      } else {
+        router.push("/subscribe");
+      }
+    }, 500); // optional small delay for smoother UX
   };
 
-  if (!user?.id) {
-    return;
-  }
+  if (!user?.id) return;
 
   return (
     <div className="space-y-6">
@@ -73,16 +72,12 @@ const Dashboard = () => {
         </p>
       </section>
 
-      {/* Button Area */}
       <section>
         <div className="w-full max-w-[200px]">
           <Button
-            label={
-              vendor !== null
-                ? "Vendor Dashboard"
-                : "Become a Vendor"
-            }
+            label={loading ? "Loading..." : vendor ? "Vendor Dashboard" : "Become a Vendor"}
             onClick={handleButtonClick}
+            disabled={loading}
           />
         </div>
       </section>
