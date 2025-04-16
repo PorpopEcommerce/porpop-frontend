@@ -2,7 +2,7 @@
 
 import { useAccountNavigation } from "@/app/hooks/useVendorAccountNavigation";
 import Header from "@/app/components/header/Header";
-import Logo from "/images/logo.png";
+import Logo from "../../../.././public/Images/logo.png";
 import { CiMenuBurger } from "react-icons/ci";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";

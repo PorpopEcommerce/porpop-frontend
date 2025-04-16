@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "/images/logo.png";
+import Logo from "../../../public/Images/logo.png";
 import { useAuth } from "@/app/context/AuthContext";
 import { MdLogin } from "react-icons/md";
 import classNames from "classnames";
