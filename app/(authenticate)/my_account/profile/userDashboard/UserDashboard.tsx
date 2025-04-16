@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccountNavigation } from "@/app/hooks/useUserAccountNavigation";
-import Logo from "/public/images/logo.png";
+import Logo from "/images/logo.png";
 import { FaTimes } from "react-icons/fa";
 import { CiMenuBurger } from "react-icons/ci";
 import Image from "next/image";

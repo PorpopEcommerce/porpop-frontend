@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "/public/images/logo.png";
+import Logo from "/images/logo.png";
 import { useAuth } from "@/app/context/AuthContext";
 import { MdLogin } from "react-icons/md";
 import classNames from "classnames";
@@ -77,7 +77,7 @@ const NavBar: React.FC<NavBarProps> = ({
                   className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
                   onClick={toggleSignIn}
                 >
-                  Sign inn
+                  Sign in
                 </button>
               </div>
             )}
