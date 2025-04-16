@@ -41,7 +41,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     id: product.id,
     title: product.name,
     description: product.description,
-    selectedImg: { image: product.images[0] },
+    selectedImg: { image: product.images?.[0] || "/placeholder.jpg" },
     quantity: 1,
     price: product.price,
   });
