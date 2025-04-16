@@ -77,7 +77,7 @@ const NavBar: React.FC<NavBarProps> = ({
                   className="text-[15px] font-semibold py-2 px-3 bg-[#9bf618] rounded-lg"
                   onClick={toggleSignIn}
                 >
-                  Sign in
+                  Sign inn
                 </button>
               </div>
             )}
