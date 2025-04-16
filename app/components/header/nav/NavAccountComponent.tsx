@@ -19,6 +19,8 @@ const NavAccountComponent = () => {
 
   const { activeUser } = useSelector((state: RootState) => state.user);
   const user = activeUser?.user;
+
+  console.log(user)
  
    useEffect(() => {
       if (!user) {

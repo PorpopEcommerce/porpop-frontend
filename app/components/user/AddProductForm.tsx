@@ -26,7 +26,9 @@ const AddProductForm: React.FC<AddProductFormProp> = ({ productId }) => {
     handleToggle,
     handleSubmit,
     handleImagesChange,
-  } = useAddProductForm();
+  } = useAddProductForm(productId);
+
+  console.log(productId)
 
   return (
     <div className="add-product-form">

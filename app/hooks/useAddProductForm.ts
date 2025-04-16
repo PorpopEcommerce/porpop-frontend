@@ -4,11 +4,17 @@ import { uploadImageToCloudinary } from "../utils/imageUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
+import { editProductByVendor } from "@/app/redux/features/products/productSlice";
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
-export const useAddProductForm = () => {
+export const useAddProductForm = (productId?: string | null) => {
   const token = Cookies.get("access_token");
+  const dispatch = useDispatch<AppDispatch>();
+
 
   const initialProduct: FormProduct = {
     name: "",
@@ -77,6 +83,31 @@ export const useAddProductForm = () => {
 
     fetchVendorId();
   }, [token]);
+
+  // ✅ fetch product data if editing
+  useEffect(() => {
+    if (!token) return;
+    if (productId) {
+      const fetchProduct = async () => {
+        try {
+          const res = await axios.get(`${BASE_URL}/v1/product/${productId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          console.log(res.data.body)
+          setFormData(res.data.body); // adjust if structure differs
+          // console.log(formData)
+        } catch (error) {
+          console.error("Failed to fetch product", error);
+        }
+      };
+
+      fetchProduct();
+    }
+  }, [productId]);
 
   const handleChange = (field: keyof FormProduct, value: any) => {
     setFormData((prev) => {
@@ -175,33 +206,34 @@ export const useAddProductForm = () => {
         min_quantity_for_discount: formData.min_quantity_for_discount,
       };
 
-      console.log("Cleaned Form Data:", cleanedFormData);
-
       try {
-        const response = await axios.post(
-          `${BASE_URL}/v1/products`,
-          cleanedFormData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        if (productId) {
+          const updatedData = cleanedFormData;
+          await dispatch(editProductByVendor({ productId, updatedData })).unwrap();
+          toast.success("Product updated successfully!");
+        } else {
+          const response = await axios.post(
+            `${BASE_URL}/v1/products`,
+            cleanedFormData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        if (response.status !== 201) {
-          const errorData = response.data.message || "Something went wrong!";
-          console.error("Error Response:", errorData);
-          toast.error(errorData);
-          return;
+          if (response.status !== 201) {
+            const errorData = response.data.message || "Something went wrong!";
+            console.error("Error Response:", errorData);
+            toast.error(errorData);
+            return;
+          }
+          setFormData(initialProduct);
+          setIsSuccess(true);
+          toast.success("Product created successfully!");
         }
 
-        const responseData = response.data;
-        console.log("Product created successfully:", responseData);
-
-        setFormData(initialProduct);
-        setIsSuccess(true);
-        toast.success("Product created successfully!");
       } catch (error) {
         console.error("Submission error:", error);
         toast.error("An error occurred while creating the product.");

@@ -73,7 +73,7 @@ export const useLoginForm = (onSuccess?: () => void) => {
         toast.error("Invalid email or password");
       } else {
         // setErrMsg("An unexpected error occurred. Please try again later.");
-        toast.error(err.response.data.message);
+        toast.error(err.response?.data.message);
       }
     } finally {
       setIsLoading(false);

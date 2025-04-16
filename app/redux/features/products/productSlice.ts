@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 interface ProductState {
   allProducts: any[];
@@ -45,7 +46,7 @@ export const fetchAllProducts = createAsyncThunk<any[], void>(
 export const fetchProductsByVendorId = createAsyncThunk<any[], string>(
   "products/fetchByVendorId",
   async (vendorId, { rejectWithValue }) => {
-   
+
     const token = Cookies.get('access_token')
 
     try {
@@ -72,7 +73,7 @@ export const deleteProductByVendor = createAsyncThunk<
   string, // This is the input (product ID)
   { rejectValue: string }
 >("products/deleteByVendor", async (productId, { rejectWithValue }) => {
-  
+
   const token = Cookies.get('access_token')
 
   try {
@@ -97,11 +98,11 @@ export const deleteProductByVendor = createAsyncThunk<
   }
 });
 export const editProductByVendor = createAsyncThunk<
-  string, // This is the returned payload (product ID)
-  string, // This is the input (product ID)
+  any, // You can replace 'any' with a proper Product type if available
+  { productId: string; updatedData: any }, // Payload is an object
   { rejectValue: string }
 >("products/editByVendor", async (productId, { rejectWithValue }) => {
-  
+
   const token = Cookies.get('access_token')
 
   try {
@@ -115,7 +116,7 @@ export const editProductByVendor = createAsyncThunk<
       }
     );
     if (response.status === 200) {
-      return productId; // Return the deleted product's ID
+      return productId; // Return the edited product's ID
     } else {
       return rejectWithValue("Failed to delete the product.");
     }
