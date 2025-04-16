@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
         <div className="aspect-square overflow-hidden relative w-full">
           <Image
             fill
-            src={data.images[0] || "No image display"}
+            src={Array.isArray(data.images) && data.images.length > 0 ? data.images[0] : "/placeholder.jpg"}
             alt={data.name}
             className="w-full h-full object-contain"
           />
