@@ -159,10 +159,10 @@ const Subscribe = () => {
                       <div>
                         <h3 className="text-lg font-bold mb-3">{plan.name}</h3>
                         <div className="h-20 w-full flex justify-center items-center rounded-2xl bg-[#9bf618] mb-3">
-                          <p className="text-xl font-semibold">
-                            NGN {plan.amount}
-                          </p>
-                        </div>
+                        <p className="text-xl font-semibold">
+                          {plan.currency} {plan.display_price.toLocaleString()}
+                        </p>
+                       </div>
                         <ul className="pl-6 text-white">
                           {getFeaturesForPlan(plan.name)?.map((feature, index) => (
                             <li key={index} className="flex gap-2 mb-3 text-left">
