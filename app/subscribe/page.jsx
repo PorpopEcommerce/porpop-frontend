@@ -98,8 +98,8 @@ const Subscribe = () => {
 
   const handleSelectPlan = (plan) => {
     router.push(
-      `/subscribe/payment_initiate?planId=${plan.id}&amount=${plan.amount}&planName=${plan.name}`
-    );
+      `/subscribe/payment_initiate?planId=${plan.id}&amount=${plan.display_price}&currency=${encodeURIComponent(plan.currency)}&planName=${encodeURIComponent(plan.name)}`
+    );    
   };
 
   const getFeaturesForPlan = (planName) => {

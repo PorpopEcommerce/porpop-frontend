@@ -18,6 +18,7 @@ const PaymentInitiate: React.FC = () => {
   const planName = searchParams.get("planName");
   const { user } = useAuth();
   const router = useRouter();
+  const currency = searchParams.get("currency");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +113,7 @@ const PaymentInitiate: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>Amount:</span>
-            <span className="font-semibold">{`₦${amount}`}</span>
+            <span className="font-semibold">{`${currency} ${amount}`}</span>
           </div>
         </div>
 
