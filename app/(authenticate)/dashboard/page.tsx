@@ -33,11 +33,15 @@ const VendorAccount = () => {
 
         const subscription = data.has_subscription;
 
-        if (subscription === true) {
-          router.push("/dashboard");
-        } else {
+        // If we're on the dashboard page and user has no subscription, redirect to subscribe
+        if (subscription !== true && window.location.pathname.includes('/dashboard')) {
           router.push("/subscribe");
         }
+        // If we're on the subscribe page and user has subscription, redirect to dashboard
+        else if (subscription === true && window.location.pathname.includes('/subscribe')) {
+          router.push("/dashboard");
+      }
+
       } catch (error) {
         console.error("Error fetching subscription details:", error);
         router.push("/");

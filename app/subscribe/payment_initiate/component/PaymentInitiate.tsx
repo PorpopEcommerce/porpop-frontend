@@ -58,6 +58,7 @@ const PaymentInitiate: React.FC = () => {
           User_id: user.id,
           Provider: "paystack",
           Plan_id: planId,
+          redirect_url: `${window.location.origin}/dashboard`,
         }),
       });
       
