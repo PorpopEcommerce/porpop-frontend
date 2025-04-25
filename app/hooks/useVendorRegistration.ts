@@ -8,14 +8,11 @@ import { toast } from "react-toastify";
 import { uploadImageToCloudinary } from "../utils/imageUpload";
 import Cookies from "js-cookie";
 
-
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 const authToken = Cookies.get("access_token");
 
 export const useVendorRegistration = () => {
-
-  const { user } = useAuth();
-
+  const { user, refreshUserData } = useAuth();
 
   const [formData, setFormData] = useState<VendorData>({
     shop_name: "",
@@ -116,8 +113,17 @@ export const useVendorRegistration = () => {
   
         console.log("Vendor successfully registered:", response.data);
         toast.success("Vendor successfully registered!");
+        
+        // 6. NEW: Refresh user data after successful registration
+        await refreshUserData();
+        toast.info("User data refreshed. You can now access your vendor dashboard.");
+        
+        // 7. Redirect to vendor dashboard after a short delay
+        setTimeout(() => {
+          window.location.href = "/dashboard/vendor";
+        }, 1500); // Give time for the toast to be seen
   
-        // 6. Reset form
+        // 8. Reset form
         setSubmitSuccess(true);
         setSelectedImage(null);
         setFormData({
@@ -157,7 +163,7 @@ export const useVendorRegistration = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, authToken, selectedImage]
+    [formData, user, authToken, selectedImage, refreshUserData]  // Added refreshUserData to dependencies
   );
   
   return {

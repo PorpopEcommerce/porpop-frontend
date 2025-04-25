@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import axios from "axios";
 
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -20,6 +22,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  // Add this new function to refresh user data from the backend
+  const refreshUserData = async () => {
+    const token = Cookies.get("access_token");
+    if (token) {
+      try {
+        const response = await axios.get(`${BASE_URL}/v1/auth`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        if (response.data && response.data.body) {
+          const userData = response.data.body;
+          
+          // Update session storage
+          sessionStorage.setItem("user", JSON.stringify(userData));
+          
+          // Update state
+          setUser(userData);
+          return userData;
+        }
+      } catch (error) {
+        console.error("Error refreshing user data:", error);
+      }
+    }
+    return null;
+  };
 
   // Login function
   const login = (data: any) => {
@@ -108,6 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         login,
         logout,
+        refreshUserData, // Add this to expose the function
       }}
     >
       {children}

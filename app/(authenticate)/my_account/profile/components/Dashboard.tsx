@@ -41,15 +41,17 @@ const Dashboard = () => {
 
   const handleButtonClick = () => {
     setLoading(true);
-
-    // simulate async nav delay or let the router push happen first
+  
     setTimeout(() => {
       if (hasSubscription === true) {
+        
         router.push("/dashboard");
       } else {
+        
         router.push("/subscribe");
       }
-    }, 500); // optional small delay for smoother UX
+      setLoading(false);
+    }, 500);
   };
 
   if (!user?.id) return;
