@@ -7,12 +7,16 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { uploadImageToCloudinary } from "../utils/imageUpload";
 import Cookies from "js-cookie";
+import { useDispatch } from 'react-redux';
+import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
+import { AppDispatch } from "@/app/redux/store";
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 const authToken = Cookies.get("access_token");
 
 export const useVendorRegistration = () => {
   const { user, refreshUserData } = useAuth();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<VendorData>({
     shop_name: "",
@@ -114,16 +118,20 @@ export const useVendorRegistration = () => {
         console.log("Vendor successfully registered:", response.data);
         toast.success("Vendor successfully registered!");
         
-        // 6. NEW: Refresh user data after successful registration
+        // 6. Refresh user data in AuthContext
         await refreshUserData();
+        
+        // 7. IMPORTANT: Also refresh user data in Redux
+        const dispatch = useDispatch<AppDispatch>();
+        
         toast.info("User data refreshed. You can now access your vendor dashboard.");
         
-        // 7. Redirect to vendor dashboard after a short delay
+        // 8. Redirect to vendor dashboard after a short delay
         setTimeout(() => {
           window.location.href = "/dashboard/vendor";
         }, 1500); // Give time for the toast to be seen
   
-        // 8. Reset form
+        // 9. Reset form
         setSubmitSuccess(true);
         setSelectedImage(null);
         setFormData({
@@ -163,7 +171,7 @@ export const useVendorRegistration = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, authToken, selectedImage, refreshUserData]  // Added refreshUserData to dependencies
+    [formData, user, authToken, selectedImage, refreshUserData, dispatch]  // Added dispatch to dependencies
   );
   
   return {

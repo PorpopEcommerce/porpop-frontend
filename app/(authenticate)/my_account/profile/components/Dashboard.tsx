@@ -43,11 +43,14 @@ const Dashboard = () => {
     setLoading(true);
   
     setTimeout(() => {
-      if (hasSubscription === true) {
-        
+      if (vendor) {
+        // If user is a vendor, go to vendor dashboard
+        router.push("/dashboard/vendor");
+      } else if (hasSubscription === true) {
+        // If user has subscription but isn't a vendor, go to vendor registration
         router.push("/dashboard");
       } else {
-        
+        // If user has no subscription, go to subscription page
         router.push("/subscribe");
       }
       setLoading(false);
