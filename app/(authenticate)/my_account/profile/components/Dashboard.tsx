@@ -12,7 +12,7 @@ import { fetchUserSubscriptions } from "@/app/redux/features/subscription/subscr
 import Spinner from "@/app/components/Spinner";
 
 const Dashboard = () => {
-  const { logout } = useAuth();
+  const { logout, user: authUser } = useAuth(); // Also get user from AuthContext
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -25,11 +25,18 @@ const Dashboard = () => {
     (state: RootState) => state.subscription
   );
 
+  // Add a console log to check the data
   useEffect(() => {
-    if (!user?.id) {
-      dispatch(fetchUserThunk());
-    }
-  }, [dispatch, user?.id]);
+    console.log("Auth user:", authUser);
+    console.log("Redux user:", user);
+    console.log("Redux vendor:", vendor);
+    console.log("User role:", user?.role);
+  }, [authUser, user, vendor]);
+
+  useEffect(() => {
+    // Force refresh every time this component mounts
+    dispatch(fetchUserThunk());
+  }, [dispatch]);
 
   useEffect(() => {
     if (user?.id) {
@@ -43,21 +50,21 @@ const Dashboard = () => {
     setLoading(true);
   
     setTimeout(() => {
-      if (vendor) {
-        // If user is a vendor, go to vendor dashboard
+      if (user?.role === 'vendor') {
+        // Check directly if role is vendor
         router.push("/dashboard/vendor");
       } else if (hasSubscription === true) {
-        // If user has subscription but isn't a vendor, go to vendor registration
         router.push("/dashboard");
       } else {
-        // If user has no subscription, go to subscription page
         router.push("/subscribe");
       }
       setLoading(false);
     }, 500);
   };
 
-  if (!user?.id) return;
+  if (!user?.id) return null;
+
+  const isVendor = user?.role === 'vendor' || !!vendor;
 
   return (
     <div className="space-y-6">
@@ -75,12 +82,19 @@ const Dashboard = () => {
           your shipping and billing addresses, and edit your password and
           account details.
         </p>
+        {/* Add debug info - remove in production */}
+        <div className="mt-3 p-2 bg-gray-800 text-xs">
+          <p>Debug Info:</p>
+          <p>Role: {user?.role}</p>
+          <p>Vendor Status: {isVendor ? 'Yes' : 'No'}</p>
+          <p>Has Subscription: {hasSubscription ? 'Yes' : 'No'}</p>
+        </div>
       </section>
 
       <section>
         <div className="w-full max-w-[200px]">
           <Button
-            label={loading ? "Loading..." : vendor ? "Vendor Dashboard" : "Become a Vendor"}
+            label={loading ? "Loading..." : isVendor ? "Vendor Dashboard" : "Become a Vendor"}
             onClick={handleButtonClick}
             disabled={loading}
           />
