@@ -43,7 +43,7 @@ const Dashboard = () => {
   
     setTimeout(() => {
       if (user?.role === 'vendor') {
-        router.push("/dashboard/vendor");
+        router.push("/dashboard/vendor/VendorDashboard");
       } else if (hasSubscription === true) {
         router.push("/dashboard");
       } else {
