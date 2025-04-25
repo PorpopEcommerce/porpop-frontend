@@ -25,14 +25,16 @@ const DashboardComponent: React.FC<DashboardComponentProps> = ({
 
   const { activeUser } = useSelector((state: RootState) => state.user);
   const vendorDetails = activeUser?.vendor;
+  const userRole = activeUser?.user?.role;
 
   useEffect(() => {
     if (!vendorDetails) {
       dispatch(fetchUserThunk()); // Fetch user details if not available
     }
   }, [dispatch, vendorDetails]);
-  // Ensure currentUser and vendorData exist
-  if (!vendorDetails) {
+
+  // If user is not a vendor, show registration prompt
+  if (!vendorDetails && userRole !== "vendor") {
     return (
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
@@ -48,6 +50,21 @@ const DashboardComponent: React.FC<DashboardComponentProps> = ({
     );
   }
 
+  // If user is a vendor but details aren't loaded yet, show loading state
+  if (!vendorDetails && userRole === "vendor") {
+    return (
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
+        <p>Loading your vendor profile...</p>
+        {/* You could add a loading spinner here if you have one */}
+        <div className="mt-4 flex justify-center">
+          <div className="animate-pulse h-4 w-32 bg-gray-300 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // If vendorDetails exists, show the dashboard
   const completion = calculateCompletion(vendorDetails);
 
   return (
