@@ -12,7 +12,7 @@ import { fetchUserSubscriptions } from "@/app/redux/features/subscription/subscr
 import Spinner from "@/app/components/Spinner";
 
 const Dashboard = () => {
-  const { logout, user: authUser } = useAuth(); // Also get user from AuthContext
+  const { logout, user: authUser } = useAuth();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -24,14 +24,6 @@ const Dashboard = () => {
   const { subscriptions } = useSelector(
     (state: RootState) => state.subscription
   );
-
-  // Add a console log to check the data
-  useEffect(() => {
-    console.log("Auth user:", authUser);
-    console.log("Redux user:", user);
-    console.log("Redux vendor:", vendor);
-    console.log("User role:", user?.role);
-  }, [authUser, user, vendor]);
 
   useEffect(() => {
     // Force refresh every time this component mounts
@@ -51,7 +43,6 @@ const Dashboard = () => {
   
     setTimeout(() => {
       if (user?.role === 'vendor') {
-        // Check directly if role is vendor
         router.push("/dashboard/vendor");
       } else if (hasSubscription === true) {
         router.push("/dashboard");
@@ -82,13 +73,6 @@ const Dashboard = () => {
           your shipping and billing addresses, and edit your password and
           account details.
         </p>
-        {/* Add debug info - remove in production */}
-        <div className="mt-3 p-2 bg-gray-800 text-xs">
-          <p>Debug Info:</p>
-          <p>Role: {user?.role}</p>
-          <p>Vendor Status: {isVendor ? 'Yes' : 'No'}</p>
-          <p>Has Subscription: {hasSubscription ? 'Yes' : 'No'}</p>
-        </div>
       </section>
 
       <section>
