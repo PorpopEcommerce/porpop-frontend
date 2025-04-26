@@ -14,7 +14,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 export const useAddProductForm = (productId?: string | null) => {
   const token = Cookies.get("access_token");
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user.activeUser); // 👈 Fetch user info
+  const { activeUser: user, fetchStatus } = useSelector((state: RootState) => state.user);
+ 
 
   const initialProduct: FormProduct = {
     name: "",
@@ -53,12 +54,19 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // ✅ Fetch user on mount
   useEffect(() => {
     if (token && !user) {
-      dispatch(fetchUserThunk()); // 👈 Ensure user is fetched
+      dispatch(fetchUserThunk());
     }
   }, [token, dispatch, user]);
 
+  // ✅ Debug user object
+  useEffect(() => {
+    console.log("Fetched user:", user);
+  }, [user]);
+
+  // ✅ Fetch product if editing
   useEffect(() => {
     if (!token) return;
     if (productId) {
@@ -110,7 +118,11 @@ export const useAddProductForm = (productId?: string | null) => {
       e.preventDefault();
       setIsSubmitting(true);
 
-      if (!user?.id) {
+      // ✅ Summary of Fixes:
+      // 1. Ensure user is fetched
+      // 2. Check fetchStatus === "succeeded"
+      // 3. Confirm user.id exists
+      if (fetchStatus !== "succeeded" || !user?.id) {
         toast.error("User ID not available. Cannot submit product.");
         setIsSubmitting(false);
         return;
@@ -133,7 +145,7 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-        user_id: user.id, // 👈 Send user_id instead of vendor_id
+        user_id: user.id, // ✅ Use user.id
         sku: "",
         product_notes: formData.product_notes,
         product_status: formData.product_status,
@@ -190,7 +202,7 @@ export const useAddProductForm = (productId?: string | null) => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, token, dispatch, productId]
+    [formData, user, fetchStatus, token, dispatch, productId]
   );
 
   return {
