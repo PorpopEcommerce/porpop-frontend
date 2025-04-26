@@ -14,7 +14,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 export const useAddProductForm = (productId?: string | null) => {
   const token = Cookies.get("access_token");
   const dispatch = useDispatch<AppDispatch>();
-
+  const user = useSelector((state: RootState) => state.user.activeUser); // 👈 Fetch user info
 
   const initialProduct: FormProduct = {
     name: "",
@@ -52,71 +52,37 @@ export const useAddProductForm = (productId?: string | null) => {
   const [formData, setFormData] = useState<FormProduct>(initialProduct);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [vendorId, setVendorId] = useState<string | null>(null);
-  const [isVendorLoading, setIsVendorLoading] = useState(true); // new
 
-  // 🆕 Fetch vendor ID on mount
   useEffect(() => {
-    const fetchVendorId = async () => {
-      if (!token) return;
+    if (token && !user) {
+      dispatch(fetchUserThunk()); // 👈 Ensure user is fetched
+    }
+  }, [token, dispatch, user]);
 
-      try {
-        const response = await axios.get(`${BASE_URL}/v1/auth`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const id = response.data?.body?.vendor?.id;
-        if (id) {
-          setVendorId(id);
-        } else {
-          toast.error("Vendor ID not found in vendor profile.");
-        }
-      } catch (error) {
-        console.error("Failed to fetch vendor ID:", error);
-        toast.error("Failed to fetch vendor information.");
-      } finally {
-        setIsVendorLoading(false); // finished loading vendor
-      }
-    };
-
-    fetchVendorId();
-  }, [token]);
-
-  // ✅ fetch product data if editing
   useEffect(() => {
     if (!token) return;
     if (productId) {
       const fetchProduct = async () => {
         try {
-          const res = await axios.get(`${BASE_URL}/v1/product/${productId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-          console.log(res.data.body)
-          setFormData(res.data.body); // adjust if structure differs
-          // console.log(formData)
+          const res = await axios.get(`${BASE_URL}/v1/product/${productId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setFormData(res.data.body);
         } catch (error) {
           console.error("Failed to fetch product", error);
         }
       };
-
       fetchProduct();
     }
-  }, [productId]);
+  }, [productId, token]);
 
   const handleChange = (field: keyof FormProduct, value: any) => {
-    setFormData((prev) => {
-      if (prev[field] === value) return prev;
-      return {
-        ...prev,
-        [field]: value,
-      };
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleToggle = (field: keyof FormProduct) => {
@@ -139,23 +105,13 @@ export const useAddProductForm = (productId?: string | null) => {
     }));
   };
 
-  const handleMinMaxChange = (
-    field: "minQuantity" | "maxQuantity",
-    value: number
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setIsSubmitting(true);
 
-      if (!vendorId) {
-        toast.error("Vendor ID not available. Cannot submit product.");
+      if (!user?.id) {
+        toast.error("User ID not available. Cannot submit product.");
         setIsSubmitting(false);
         return;
       }
@@ -177,11 +133,10 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-        vendor_id: vendorId,
-        sku: "", // optional
+        user_id: user.id, // 👈 Send user_id instead of vendor_id
+        sku: "",
         product_notes: formData.product_notes,
         product_status: formData.product_status,
-        // stock info
         stock: formData.stock,
         is_stock_management_enabled: formData.is_stock_management_enabled,
         low_stock_threshold: formData.low_stock_threshold,
@@ -192,9 +147,7 @@ export const useAddProductForm = (productId?: string | null) => {
         min_quantity_for_wholesales: formData.min_quantity_for_wholesales,
         is_downloadable: formData.is_downloadable,
         allow_review: formData.allow_review,
-        // visibility: true,
         published: true,
-        // shipping Info
         weight: formData.weight,
         length: formData.length,
         width: formData.width,
@@ -208,8 +161,7 @@ export const useAddProductForm = (productId?: string | null) => {
 
       try {
         if (productId) {
-          const updatedData = cleanedFormData;
-          await dispatch(editProductByVendor({ productId, updatedData })).unwrap();
+          await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
         } else {
           const response = await axios.post(
@@ -222,10 +174,8 @@ export const useAddProductForm = (productId?: string | null) => {
               },
             }
           );
-
           if (response.status !== 201) {
             const errorData = response.data.message || "Something went wrong!";
-            console.error("Error Response:", errorData);
             toast.error(errorData);
             return;
           }
@@ -233,7 +183,6 @@ export const useAddProductForm = (productId?: string | null) => {
           setIsSuccess(true);
           toast.success("Product created successfully!");
         }
-
       } catch (error) {
         console.error("Submission error:", error);
         toast.error("An error occurred while creating the product.");
@@ -241,7 +190,7 @@ export const useAddProductForm = (productId?: string | null) => {
         setIsSubmitting(false);
       }
     },
-    [formData, vendorId]
+    [formData, user, token, dispatch, productId]
   );
 
   return {
@@ -249,11 +198,8 @@ export const useAddProductForm = (productId?: string | null) => {
     setFormData,
     isSubmitting,
     isSuccess,
-    isVendorLoading, // 👈 return this too
-    vendorId,
     handleChange,
     handleToggle,
-    handleMinMaxChange,
     handleImagesChange,
     handleSubmit,
   };
