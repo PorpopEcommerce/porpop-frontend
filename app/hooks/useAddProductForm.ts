@@ -16,8 +16,10 @@ export const useAddProductForm = (productId?: string | null) => {
   const dispatch = useDispatch<AppDispatch>();
   const { activeUser: user, fetchStatus } = useSelector((state: RootState) => state.user);
   
-  // Added loading state to track user data loading
+  // Add retry mechanism
+  const [retryCount, setRetryCount] = useState(0);
   const [isUserLoading, setIsUserLoading] = useState(true);
+  const [hasUserLoadingError, setHasUserLoadingError] = useState(false);
  
   const initialProduct: FormProduct = {
     name: "",
@@ -56,58 +58,109 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Improved fetch user effect with better handling
+  // Check if user is valid (not just exists, but has required properties)
+  const isUserValid = useCallback(() => {
+    return user && user.id && typeof user.id === 'string' && user.id.length > 0;
+  }, [user]);
+
+  // Completely revised user fetch logic with retries and better error handling
   useEffect(() => {
+    let isMounted = true;
+    const MAX_RETRIES = 3;
+    
     const fetchUserData = async () => {
       if (!token) {
-        setIsUserLoading(false);
+        if (isMounted) {
+          setIsUserLoading(false);
+          setHasUserLoadingError(true);
+        }
         return;
       }
       
-      if (!user) {
-        try {
-          setIsUserLoading(true);
-          await dispatch(fetchUserThunk()).unwrap();
-        } catch (error) {
-          console.error("Failed to fetch user:", error);
-          toast.error("Could not load user information. Please refresh the page.");
-        } finally {
+      // If we already have a valid user, no need to fetch
+      if (isUserValid()) {
+        if (isMounted) {
           setIsUserLoading(false);
+          setHasUserLoadingError(false);
         }
-      } else {
-        setIsUserLoading(false);
+        return;
+      }
+      
+      try {
+        if (isMounted) setIsUserLoading(true);
+        
+        console.log(`Attempting to fetch user data (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+        await dispatch(fetchUserThunk()).unwrap();
+        
+        // Add a short delay to ensure Redux store is updated
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Verify the user was actually loaded correctly
+        if (!isUserValid()) {
+          throw new Error("User data fetched but appears to be invalid or incomplete");
+        }
+        
+        if (isMounted) {
+          setIsUserLoading(false);
+          setHasUserLoadingError(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        
+        if (isMounted) {
+          if (retryCount < MAX_RETRIES - 1) {
+            // Try again with exponential backoff
+            setRetryCount(prev => prev + 1);
+          } else {
+            setIsUserLoading(false);
+            setHasUserLoadingError(true);
+            toast.error("Could not load user information. Please try refreshing the page.");
+          }
+        }
       }
     };
     
     fetchUserData();
-  }, [token, dispatch, user]);
-
-  // Debug user object
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [token, dispatch, retryCount, isUserValid]);
+  
+  // Log user object for debugging
   useEffect(() => {
     console.log("Fetched user:", user);
     console.log("User loading status:", isUserLoading);
+    console.log("User loading error:", hasUserLoadingError);
     console.log("Fetch status:", fetchStatus);
-  }, [user, isUserLoading, fetchStatus]);
+    console.log("Is user valid:", isUserValid());
+    console.log("Current retry count:", retryCount);
+  }, [user, isUserLoading, hasUserLoadingError, fetchStatus, isUserValid, retryCount]);
 
   // Fetch product if editing
   useEffect(() => {
-    if (!token) return;
-    if (productId) {
-      const fetchProduct = async () => {
-        try {
-          const res = await axios.get(`${BASE_URL}/v1/product/${productId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    if (!token || !productId) return;
+    
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/v1/product/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        if (res.data && res.data.body) {
           setFormData(res.data.body);
-        } catch (error) {
-          console.error("Failed to fetch product", error);
-          toast.error("Failed to load product data");
+        } else {
+          throw new Error("Invalid product data structure");
         }
-      };
-      fetchProduct();
-    }
+      } catch (error) {
+        console.error("Failed to fetch product", error);
+        toast.error("Failed to load product data");
+      }
+    };
+    
+    fetchProduct();
   }, [productId, token]);
 
   const handleChange = (field: keyof FormProduct, value: any) => {
@@ -125,16 +178,24 @@ export const useAddProductForm = (productId?: string | null) => {
   };
 
   const handleImagesChange = async (files: File[]) => {
-    const imageUrls = await Promise.all(
-      files.map(async (file) => {
-        const imageUrl = await uploadImageToCloudinary(file);
-        return imageUrl;
-      })
-    );
-    setFormData((prev) => ({
-      ...prev,
-      images: imageUrls,
-    }));
+    if (!files || files.length === 0) return;
+    
+    try {
+      const imageUrls = await Promise.all(
+        files.map(async (file) => {
+          const imageUrl = await uploadImageToCloudinary(file);
+          return imageUrl;
+        })
+      );
+      
+      setFormData((prev) => ({
+        ...prev,
+        images: imageUrls.filter(url => url && url.trim() !== ""),
+      }));
+    } catch (error) {
+      console.error("Failed to upload images:", error);
+      toast.error("Failed to upload one or more images");
+    }
   };
 
   const handleSubmit = useCallback(
@@ -142,25 +203,30 @@ export const useAddProductForm = (productId?: string | null) => {
       e.preventDefault();
       setIsSubmitting(true);
 
-      // Check if user data is still loading
+      // More comprehensive checks before submission
       if (isUserLoading) {
         toast.info("User information is still loading. Please wait a moment and try again.");
         setIsSubmitting(false);
         return;
       }
 
-      // Check if we have a valid user ID after loading is complete
-      if (!user?.id) {
-        toast.error("User information could not be loaded. Please try refreshing the page.");
+      if (hasUserLoadingError || !isUserValid()) {
+        toast.error("User information could not be loaded properly. Please try refreshing the page.");
+        setIsSubmitting(false);
+        return;
+      }
+      
+      if (!token) {
+        toast.error("Authentication token is missing. Please log in again.");
         setIsSubmitting(false);
         return;
       }
       
       const cleanedFormData = {
-        name: formData.name,
-        product_type: formData.product_type,
-        price: formData.price,
-        discounted_price: formData.discounted_price,
+        name: formData.name || "",
+        product_type: formData.product_type || "",
+        price: formData.price || 0,
+        discounted_price: formData.discounted_price || 0,
         description: formData.description || "",
         discount_scheduled_from: formData.discount_scheduled_from
           ? new Date(formData.discount_scheduled_from).toISOString()
@@ -168,45 +234,46 @@ export const useAddProductForm = (productId?: string | null) => {
         discount_scheduled_to: formData.discount_scheduled_to
           ? new Date(formData.discount_scheduled_to).toISOString()
           : null,
-        images: formData.images.filter((img) => img.trim() !== ""),
+        images: formData.images.filter((img) => img && img.trim() !== ""),
         image_url:
-          formData.images.length > 0 && formData.images[0].trim() !== ""
+          formData.images.length > 0 && formData.images[0] && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
         user_id: user.id,
         sku: "",
-        product_notes: formData.product_notes,
-        product_status: formData.product_status,
-        stock: formData.stock,
-        is_stock_management_enabled: formData.is_stock_management_enabled,
-        low_stock_threshold: formData.low_stock_threshold,
-        is_wholesales_enabled: formData.is_wholesales_enabled,
-        stock_type: formData.stock_type,
-        is_only_one: formData.is_only_one,
-        wholesales_price: formData.wholesales_price,
-        min_quantity_for_wholesales: formData.min_quantity_for_wholesales,
-        is_downloadable: formData.is_downloadable,
-        allow_review: formData.allow_review,
+        product_notes: formData.product_notes || "",
+        product_status: formData.product_status || "",
+        stock: formData.stock || 0,
+        is_stock_management_enabled: formData.is_stock_management_enabled || false,
+        low_stock_threshold: formData.low_stock_threshold || 0,
+        is_wholesales_enabled: formData.is_wholesales_enabled || false,
+        stock_type: formData.stock_type || "",
+        is_only_one: formData.is_only_one || false,
+        wholesales_price: formData.wholesales_price || 0,
+        min_quantity_for_wholesales: formData.min_quantity_for_wholesales || 0,
+        is_downloadable: formData.is_downloadable || false,
+        allow_review: formData.allow_review || false,
         published: true,
-        weight: formData.weight,
-        length: formData.length,
-        width: formData.width,
-        height: formData.height,
-        shipping_class: formData.shipping_class,
-        tax_class: formData.tax_class,
-        tax_status: formData.tax_status,
-        discount_percentage: formData.discount_percentage,
-        min_quantity_for_discount: formData.min_quantity_for_discount,
+        weight: formData.weight || 0,
+        length: formData.length || 0,
+        width: formData.width || 0,
+        height: formData.height || 0,
+        shipping_class: formData.shipping_class || "",
+        tax_class: formData.tax_class || "",
+        tax_status: formData.tax_status || "",
+        discount_percentage: formData.discount_percentage || 0,
+        min_quantity_for_discount: formData.min_quantity_for_discount || 0,
       };
 
       try {
+        console.log("Submitting with data:", JSON.stringify(cleanedFormData, null, 2));
+        console.log("Using token:", token ? "Valid token" : "No token");
+        console.log("Using user ID:", user.id);
+        
         if (productId) {
           await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
         } else {
-          console.log("Submitting product with token:", token ? "Valid token" : "No token");
-          console.log("Submitting with user ID:", user.id);
-          
           const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
             headers: {
               "Content-Type": "application/json",
@@ -219,19 +286,40 @@ export const useAddProductForm = (productId?: string | null) => {
             toast.error(errorData);
             return;
           }
+          
           setFormData(initialProduct);
           setIsSuccess(true);
           toast.success("Product created successfully!");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Submission error:", error);
-        toast.error("An error occurred while creating the product.");
+        
+        // More detailed error handling
+        if (error.response) {
+          console.error("Response error data:", error.response.data);
+          console.error("Response error status:", error.response.status);
+          
+          const errorMessage = error.response.data?.message || 
+                              "An error occurred while submitting the product.";
+          toast.error(errorMessage);
+        } else if (error.request) {
+          toast.error("No response received from server. Please check your connection.");
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
       } finally {
         setIsSubmitting(false);
       }
     },
-    [formData, user, isUserLoading, token, dispatch, productId]
+    [formData, user, isUserLoading, hasUserLoadingError, isUserValid, token, dispatch, productId]
   );
+
+  // Extra utility to force a manual user data refresh
+  const refreshUserData = useCallback(() => {
+    setRetryCount(0);
+    setHasUserLoadingError(false);
+    setIsUserLoading(true);
+  }, []);
 
   return {
     formData,
@@ -239,9 +327,11 @@ export const useAddProductForm = (productId?: string | null) => {
     isSubmitting,
     isSuccess,
     isUserLoading,
+    hasUserLoadingError,
     handleChange,
     handleToggle,
     handleImagesChange,
     handleSubmit,
+    refreshUserData  // New function to manually refresh user data
   };
 };
