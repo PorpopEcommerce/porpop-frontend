@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/material": "^6.1.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.11",
     "@prisma/client": "^5.22.0",
     "@reduxjs/toolkit": "^2.4.0",
     "@tanstack/react-query": "^5.69.0",
