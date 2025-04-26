@@ -323,7 +323,7 @@ export const useAddProductForm = (productId?: string | null) => {
           toast.success("Product updated successfully!");
           
           // Redirect after successful update
-          window.location.href = '/vendor/dashboard/products';
+          window.location.href = '/dashboard/vendor';
         } else {
           // For new product creation
           try {
