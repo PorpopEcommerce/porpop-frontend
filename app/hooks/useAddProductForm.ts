@@ -15,8 +15,10 @@ export const useAddProductForm = (productId?: string | null) => {
   const token = Cookies.get("access_token");
   const dispatch = useDispatch<AppDispatch>();
   const { activeUser: user, fetchStatus } = useSelector((state: RootState) => state.user);
+  
+  // Added loading state to track user data loading
+  const [isUserLoading, setIsUserLoading] = useState(true);
  
-
   const initialProduct: FormProduct = {
     name: "",
     product_type: "",
@@ -54,19 +56,40 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // ✅ Fetch user on mount
+  // Improved fetch user effect with better handling
   useEffect(() => {
-    if (token && !user) {
-      dispatch(fetchUserThunk());
-    }
+    const fetchUserData = async () => {
+      if (!token) {
+        setIsUserLoading(false);
+        return;
+      }
+      
+      if (!user) {
+        try {
+          setIsUserLoading(true);
+          await dispatch(fetchUserThunk()).unwrap();
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+          toast.error("Could not load user information. Please refresh the page.");
+        } finally {
+          setIsUserLoading(false);
+        }
+      } else {
+        setIsUserLoading(false);
+      }
+    };
+    
+    fetchUserData();
   }, [token, dispatch, user]);
 
-  // ✅ Debug user object
+  // Debug user object
   useEffect(() => {
     console.log("Fetched user:", user);
-  }, [user]);
+    console.log("User loading status:", isUserLoading);
+    console.log("Fetch status:", fetchStatus);
+  }, [user, isUserLoading, fetchStatus]);
 
-  // ✅ Fetch product if editing
+  // Fetch product if editing
   useEffect(() => {
     if (!token) return;
     if (productId) {
@@ -80,6 +103,7 @@ export const useAddProductForm = (productId?: string | null) => {
           setFormData(res.data.body);
         } catch (error) {
           console.error("Failed to fetch product", error);
+          toast.error("Failed to load product data");
         }
       };
       fetchProduct();
@@ -118,18 +142,20 @@ export const useAddProductForm = (productId?: string | null) => {
       e.preventDefault();
       setIsSubmitting(true);
 
-      if (!user?.id || fetchStatus !== "succeeded") {
-        toast.error("User information is still loading. Please wait.");
-        setIsSubmitting(false);
-        return;
-      }
-      
-      if (fetchStatus !== "succeeded" || !user?.id) {
-        toast.error("User ID not available. Cannot submit product.");
+      // Check if user data is still loading
+      if (isUserLoading) {
+        toast.info("User information is still loading. Please wait a moment and try again.");
         setIsSubmitting(false);
         return;
       }
 
+      // Check if we have a valid user ID after loading is complete
+      if (!user?.id) {
+        toast.error("User information could not be loaded. Please try refreshing the page.");
+        setIsSubmitting(false);
+        return;
+      }
+      
       const cleanedFormData = {
         name: formData.name,
         product_type: formData.product_type,
@@ -147,7 +173,7 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-        user_id: user.id, // ✅ Use user.id
+        user_id: user.id,
         sku: "",
         product_notes: formData.product_notes,
         product_status: formData.product_status,
@@ -178,6 +204,9 @@ export const useAddProductForm = (productId?: string | null) => {
           await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
         } else {
+          console.log("Submitting product with token:", token ? "Valid token" : "No token");
+          console.log("Submitting with user ID:", user.id);
+          
           const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
             headers: {
               "Content-Type": "application/json",
@@ -201,7 +230,7 @@ export const useAddProductForm = (productId?: string | null) => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, fetchStatus, token, dispatch, productId]
+    [formData, user, isUserLoading, token, dispatch, productId]
   );
 
   return {
@@ -209,6 +238,7 @@ export const useAddProductForm = (productId?: string | null) => {
     setFormData,
     isSubmitting,
     isSuccess,
+    isUserLoading,
     handleChange,
     handleToggle,
     handleImagesChange,
