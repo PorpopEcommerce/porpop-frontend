@@ -236,14 +236,14 @@ export const useAddProductForm = (productId?: string | null) => {
     async (e: React.FormEvent) => {
       e.preventDefault();
       setIsSubmitting(true);
-
+  
       // More comprehensive checks before submission
       if (isUserLoading) {
         toast.info("User information is still loading. Please wait a moment and try again.");
         setIsSubmitting(false);
         return;
       }
-
+  
       if (hasUserLoadingError || !isUserValid()) {
         toast.error("User information could not be loaded properly. Please try refreshing the page.");
         setIsSubmitting(false);
@@ -277,7 +277,7 @@ export const useAddProductForm = (productId?: string | null) => {
         category_id:
           formData.category_id && formData.category_id.trim() !== ""
             ? formData.category_id
-            : null, // ✅ Fix added here
+            : null,
         sku: "",
         product_notes: formData.product_notes || "",
         product_status: formData.product_status || "",
@@ -303,7 +303,7 @@ export const useAddProductForm = (productId?: string | null) => {
         min_quantity_for_discount: formData.min_quantity_for_discount || 0,
       };
       
-
+  
       try {
         console.log("Submitting with data:", JSON.stringify(cleanedFormData, null, 2));
         console.log("Using token:", token ? "Valid token" : "No token");
@@ -321,7 +321,11 @@ export const useAddProductForm = (productId?: string | null) => {
         if (productId) {
           await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
+          
+          // Redirect after successful update
+          window.location.href = '/vendor/dashboard/products';
         } else {
+          // For new product creation
           try {
             const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
               headers: {
@@ -332,10 +336,17 @@ export const useAddProductForm = (productId?: string | null) => {
             
             console.log("Server response:", response.status, response.data);
     
-            if (response.status !== 201) {
+            if (response.status === 201) {
+              // Success path
+              setFormData(initialProduct);
+              setIsSuccess(true);
+              toast.success("Product created successfully!");
+              
+              // Redirect to products dashboard
+              window.location.href = 'dashboard/vendor';
+            } else {
               const errorData = response.data.message || "Something went wrong!";
               toast.error(errorData);
-              return;
             }
           } catch (error: any) {
             console.error("Submission error:", error);
@@ -354,13 +365,6 @@ export const useAddProductForm = (productId?: string | null) => {
               toast.error(`Error: ${error.message}`);
             }
           }
-          
-          setIsSubmitting(false);
-          return;
-          
-          setFormData(initialProduct);
-          setIsSuccess(true);
-          toast.success("Product created successfully!");
         }
       } catch (error: any) {
         console.error("Submission error:", error);
@@ -382,9 +386,8 @@ export const useAddProductForm = (productId?: string | null) => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, isUserLoading, hasUserLoadingError, isUserValid, token, dispatch, productId]
+    [formData, user, isUserLoading, hasUserLoadingError, isUserValid, token, dispatch, productId, initialProduct]
   );
-
   // Extra utility to force a manual user data refresh
   const refreshUserData = useCallback(() => {
     setRetryCount(0);
