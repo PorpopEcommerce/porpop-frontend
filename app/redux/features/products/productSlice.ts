@@ -97,36 +97,36 @@ export const deleteProductByVendor = createAsyncThunk<
     );
   }
 });
-export const editProductByVendor = createAsyncThunk<
-  any, // You can replace 'any' with a proper Product type if available
-  { productId: string; updatedData: any }, // Payload is an object
-  { rejectValue: string }
->("products/editByVendor", async (productId, { rejectWithValue }) => {
+export const editProductByVendor = createAsyncThunk(
+  "products/editByVendor",
+  async ({ productId, updatedData }: { productId: string; updatedData: any }, { rejectWithValue }) => {
+    const token = Cookies.get('access_token');
 
-  const token = Cookies.get('access_token')
-
-  try {
-    const response = await axios.patch(
-      `${BASE_URL}/v1/products/${productId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/v1/products/${productId}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return rejectWithValue("Failed to update the product.");
       }
-    );
-    if (response.status === 200) {
-      return productId; // Return the edited product's ID
-    } else {
-      return rejectWithValue("Failed to delete the product.");
+    } catch (error: any) {
+      console.error("Error updating product:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update the product."
+      );
     }
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to delete the product."
-    );
   }
-});
-
+);
 // Product slice
 const productSlice = createSlice({
   name: "products",
