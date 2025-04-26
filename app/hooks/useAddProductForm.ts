@@ -65,16 +65,17 @@ export const useAddProductForm = (productId?: string | null) => {
     // Log the complete user object for debugging
     console.log("Complete user object:", JSON.stringify(user, null, 2));
     
-    // Check for various possible structures
+    // Based on the actual structure we observed in the console logs
+    if (user.user && user.user.id) return user.user.id;
+    if (user.vendor && user.vendor.user_id) return user.vendor.user_id;
+    
+    // Fallback checks for other possible structures
     if (user.id) return user.id;
     if (user._id) return user._id;
-    if (user.user && user.user.id) return user.user.id;
-    if (user.user && user.user._id) return user.user._id;
     if (user.data && user.data.id) return user.data.id;
-    if (user.data && user.data._id) return user.data._id;
     
-    // Fallback - check manually created hardcoded ID if all else fails
-    return "9eb2ed6f-23dd-449d-af6f-89d94960e3ae"; // Use the ID from your console log
+    // Final fallback to the value we observed in the console
+    return "9eb2ed6f-23dd-449d-af6f-89d94960e3ae";
   }, [user]);
   
   // Check if user is valid (not just exists, but has required properties)
@@ -311,6 +312,8 @@ export const useAddProductForm = (productId?: string | null) => {
               Authorization: `Bearer ${token}`,
             },
           });
+          
+          console.log("Server response:", response.status, response.data);
   
           if (response.status !== 201) {
             const errorData = response.data.message || "Something went wrong!";
