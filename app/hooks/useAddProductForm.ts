@@ -306,20 +306,41 @@ export const useAddProductForm = (productId?: string | null) => {
           await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
         } else {
-          const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          
-          console.log("Server response:", response.status, response.data);
-  
-          if (response.status !== 201) {
-            const errorData = response.data.message || "Something went wrong!";
-            toast.error(errorData);
-            return;
+          try {
+            const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            
+            console.log("Server response:", response.status, response.data);
+    
+            if (response.status !== 201) {
+              const errorData = response.data.message || "Something went wrong!";
+              toast.error(errorData);
+              return;
+            }
+          } catch (error: any) {
+            console.error("Submission error:", error);
+            
+            // More detailed error handling
+            if (error.response) {
+              console.error("Response error data:", error.response.data);
+              console.error("Response error status:", error.response.status);
+              
+              const errorMessage = error.response.data?.message || 
+                                  "An error occurred while submitting the product.";
+              toast.error(errorMessage);
+            } else if (error.request) {
+              toast.error("No response received from server. Please check your connection.");
+            } else {
+              toast.error(`Error: ${error.message}`);
+            }
           }
+          
+          setIsSubmitting(false);
+          return;
           
           setFormData(initialProduct);
           setIsSuccess(true);
