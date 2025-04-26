@@ -21,6 +21,7 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [hasUserLoadingError, setHasUserLoadingError] = useState(false);
  
+  // Add initialProduct to include category_id
   const initialProduct: FormProduct = {
     name: "",
     product_type: "",
@@ -40,7 +41,6 @@ export const useAddProductForm = (productId?: string | null) => {
     length: 0,
     width: 0,
     height: 0,
-    category_id: "",
     shipping_class: "",
     tax_class: "",
     tax_status: "",
@@ -53,6 +53,7 @@ export const useAddProductForm = (productId?: string | null) => {
     allow_review: false,
     visibility: "",
     product_notes: "",
+    category_id: "", // Add this line
   };
 
   const [formData, setFormData] = useState<FormProduct>(initialProduct);
@@ -397,6 +398,6 @@ export const useAddProductForm = (productId?: string | null) => {
     handleToggle,
     handleImagesChange,
     handleSubmit,
-    refreshUserData  // New function to manually refresh user data
+    refreshUserData
   };
 };
