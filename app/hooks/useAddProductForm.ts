@@ -262,7 +262,7 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0] && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-            vendor_id: user?.vendor?.id, 
+            user_id: getUserId(), 
         sku: "",
         product_notes: formData.product_notes || "",
         product_status: formData.product_status || "",
