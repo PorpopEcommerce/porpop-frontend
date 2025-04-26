@@ -58,10 +58,22 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Helper to extract user ID from potentially nested user object
+  const getUserId = useCallback(() => {
+    if (!user) return null;
+    
+    // Check if user might be nested inside a user property (common Redux structure)
+    const userObj = user.user ? user.user : user;
+    
+    // Try to find an ID in various possible locations
+    return userObj.id || userObj._id || (userObj.data && userObj.data.id) || null;
+  }, [user]);
+  
   // Check if user is valid (not just exists, but has required properties)
   const isUserValid = useCallback(() => {
-    return user && user.id && typeof user.id === 'string' && user.id.length > 0;
-  }, [user]);
+    const userId = getUserId();
+    return !!userId && typeof userId === 'string' && userId.length > 0;
+  }, [getUserId]);
 
   // Completely revised user fetch logic with retries and better error handling
   useEffect(() => {
@@ -239,7 +251,7 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0] && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-        user_id: user.id,
+        user_id: getUserId(),
         sku: "",
         product_notes: formData.product_notes || "",
         product_status: formData.product_status || "",
