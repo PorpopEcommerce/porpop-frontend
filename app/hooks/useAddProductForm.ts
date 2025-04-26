@@ -274,6 +274,10 @@ export const useAddProductForm = (productId?: string | null) => {
             ? formData.images[0]
             : "",
         user_id: getUserId(),
+        category_id:
+          formData.category_id && formData.category_id.trim() !== ""
+            ? formData.category_id
+            : null, // ✅ Fix added here
         sku: "",
         product_notes: formData.product_notes || "",
         product_status: formData.product_status || "",
@@ -298,6 +302,7 @@ export const useAddProductForm = (productId?: string | null) => {
         discount_percentage: formData.discount_percentage || 0,
         min_quantity_for_discount: formData.min_quantity_for_discount || 0,
       };
+      
 
       try {
         console.log("Submitting with data:", JSON.stringify(cleanedFormData, null, 2));
