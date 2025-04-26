@@ -7,6 +7,7 @@ export type FormProduct = {
   discount_scheduled_to: string;
   images: string[],
   // category: string;
+  category_id?: string; 
   weight: number;
   length: number;
   width: number;

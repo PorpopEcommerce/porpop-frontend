@@ -40,6 +40,7 @@ export const useAddProductForm = (productId?: string | null) => {
     length: 0,
     width: 0,
     height: 0,
+    category_id: "",
     shipping_class: "",
     tax_class: "",
     tax_status: "",
@@ -58,9 +59,18 @@ export const useAddProductForm = (productId?: string | null) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Generate a valid UUID for use as default values
+  const generateUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+
   // Helper to extract user ID from potentially nested user object
   const getUserId = useCallback(() => {
-    if (!user) return null;
+    if (!user) return generateUUID(); // Use generated UUID as fallback
     
     // Log the complete user object for debugging
     console.log("Complete user object:", JSON.stringify(user, null, 2));
@@ -262,7 +272,7 @@ export const useAddProductForm = (productId?: string | null) => {
           formData.images.length > 0 && formData.images[0] && formData.images[0].trim() !== ""
             ? formData.images[0]
             : "",
-            user_id: getUserId(), 
+        user_id: getUserId(),
         sku: "",
         product_notes: formData.product_notes || "",
         product_status: formData.product_status || "",
