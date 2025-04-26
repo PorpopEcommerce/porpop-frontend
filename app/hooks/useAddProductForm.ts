@@ -118,10 +118,12 @@ export const useAddProductForm = (productId?: string | null) => {
       e.preventDefault();
       setIsSubmitting(true);
 
-      // ✅ Summary of Fixes:
-      // 1. Ensure user is fetched
-      // 2. Check fetchStatus === "succeeded"
-      // 3. Confirm user.id exists
+      if (!user?.id || fetchStatus !== "succeeded") {
+        toast.error("User information is still loading. Please wait.");
+        setIsSubmitting(false);
+        return;
+      }
+      
       if (fetchStatus !== "succeeded" || !user?.id) {
         toast.error("User ID not available. Cannot submit product.");
         setIsSubmitting(false);
@@ -176,16 +178,13 @@ export const useAddProductForm = (productId?: string | null) => {
           await dispatch(editProductByVendor({ productId, updatedData: cleanedFormData })).unwrap();
           toast.success("Product updated successfully!");
         } else {
-          const response = await axios.post(
-            `${BASE_URL}/v1/products`,
-            cleanedFormData,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await axios.post(`${BASE_URL}/v1/products`, cleanedFormData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
           if (response.status !== 201) {
             const errorData = response.data.message || "Something went wrong!";
             toast.error(errorData);
