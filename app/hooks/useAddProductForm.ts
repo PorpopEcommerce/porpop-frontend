@@ -343,7 +343,7 @@ export const useAddProductForm = (productId?: string | null) => {
               toast.success("Product created successfully!");
               
               // Redirect to products dashboard
-              window.location.href = 'dashboard/vendor';
+              window.location.href = '/vendor';
             } else {
               const errorData = response.data.message || "Something went wrong!";
               toast.error(errorData);
