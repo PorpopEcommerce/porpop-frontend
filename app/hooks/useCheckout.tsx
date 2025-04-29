@@ -81,7 +81,7 @@ const useCheckout = () => {
         },
       });
 
-      console.log(response.data)
+      console.log("Order creation response:", response.data);
   
       const id = response.data?.body?.id;
       if (id) {
@@ -97,7 +97,6 @@ const useCheckout = () => {
     }
   };
   
-
   const handleSubmit = async (products: Product[], subtotal: number) => {
     const token = Cookies.get("access_token");
     if (!token) {
@@ -109,18 +108,23 @@ const useCheckout = () => {
   
     setIsSubmitting(true);
   
+    // Updated to match backend expected fields
     const orderData = {
       buyer_id: user.id,
       vendor_id: "bb3c394e-98e8-43a2-aee1-317e39120dea",
-      items: products.map((product) => ({
-        product_id: product.id,
+      orderItems: products.map((product) => ({
+        productID: product.id,
         quantity: Number(product.quantity),
+        price: product.price
       })),
-      total_amount: subtotal,
-      shipping_address: form.streetAddress,
-      payment_method: "paystack",
+      totalAmount: subtotal, // Match backend field name
+      shippingAddress: form.streetAddress,
+      paymentMethod: "paystack",
+      status: "pending" // Add this if your backend expects it
     };
   
+    console.log("Sending order data:", orderData);
+    
     const id = await createOrder(token, orderData);
   
     if (!id) {
@@ -130,12 +134,14 @@ const useCheckout = () => {
   
     const paymentRequest = {
       user_id: user.id,
-      amount: Number(subtotal),
       gateway: "paystack",
       email: form.email,
       order_id: id,
+      // Remove amount field as backend will get it from the order
     };
   
+    console.log("Sending payment request:", paymentRequest);
+    
     try {
       const response = await fetch(`${BASE_URL}/v1/payments/initiate`, {
         method: "POST",
@@ -146,15 +152,17 @@ const useCheckout = () => {
         body: JSON.stringify(paymentRequest),
       });
   
-      if (!response.ok) throw new Error("Payment initialization failed");
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Payment initialization failed:", errorData);
+        throw new Error("Payment initialization failed");
+      }
   
       const data = await response.json();
-
-      console.log(data)
+      console.log("Payment initialization response:", data);
   
-      if (data.body?.payment_url
-      ) {
-        router.push(data.body?.payment_url);
+      if (data.body?.payment_url) {
+        router.push(data.body.payment_url);
       } else {
         toast.error("Payment URL not found.");
       }
@@ -166,7 +174,6 @@ const useCheckout = () => {
     }
   };
   
-
   return {
     form,
     errors,
@@ -175,7 +182,5 @@ const useCheckout = () => {
     handleSubmit,
   };
 };
-
-
 
 export default useCheckout;
