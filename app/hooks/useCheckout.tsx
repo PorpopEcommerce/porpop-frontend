@@ -108,7 +108,7 @@ const useCheckout = () => {
   
     setIsSubmitting(true);
   
-    // Updated to match backend expected fields
+    
     const orderData = {
       buyer_id: user.id,
       vendor_id: "bb3c394e-98e8-43a2-aee1-317e39120dea",
@@ -117,10 +117,10 @@ const useCheckout = () => {
         quantity: Number(product.quantity),
         price: product.price
       })),
-      totalAmount: subtotal, // Match backend field name
-      shippingAddress: form.streetAddress,
-      paymentMethod: "paystack",
-      status: "pending" // Add this if your backend expects it
+      total_amount: subtotal, 
+      shipping_address: form.streetAddress, 
+      payment_method: "paystack", 
+      status: "pending"
     };
   
     console.log("Sending order data:", orderData);
@@ -137,7 +137,6 @@ const useCheckout = () => {
       gateway: "paystack",
       email: form.email,
       order_id: id,
-      // Remove amount field as backend will get it from the order
     };
   
     console.log("Sending payment request:", paymentRequest);
