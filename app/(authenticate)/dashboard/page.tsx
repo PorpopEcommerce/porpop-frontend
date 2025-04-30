@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +9,8 @@ import Spinner from "@/app/components/Spinner";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// Component that uses searchParams wrapped in its own component
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
+
 const DashboardContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,18 +20,44 @@ const DashboardContent = () => {
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [notifyLoading, setNotifyLoading] = useState(false);
+  const [isVendor, setIsVendor] = useState(false);
+
+  useEffect(() => {
+    const checkVendorStatus = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/v1/vendors/me`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (res.status === 200) {
+          setIsVendor(true);
+        } else {
+          setIsVendor(false);
+        }
+      } catch {
+        setIsVendor(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      checkVendorStatus();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (paymentSuccess) {
       setShowPopup(true);
     }
-    setLoading(false);
   }, [paymentSuccess]);
 
   const handleNotifyAdmin = async () => {
     try {
       setNotifyLoading(true);
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_DATABASE_URL}/v1/vendors/notify-admin`, {}, {
+      const res = await axios.post(`${BASE_URL}/v1/vendors/notify-admin`, {}, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -39,12 +66,11 @@ const DashboardContent = () => {
       if (res.status === 200) {
         toast.success("✅ Admin has been notified!");
         setShowPopup(false);
-        router.replace("/dashboard"); // remove query
+        router.replace("/dashboard");
       } else {
         toast.error("❌ Failed to notify admin.");
       }
     } catch (err) {
-      console.error(err);
       toast.error("❌ Error contacting admin.");
     } finally {
       setNotifyLoading(false);
@@ -78,12 +104,17 @@ const DashboardContent = () => {
         </div>
       )}
 
-      <VendorDashboard />
+      {!isVendor ? (
+        <div className="text-center mt-20 text-lg text-red-500">
+          You are not yet an approved vendor. Please wait for admin approval.
+        </div>
+      ) : (
+        <VendorDashboard />
+      )}
     </div>
   );
 };
 
-// Main dashboard component with Suspense boundary
 const SafeDashboard = () => {
   return (
     <ProtectedRoute>
