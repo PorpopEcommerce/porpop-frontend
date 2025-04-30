@@ -1,62 +1,62 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // For route navigation
+import { useRouter, useSearchParams } from "next/navigation";
 import ProtectedRoute from "@/app/provider/ProtectedRoute";
 import VendorDashboard from "./vendor/VendorDashboard";
 import { useAuth } from "@/app/context/AuthContext";
 import { Suspense } from "react";
 import Spinner from "@/app/components/Spinner";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const VendorAccount = () => {
   const router = useRouter();
-  const { user, authToken } = useAuth(); // Assuming vendor details come from AuthContext
-  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const paymentSuccess = searchParams.get("payment") === "success";
+
+  const { user, authToken } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(false);
 
   useEffect(() => {
-    if (!user) return; // Wait until vendor is available
+    if (paymentSuccess) {
+      setShowPopup(true);
+    }
+    setLoading(false);
+  }, [paymentSuccess]);
 
-    const checkSubscription = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/v1/billing/subscriptions?user_id=${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // Assuming authToken comes from AuthContext
-            },
-          }
-        );
-        const data = await response.data.body;
+  const handleNotifyAdmin = async () => {
+    try {
+      setNotifyLoading(true);
+      const res = await axios.post(`${BASE_URL}/v1/vendors/notify-admin`, {}, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
-        const subscription = data.has_subscription;
-
-        // If we're on the dashboard page and user has no subscription, redirect to subscribe
-        if (subscription !== true && window.location.pathname.includes('/dashboard')) {
-          router.push("/subscribe");
-        }
-        // If we're on the subscribe page and user has subscription, redirect to dashboard
-        else if (subscription === true && window.location.pathname.includes('/subscribe')) {
-          router.push("/dashboard");
+      if (res.status === 200) {
+        toast.success("✅ Admin has been notified!");
+        setShowPopup(false);
+        router.replace("/dashboard"); // remove query from URL
+      } else {
+        toast.error("❌ Failed to notify admin.");
       }
-
-      } catch (error) {
-        console.error("Error fetching subscription details:", error);
-        router.push("/");
-      } finally {
-        setLoading(false); // Ensure loading is turned off
-      }
-    };
-
-    checkSubscription();
-  }, [user, router]);
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Error contacting admin.");
+    } finally {
+      setNotifyLoading(false);
+    }
+  };
 
   if (loading) {
     return (
-      <div>
-        <Spinner /> {/* Show a loading spinner while fetching subscription */}
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner />
       </div>
     );
   }
@@ -64,7 +64,27 @@ const VendorAccount = () => {
   return (
     <Suspense fallback={<div>Loading Page....</div>}>
       <ProtectedRoute>
-        <VendorDashboard />
+        <div className="p-4 relative">
+          {/* Modal Popup */}
+          {showPopup && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+              <div className="bg-white rounded-lg shadow-lg max-w-md p-6 text-center">
+                <p className="text-gray-800 text-lg mb-4">
+                  Thanks for subscribing. Please click on the button below to proceed with activating your account.
+                </p>
+                <button
+                  onClick={handleNotifyAdmin}
+                  disabled={notifyLoading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {notifyLoading ? "Sending Request..." : "Request Account Activation"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <VendorDashboard />
+        </div>
       </ProtectedRoute>
     </Suspense>
   );
