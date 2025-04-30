@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 const DashboardContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const paymentSuccess = searchParams.get("payment") === "success";
+  const paymentSuccess = searchParams.get("payment") === "success" || searchParams.get("status") === "success";
 
   const { user, authToken } = useAuth();
   const [loading, setLoading] = useState(true);
