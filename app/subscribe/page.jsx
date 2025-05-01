@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/Spinner";
 import { TiTick } from "react-icons/ti";
+import { useAuth } from "@/app/context/AuthContext"; // Make sure to import your Auth context
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
@@ -16,6 +17,7 @@ const Subscribe = () => {
   const [loading, setLoading] = useState(true);
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(false); // Tracks screen size
   const router = useRouter();
+  const { authToken } = useAuth(); // Get the auth token
 
   const featuresMap = {
     Starter: [
@@ -53,6 +55,30 @@ const Subscribe = () => {
       "Unlimited product",
     ],
   };
+
+  // New effect to check subscription status
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!authToken) return;
+      
+      try {
+        const response = await axios.get(`${BASE_URL}/v1/billing/check-subscription`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        
+        if (response.data && response.data.body && response.data.body.hasSubscription) {
+          // Redirect to dashboard if subscription exists
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      }
+    };
+    
+    checkSubscription();
+  }, [authToken, router]);
 
   useEffect(() => {
     const fetchPlans = async () => {

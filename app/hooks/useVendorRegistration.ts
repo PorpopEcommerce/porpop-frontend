@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { vendorRegisterSchema, validateField } from "./validation";
 import * as z from "zod";
 import { VendorData } from "../types/vendor";
@@ -10,13 +10,15 @@ import Cookies from "js-cookie";
 import { useDispatch } from 'react-redux';
 import { fetchUserThunk } from "@/app/redux/features/users/userSlice";
 import { AppDispatch } from "@/app/redux/store";
+import { useRouter } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 const authToken = Cookies.get("access_token");
 
 export const useVendorRegistration = () => {
   const { user, refreshUserData } = useAuth();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const [formData, setFormData] = useState<VendorData>({
     shop_name: "",
@@ -33,6 +35,61 @@ export const useVendorRegistration = () => {
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // This useEffect checks for two things:
+  // 1. If the user has a subscription but is not approved, redirect to dashboard with waiting message
+  // 2. If the user doesn't have a subscription, redirect to subscription page
+  useEffect(() => {
+    const checkStatusAndRedirect = async () => {
+      if (!authToken) return;
+      
+      try {
+        // Check if user has a subscription
+        const subscriptionResponse = await axios.get(`${BASE_URL}/v1/billing/check-subscription`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        
+        const hasSubscription = 
+          subscriptionResponse.data && 
+          subscriptionResponse.data.body && 
+          subscriptionResponse.data.body.hasSubscription;
+        
+        if (hasSubscription) {
+          // User has a subscription - now check if they're an approved vendor
+          try {
+            const vendorResponse = await axios.get(`${BASE_URL}/v1/vendors/me`, {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            });
+            
+            // If this request succeeds, they are an approved vendor - let them access the form
+            if (vendorResponse.status === 200) {
+              // Allow access to the form - do nothing
+              return;
+            }
+          } catch (error) {
+            // If request fails, they have a subscription but aren't an approved vendor
+            // Redirect to dashboard where they'll see the waiting message
+            toast.info("You already have a subscription. Waiting for admin approval.");
+            router.push('/dashboard');
+          }
+        } else {
+          // No subscription found - redirect to subscription page
+          toast.error("You need an active subscription to become a vendor.");
+          router.push('/subscribe');
+        }
+      } catch (error) {
+        console.error("Error checking status:", error);
+        // Default to subscription page if there's an error
+        router.push('/subscribe');
+      }
+    };
+    
+    checkStatusAndRedirect();
+  }, [router]);
 
   const handleInputChange = useCallback(
     (fieldName: keyof VendorData, value: string) => {
@@ -122,13 +179,13 @@ export const useVendorRegistration = () => {
         await refreshUserData();
         
         // 7. IMPORTANT: Also refresh user data in Redux
-        const dispatch = useDispatch<AppDispatch>();
+        dispatch(fetchUserThunk());
         
         toast.info("User data refreshed. You can now access your vendor dashboard.");
         
         // 8. Redirect to vendor dashboard after a short delay
         setTimeout(() => {
-          window.location.href = "/dashboard/vendor";
+          router.push("/dashboard/vendor");
         }, 1500); // Give time for the toast to be seen
   
         // 9. Reset form
@@ -156,6 +213,10 @@ export const useVendorRegistration = () => {
   
           if (message === "subscription not found") {
             toast.error("You need an active subscription to become a vendor.");
+            // Redirect to subscription page
+            setTimeout(() => {
+              router.push("/subscribe");
+            }, 1500);
           } else {
             toast.error(message || "Something went wrong. Try again.");
           }
@@ -171,7 +232,7 @@ export const useVendorRegistration = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, user, authToken, selectedImage, refreshUserData, dispatch]  // Added dispatch to dependencies
+    [formData, user, authToken, selectedImage, refreshUserData, dispatch, router]
   );
   
   return {

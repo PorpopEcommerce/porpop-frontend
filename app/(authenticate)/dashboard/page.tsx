@@ -51,6 +51,8 @@ const DashboardContent = () => {
   useEffect(() => {
     if (paymentSuccess) {
       setShowPopup(true);
+      // Remove the success parameters from the URL to prevent the popup from showing again on refresh
+      router.replace("/dashboard");
     }
   }, [paymentSuccess]);
 

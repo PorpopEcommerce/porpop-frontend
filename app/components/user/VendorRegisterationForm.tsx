@@ -1,5 +1,11 @@
 import { useVendorRegistration } from "../../hooks/useVendorRegistration";
 import { FaCamera } from "react-icons/fa";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext"; // Adjust the import path as needed
+import axios from "axios";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const VendorForm = () => {
   const {
@@ -15,6 +21,33 @@ const VendorForm = () => {
     agreeToTerms,
     setAgreeToTerms,
   } = useVendorRegistration();
+  
+  const router = useRouter();
+  const { authToken } = useAuth();
+
+  // Check if user already has a subscription
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!authToken) return;
+      
+      try {
+        const response = await axios.get(`${BASE_URL}/v1/billing/check-subscription`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        
+        if (response.data && response.data.body && response.data.body.hasSubscription) {
+          // Redirect to dashboard if subscription exists
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error("Error checking subscription:", error);
+      }
+    };
+    
+    checkSubscription();
+  }, [authToken, router]);
 
   return (
     <div className="w-full text-white">
