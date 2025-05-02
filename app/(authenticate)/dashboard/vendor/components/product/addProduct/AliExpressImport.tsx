@@ -35,7 +35,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
   // Base API URL
-  const baseApiUrl = "https://backend-porpop.onrender.com/api/v1";
+  const baseApiUrl = "https://backend-porpop-1ih6.onrender.com/v1";;
 
   // Fetch imported products
   const fetchImportedProducts = async () => {
