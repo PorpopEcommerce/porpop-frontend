@@ -37,6 +37,18 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   // Base API URL - fixed the extra semicolon
   const baseApiUrl = "https://backend-porpop-1ih6.onrender.com/v1";
 
+  // Debug on component mount
+  useEffect(() => {
+    console.log("All cookies:", document.cookie);
+    
+    // Try various storage locations
+    const token = getAuthToken();
+    console.log("Auth token found:", token ? "Yes" : "No");
+    if (token) {
+      console.log("Token first 10 chars:", token.substring(0, 10) + "...");
+    }
+  }, []);
+
   // Helper function to get cookie value
   const getCookieValue = (name: string): string => {
     const cookies = document.cookie.split(';');
@@ -49,10 +61,49 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     return '';
   };
 
+  // More comprehensive auth token retrieval
+  const getAuthToken = (): string => {
+    // Try multiple cookie names
+    const cookieToken = getCookieValue("token") || getCookieValue("jwt") || 
+                        getCookieValue("access_token") || getCookieValue("authToken") ||
+                        getCookieValue("auth");
+    if (cookieToken) {
+      console.log("Found token in cookies");
+      return cookieToken;
+    }
+    
+    // Try localStorage as a fallback
+    try {
+      const localStorageToken = localStorage.getItem("token") || localStorage.getItem("jwt") || 
+                               localStorage.getItem("access_token") || localStorage.getItem("authToken");
+      if (localStorageToken) {
+        console.log("Found token in localStorage");
+        return localStorageToken;
+      }
+    } catch (e) {
+      console.error("Error accessing localStorage:", e);
+    }
+    
+    // Try sessionStorage as another fallback
+    try {
+      const sessionToken = sessionStorage.getItem("token") || sessionStorage.getItem("jwt") || 
+                          sessionStorage.getItem("access_token") || sessionStorage.getItem("authToken");
+      if (sessionToken) {
+        console.log("Found token in sessionStorage");
+        return sessionToken;
+      }
+    } catch (e) {
+      console.error("Error accessing sessionStorage:", e);
+    }
+    
+    console.warn("No auth token found in any storage location");
+    return '';
+  };
+
   // Fetch imported products with improved error logging
   const fetchImportedProducts = async () => {
     setLoading(true);
-    const token = getCookieValue("token");
+    const token = getAuthToken();
     console.log("Token for imported products:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
@@ -63,8 +114,9 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         method: "GET",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
+        credentials: 'include', // Include cookies in the request
       });
 
       console.log("Imported products response status:", response.status);
@@ -94,8 +146,11 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     }
 
     setLoading(true);
-    const token = getCookieValue("token");
+    const token = getAuthToken();
     console.log("Search using token:", token ? token.substring(0, 10) + "..." : "No token found"); 
+    if (!token) {
+      console.warn("No authentication token found - authentication will likely fail");
+    }
     
     try {
       const searchUrl = `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`;
@@ -105,8 +160,9 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         method: "GET",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
+        credentials: 'include', // Include cookies in the request
       });
 
       console.log("Search response status:", response.status);
@@ -137,7 +193,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   // Handle importing selected product with improved error logging
   const handleImport = async (product: Product) => {
     setImportLoading(true);
-    const token = getCookieValue("token");
+    const token = getAuthToken();
     console.log("Import using token:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
@@ -148,8 +204,9 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         method: "GET",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
+        credentials: 'include', // Include cookies in the request
       });
 
       console.log("Import response status:", response.status);
@@ -171,8 +228,9 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
+        credentials: 'include', // Include cookies in the request
         body: JSON.stringify(importedData.data),
       });
 
@@ -203,7 +261,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     }
 
     setLoading(true);
-    const token = getCookieValue("token");
+    const token = getAuthToken();
     console.log("Update using token:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
@@ -215,8 +273,9 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
+        credentials: 'include', // Include cookies in the request
         body: JSON.stringify(updatedProduct),
       });
 
