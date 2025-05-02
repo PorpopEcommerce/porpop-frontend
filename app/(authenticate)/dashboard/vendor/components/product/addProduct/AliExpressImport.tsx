@@ -179,8 +179,17 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       }
 
       const data = await response.json();
-      console.log("Search Results:", data);
-      setSearchResults(data.data || []);
+      console.log("Raw search response data:", JSON.stringify(data, null, 2));
+      console.log("Products array structure:", data.data ? typeof data.data : 'No data property found');
+      console.log("Products count:", data.data ? (Array.isArray(data.data) ? data.data.length : 'Not an array') : 'N/A');
+      
+      // If data.data exists but isn't an array, we might need to adjust how we access it
+      const productsArray = data.data ? 
+        (Array.isArray(data.data) ? data.data : 
+         (data.data.products ? data.data.products : [])) : [];
+      
+      console.log("Products to display:", productsArray.length);
+      setSearchResults(productsArray);
       setIsSearchModalOpen(true);
     } catch (error : any) {
       console.error("Search error details:", error);
