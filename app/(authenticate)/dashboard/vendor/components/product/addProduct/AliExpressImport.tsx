@@ -34,40 +34,47 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   const [isImportedModalOpen, setIsImportedModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
-  // Base API URL
-  const baseApiUrl = "https://backend-porpop-1ih6.onrender.com/v1";;
+  // Base API URL - fixed the extra semicolon
+  const baseApiUrl = "https://backend-porpop-1ih6.onrender.com/v1";
 
-  // Fetch imported products
+  // Fetch imported products with improved error logging
   const fetchImportedProducts = async () => {
     setLoading(true);
+    const token = localStorage.getItem("token");
+    console.log("Token for imported products:", token?.substring(0, 10) + "...");
+    
     try {
-      const response = await fetch(
-        `${baseApiUrl}/imports/aliexpress/imported`,
-        {
-          method: "GET",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const importUrl = `${baseApiUrl}/imports/aliexpress/imported`;
+      console.log("Fetching imported products from:", importUrl);
+      
+      const response = await fetch(importUrl, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
 
+      console.log("Imported products response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("Failed to fetch imported products.");
+        const errorText = await response.text();
+        console.error("Import products error response:", errorText);
+        throw new Error(`Failed to fetch imported products (${response.status}): ${errorText}`);
       }
 
       const data = await response.json();
       console.log("Imported Products:", data);
       setImportedProducts(data.data || []);
-    } catch (error) {
-      console.error(error);
-      alert("Error fetching imported products. Please try again.");
+    } catch (error: any) {
+      console.error("Error message:", error.message);
+      alert(`Error message: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle AliExpress search
+  // Handle AliExpress search with enhanced error logging
   const handleSearch = async () => {
     if (!keyword.trim()) {
       alert("Please enter a search keyword");
@@ -75,85 +82,107 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     }
 
     setLoading(true);
+    const token = localStorage.getItem("token");
+    console.log("Search using token:", token?.substring(0, 10) + "..."); // Log partial token for security
+    
     try {
-      const response = await fetch(
-        `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`,
-        {
-          method: "GET",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const searchUrl = `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`;
+      console.log("Search URL:", searchUrl);
+      
+      const response = await fetch(searchUrl, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
 
+      console.log("Search response status:", response.status);
+      const headerObj: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+      headerObj[key] = value;
+    });
+console.log("Search response headers:", headerObj);
       if (!response.ok) {
-        throw new Error("Failed to search AliExpress products.");
+        const errorText = await response.text();
+        console.error("Search error response:", errorText);
+        throw new Error(`Failed to search AliExpress products (${response.status}): ${errorText}`);
       }
 
       const data = await response.json();
       console.log("Search Results:", data);
       setSearchResults(data.data || []);
       setIsSearchModalOpen(true);
-    } catch (error) {
-      console.error(error);
-      alert("Error searching products. Please try again.");
+    } catch (error : any) {
+      console.error("Search error details:", error);
+      alert(`Error searching products: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle importing selected product
+  // Handle importing selected product with improved error logging
   const handleImport = async (product: Product) => {
     setImportLoading(true);
+    const token = localStorage.getItem("token");
+    console.log("Import using token:", token?.substring(0, 10) + "...");
+    
     try {
-      const response = await fetch(
-        `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(product.productId)}`,
-        {
-          method: "GET",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const importUrl = `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(product.productId)}`;
+      console.log("Import URL:", importUrl);
+      
+      const response = await fetch(importUrl, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
 
+      console.log("Import response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("Failed to import product details.");
+        const errorText = await response.text();
+        console.error("Import error response:", errorText);
+        throw new Error(`Failed to import product details (${response.status}): ${errorText}`);
       }
 
       const importedData = await response.json();
       console.log("Imported Product Data:", importedData);
 
       // Now save the imported product
-      const saveResponse = await fetch(
-        `${baseApiUrl}/imports/aliexpress/save`,
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(importedData.data),
-        }
-      );
+      const saveUrl = `${baseApiUrl}/imports/aliexpress/save`;
+      console.log("Save URL:", saveUrl);
+      
+      const saveResponse = await fetch(saveUrl, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(importedData.data),
+      });
 
+      console.log("Save response status:", saveResponse.status);
+      
       if (!saveResponse.ok) {
-        throw new Error("Failed to save imported product.");
+        const errorText = await saveResponse.text();
+        console.error("Save error response:", errorText);
+        throw new Error(`Failed to save imported product (${saveResponse.status}): ${errorText}`);
       }
 
       alert("Product imported successfully!");
       // Refresh the imported products list
       fetchImportedProducts();
-    } catch (error) {
-      console.error(error);
-      alert("Error importing product. Please try again.");
+    } catch (error : any) {
+      console.error("Import/save error details:", error);
+      alert(`Error importing product: ${error.message}`);
     } finally {
       setImportLoading(false);
     }
   };
 
-  // Handle updating an imported product
+  // Handle updating an imported product with improved error logging
   const handleUpdate = async (updatedProduct: Product) => {
     if (!editingProduct || !editingProduct.id) {
       alert("No product selected for update");
@@ -161,29 +190,37 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     }
 
     setLoading(true);
+    const token = localStorage.getItem("token");
+    console.log("Update using token:", token?.substring(0, 10) + "...");
+    
     try {
-      const response = await fetch(
-        `${baseApiUrl}/imports/aliexpress/${editingProduct.id}`,
-        {
-          method: "PATCH",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(updatedProduct),
-        }
-      );
+      const updateUrl = `${baseApiUrl}/imports/aliexpress/${editingProduct.id}`;
+      console.log("Update URL:", updateUrl);
+      console.log("Update payload:", JSON.stringify(updatedProduct, null, 2));
+      
+      const response = await fetch(updateUrl, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedProduct),
+      });
 
+      console.log("Update response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("Failed to update product.");
+        const errorText = await response.text();
+        console.error("Update error response:", errorText);
+        throw new Error(`Failed to update product (${response.status}): ${errorText}`);
       }
 
       alert("Product updated successfully!");
       setEditingProduct(null);
       fetchImportedProducts();
-    } catch (error) {
-      console.error(error);
-      alert("Error updating product. Please try again.");
+    } catch (error : any) {
+      console.error("Update error details:", error);
+      alert(`Error updating product: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -260,7 +297,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                     )}
                     <div className="p-3 text-center">
                       <span className="text-center">
-                        {truncateText(product.displayTitle || product.name || "",)}
+                        {truncateText(product.displayTitle || product.name || "")}
                       </span>
                     </div>
                   </div>
@@ -302,7 +339,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                     )}
                     <div className="p-3 text-left w-full">
                       <h4 className="font-bold">
-                        {truncateText(product.displayTitle || product.name || "",)}
+                        {truncateText(product.displayTitle || product.name || "")}
                       </h4>
                       {product.price && (
                         <p className="text-green-400 my-1">Price: ${product.price.toFixed(2)}</p>
