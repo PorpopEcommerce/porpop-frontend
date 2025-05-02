@@ -37,11 +37,23 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   // Base API URL - fixed the extra semicolon
   const baseApiUrl = "https://backend-porpop-1ih6.onrender.com/v1";
 
+  // Helper function to get cookie value
+  const getCookieValue = (name: string): string => {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + '=')) {
+        return cookie.substring(name.length + 1);
+      }
+    }
+    return '';
+  };
+
   // Fetch imported products with improved error logging
   const fetchImportedProducts = async () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
-    console.log("Token for imported products:", token?.substring(0, 10) + "...");
+    const token = getCookieValue("token");
+    console.log("Token for imported products:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
       const importUrl = `${baseApiUrl}/imports/aliexpress/imported`;
@@ -82,8 +94,8 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     }
 
     setLoading(true);
-    const token = localStorage.getItem("token");
-    console.log("Search using token:", token?.substring(0, 10) + "..."); // Log partial token for security
+    const token = getCookieValue("token");
+    console.log("Search using token:", token ? token.substring(0, 10) + "..." : "No token found"); 
     
     try {
       const searchUrl = `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`;
@@ -100,9 +112,10 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       console.log("Search response status:", response.status);
       const headerObj: Record<string, string> = {};
       response.headers.forEach((value, key) => {
-      headerObj[key] = value;
-    });
-console.log("Search response headers:", headerObj);
+        headerObj[key] = value;
+      });
+      console.log("Search response headers:", headerObj);
+      
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Search error response:", errorText);
@@ -124,8 +137,8 @@ console.log("Search response headers:", headerObj);
   // Handle importing selected product with improved error logging
   const handleImport = async (product: Product) => {
     setImportLoading(true);
-    const token = localStorage.getItem("token");
-    console.log("Import using token:", token?.substring(0, 10) + "...");
+    const token = getCookieValue("token");
+    console.log("Import using token:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
       const importUrl = `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(product.productId)}`;
@@ -190,8 +203,8 @@ console.log("Search response headers:", headerObj);
     }
 
     setLoading(true);
-    const token = localStorage.getItem("token");
-    console.log("Update using token:", token?.substring(0, 10) + "...");
+    const token = getCookieValue("token");
+    console.log("Update using token:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
       const updateUrl = `${baseApiUrl}/imports/aliexpress/${editingProduct.id}`;
