@@ -101,103 +101,136 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
   };
 
   // Fetch imported products with improved error logging
-  const fetchImportedProducts = async () => {
-    setLoading(true);
-    const token = getAuthToken();
-    console.log("Token for imported products:", token ? token.substring(0, 10) + "..." : "No token found");
+const fetchImportedProducts = async () => {
+  setLoading(true);
+  const token = getAuthToken();
+  console.log("Token for imported products:", token ? token.substring(0, 10) + "..." : "No token found");
+  
+  try {
+    const importUrl = `${baseApiUrl}/imports/aliexpress/imported`;
+    console.log("Fetching imported products from:", importUrl);
     
-    try {
-      const importUrl = `${baseApiUrl}/imports/aliexpress/imported`;
-      console.log("Fetching imported products from:", importUrl);
-      
-      const response = await fetch(importUrl, {
-        method: "GET",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token.trim()}` : '',
-        },
-        credentials: 'include', // Include cookies in the request
-      });
+    const response = await fetch(importUrl, {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token.trim()}` : '',
+      },
+      credentials: 'include', // Include cookies in the request
+    });
 
-      console.log("Imported products response status:", response.status);
+    console.log("Imported products response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Import products error response:", errorText);
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Import products error response:", errorText);
-        throw new Error(`Failed to fetch imported products (${response.status}): ${errorText}`);
+      // Try to parse the error message for a better user display
+      let errorMessage = `Server error (${response.status})`;
+      try {
+        const errorObj = JSON.parse(errorText);
+        errorMessage = errorObj.message || errorMessage;
+      } catch (e) {
+        // If error text isn't valid JSON, use it directly
+        errorMessage = errorText || errorMessage;
       }
-
-      const data = await response.json();
-      console.log("Imported Products:", data);
-      setImportedProducts(data.data || []);
-    } catch (error: any) {
-      console.error("Error message:", error.message);
-      alert(`Error message: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle AliExpress search with enhanced error logging
-  const handleSearch = async () => {
-    if (!keyword.trim()) {
-      alert("Please enter a search keyword");
+      
+      // Handle specific error cases
+      if (response.status === 500 && errorMessage.includes("Invalid user ID format")) {
+        console.log("There's an issue with the user ID format on the backend.");
+        // Set empty results rather than showing an error
+        setImportedProducts([]);
+      } else {
+        alert(`Error fetching imported products: ${errorMessage}`);
+        setImportedProducts([]);
+      }
       return;
     }
 
-    setLoading(true);
-    const token = getAuthToken();
-    console.log("Search using token:", token ? token.substring(0, 10) + "..." : "No token found"); 
-    if (!token) {
-      console.warn("No authentication token found - authentication will likely fail");
+    const data = await response.json();
+    console.log("Imported Products:", data);
+    
+    // Handle different response formats
+    let products = [];
+    if (data.data && Array.isArray(data.data)) {
+      products = data.data;
+    } else if (data.body && Array.isArray(data.body)) {
+      products = data.body;
     }
     
-    try {
-      const searchUrl = `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`;
-      console.log("Search URL:", searchUrl);
-      
-      const response = await fetch(searchUrl, {
-        method: "GET",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token.trim()}` : '',
-        },
-        credentials: 'include', // Include cookies in the request
-      });
+    setImportedProducts(products);
+  } catch (error: any) {
+    console.error("Error message:", error.message);
+    // Don't show alert for backend errors to avoid frustrating users
+    console.log(`Error loading imported products: ${error.message}`);
+    setImportedProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      console.log("Search response status:", response.status);
-      const headerObj: Record<string, string> = {};
-      response.headers.forEach((value, key) => {
-        headerObj[key] = value;
-      });
-      console.log("Search response headers:", headerObj);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Search error response:", errorText);
-        throw new Error(`Failed to search AliExpress products (${response.status}): ${errorText}`);
-      }
+  // Handle AliExpress search with enhanced error logging
+const handleSearch = async () => {
+  if (!keyword.trim()) {
+    alert("Please enter a search keyword");
+    return;
+  }
 
-      const data = await response.json();
-      console.log("Raw search response data:", JSON.stringify(data, null, 2));
-      console.log("Products array structure:", data.data ? typeof data.data : 'No data property found');
-      console.log("Products count:", data.data ? (Array.isArray(data.data) ? data.data.length : 'Not an array') : 'N/A');
-      
-      // If data.data exists but isn't an array, we might need to adjust how we access it
-      const productsArray = data.data ? 
-        (Array.isArray(data.data) ? data.data : 
-         (data.data.products ? data.data.products : [])) : [];
-      
-      console.log("Products to display:", productsArray.length);
-      setSearchResults(productsArray);
-      setIsSearchModalOpen(true);
-    } catch (error : any) {
-      console.error("Search error details:", error);
-      alert(`Error searching products: ${error.message}`);
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  const token = getAuthToken();
+  console.log("Search using token:", token ? token.substring(0, 10) + "..." : "No token found"); 
+  
+  try {
+    const searchUrl = `${baseApiUrl}/imports/aliexpress/search?query=${encodeURIComponent(keyword)}`;
+    console.log("Search URL:", searchUrl);
+    
+    const response = await fetch(searchUrl, {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token.trim()}` : '',
+      },
+      credentials: 'include', // Include cookies in the request
+    });
+
+    console.log("Search response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Search error response:", errorText);
+      throw new Error(`Failed to search AliExpress products (${response.status}): ${errorText}`);
     }
-  };
+
+    const data = await response.json();
+    console.log("Raw search response data:", JSON.stringify(data, null, 2));
+    
+    // Extract products from the correct path in the response
+    let products = [];
+    if (data.body && Array.isArray(data.body)) {
+      // If products are in data.body
+      products = data.body;
+    } else if (data.data && Array.isArray(data.data)) {
+      // If products are in data.data (original expected format)
+      products = data.data;
+    } else if (data.data && data.data.body && Array.isArray(data.data.body)) {
+      // If products are nested in data.data.body
+      products = data.data.body;
+    }
+    
+    console.log("Products to display:", products.length);
+    setSearchResults(products);
+    setIsSearchModalOpen(true);
+    
+    if (products.length === 0) {
+      console.log("No products found in the search results. Try a different keyword.");
+    }
+  } catch (error : any) {
+    console.error("Search error details:", error);
+    alert(`Error searching products: ${error.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle importing selected product with improved error logging
   const handleImport = async (product: Product) => {
