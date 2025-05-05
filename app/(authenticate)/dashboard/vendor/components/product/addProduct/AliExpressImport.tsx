@@ -312,20 +312,27 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       const importedData = await response.json();
       console.log("Imported Product Data:", importedData);
 
+      // After getting the importedData response
+      console.log("Raw imported data structure:", JSON.stringify(importedData.data, null, 2).substring(0, 500));
+
       // Format the data to match the SaveImportedProductRequest structure
       const saveData = {
-        name: importedData.data?.productInfoComponent?.subject || 
-          "Imported Product",
+        name: importedData.data?.productInfoComponent?.subject || "Imported Product",
         description: importedData.data?.productDescriptionComponent?.description || 
-          "No description available",
-      user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae",
-      price: parseFloat(importedData.data?.priceComponent?.originalPrice || 
-              importedData.data?.priceComponent?.formattedPrice || 
-                  "0"),
-      images: importedData.data?.imageComponent?.imagePathList || [],
-      image_url: importedData.data?.imageComponent?.mainImagePath || "",
-      original_aliexpress_id: cleanProductId
-    };
+               importedData.data?.productInfoComponent?.subject || 
+               "No description available",
+        user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae", 
+        price: parseFloat(importedData.data?.priceComponent?.originalPrice || 
+                   importedData.data?.priceComponent?.formattedPrice || 
+                   "0"),
+              images: (importedData.data?.imageComponent?.imagePathList || []).map((path: string) => 
+              path.startsWith('//') ? `https:${path}` : path),
+        image_url: importedData.data?.imageComponent?.mainImagePath ? 
+             (importedData.data.imageComponent.mainImagePath.startsWith('//') ? 
+             `https:${importedData.data.imageComponent.mainImagePath}` : 
+             importedData.data.imageComponent.mainImagePath) : "",
+        original_aliexpress_id: cleanProductId
+};
       
       console.log("Formatted save data:", saveData);
 
