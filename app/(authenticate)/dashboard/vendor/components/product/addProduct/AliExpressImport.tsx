@@ -312,6 +312,19 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       const importedData = await response.json();
       console.log("Imported Product Data:", importedData);
 
+      // Format the data to match the SaveImportedProductRequest structure
+      const saveData = {
+        name: importedData.data.displayTitle || importedData.data.name || "Imported Product",
+        description: importedData.data.description || "No description available",
+        user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae", // This should be extracted from token claims
+        price: importedData.data.price || 0,
+        images: importedData.data.productImages || [],
+        image_url: importedData.data.imgUrl || importedData.data.imageURL || "",
+        original_aliexpress_id: cleanProductId
+      };
+      
+      console.log("Formatted save data:", saveData);
+
       // Now save the imported product
       const saveUrl = `${baseApiUrl}/imports/aliexpress/save`;
       console.log("Save URL:", saveUrl);
@@ -323,7 +336,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
           "Authorization": token ? `Bearer ${token.trim()}` : '',
         },
         credentials: 'include', // Include cookies in the request
-        body: JSON.stringify(importedData.data),
+        body: JSON.stringify(saveData), // Use formatted data instead of raw importedData.data
       });
 
       console.log("Save response status:", saveResponse.status);
