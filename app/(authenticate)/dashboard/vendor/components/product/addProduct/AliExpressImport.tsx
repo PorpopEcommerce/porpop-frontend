@@ -100,7 +100,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     return '';
   };
 
-  // Helper function to get direct image URL (instead of proxied)
+  // Helper function to get direct image URL
   const getDirectImageUrl = (url?: string): string => {
     if (!url) return '';
     
@@ -116,6 +116,25 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     
     // Otherwise, assume it needs https:// prefix
     return `https://${url}`;
+  };
+
+  // Extract AliExpress product ID from various formats
+  const extractProductId = (productId: string): string => {
+    // Handle case where productId contains the full URL
+    if (productId.includes('aliexpress.com/item/')) {
+      const match = productId.match(/item\/(\d+)\.html/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // If it's just a numeric ID, return as is
+    if (/^\d+$/.test(productId)) {
+      return productId;
+    }
+    
+    // Default fallback - return as is
+    return productId;
   };
 
   // Fetch imported products with improved error logging
@@ -233,6 +252,15 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       } else if (data.data && data.data.body && Array.isArray(data.data.body)) {
         // If products are nested in data.data.body
         products = data.data.body;
+      } else if (data.data && data.data.itemList && Array.isArray(data.data.itemList)) {
+        // If products are in data.data.itemList (from the logs we can see this format)
+        products = data.data.itemList.map((item: any) => ({
+          productId: item.itemId,
+          displayTitle: item.type && `recommend - ${item.orders || '0'}`,
+          imgUrl: item.itemMainPic,
+          price: parseFloat(item.salePrice) || 0,
+          description: item.score ? `Rating: ${item.score}, Orders: ${item.orders}` : ""
+        }));
       }
       
       console.log("Products to display:", products.length);
@@ -257,7 +285,11 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     console.log("Import using token:", token ? token.substring(0, 10) + "..." : "No token found");
     
     try {
-      const importUrl = `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(product.productId)}`;
+      // Extract just the numeric ID from the productId
+      const cleanProductId = extractProductId(product.productId);
+      console.log("Using clean product ID for import:", cleanProductId);
+      
+      const importUrl = `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(cleanProductId)}`;
       console.log("Import URL:", importUrl);
       
       const response = await fetch(importUrl, {
