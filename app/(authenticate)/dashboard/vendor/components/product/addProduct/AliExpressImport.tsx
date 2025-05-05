@@ -312,8 +312,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       const importedData = await response.json();
       console.log("Imported Product Data:", importedData);
 
-      // After getting the importedData response
-      console.log("Raw imported data structure:", JSON.stringify(importedData.data, null, 2).substring(0, 500));
+      console.log("Raw imported data structure received");
 
       // Format the data to match the SaveImportedProductRequest structure
       const saveData = {
