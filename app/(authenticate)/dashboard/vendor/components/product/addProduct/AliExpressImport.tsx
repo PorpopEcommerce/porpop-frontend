@@ -100,10 +100,22 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     return '';
   };
 
-  // Helper function to get proxied image URL
-  const getProxiedImageUrl = (url?: string): string => {
+  // Helper function to get direct image URL (instead of proxied)
+  const getDirectImageUrl = (url?: string): string => {
     if (!url) return '';
-    return `${baseApiUrl}/imports/aliexpress/proxy-image?url=${encodeURIComponent(url)}`;
+    
+    // If URL already has a protocol, return it as is
+    if (url.startsWith('http')) {
+      return url;
+    }
+    
+    // If URL is a protocol-relative URL (starts with //), add https:
+    if (url.startsWith('//')) {
+      return `https:${url}`;
+    }
+    
+    // Otherwise, assume it needs https:// prefix
+    return `https://${url}`;
   };
 
   // Fetch imported products with improved error logging
@@ -411,14 +423,26 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                     {(product.imgUrl || product.imageURL) && (
                       <div className="w-full h-48 flex items-center justify-center bg-gray-800">
                         <img
-                          src={getProxiedImageUrl(product.imgUrl || product.imageURL)}
+                          src={getDirectImageUrl(product.imgUrl || product.imageURL)}
                           alt={product.displayTitle || product.name || "Product"}
                           className="max-w-full max-h-48 object-contain"
+                          crossOrigin="anonymous"
+                          referrerPolicy="no-referrer"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            console.log("Proxy image failed to load:", target.src);
+                            console.log("Image failed to load:", target.src);
                             
-                            // Show a colored div as fallback
+                            // Try alternate URL format if the current one fails
+                            if (target.src.includes('alicdn.com') && !target.dataset.retried) {
+                              target.dataset.retried = 'true';
+                              
+                              // Extract the path portion of the URL
+                              const urlPath = target.src.replace(/^https?:\/\/[^\/]+\//, '/');
+                              target.src = `https://ae04.alicdn.com${urlPath}`;
+                              return;
+                            }
+                            
+                            // Show a colored div as fallback if all attempts fail
                             const parent = target.parentElement;
                             if (parent) {
                               const placeholder = document.createElement('div');
@@ -468,14 +492,26 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                     {(product.imgUrl || product.imageURL) && (
                       <div className="w-full h-48 flex items-center justify-center bg-gray-800">
                         <img
-                          src={getProxiedImageUrl(product.imgUrl || product.imageURL)}
+                          src={getDirectImageUrl(product.imgUrl || product.imageURL)}
                           alt={product.displayTitle || product.name || "Product"}
                           className="max-w-full max-h-48 object-contain"
+                          crossOrigin="anonymous"
+                          referrerPolicy="no-referrer"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            console.log("Proxy image failed to load:", target.src);
+                            console.log("Image failed to load:", target.src);
                             
-                            // Show a colored div as fallback
+                            // Try alternate URL format if the current one fails
+                            if (target.src.includes('alicdn.com') && !target.dataset.retried) {
+                              target.dataset.retried = 'true';
+                              
+                              // Extract the path portion of the URL
+                              const urlPath = target.src.replace(/^https?:\/\/[^\/]+\//, '/');
+                              target.src = `https://ae04.alicdn.com${urlPath}`;
+                              return;
+                            }
+                            
+                            // Show a colored div as fallback if all attempts fail
                             const parent = target.parentElement;
                             if (parent) {
                               const placeholder = document.createElement('div');
