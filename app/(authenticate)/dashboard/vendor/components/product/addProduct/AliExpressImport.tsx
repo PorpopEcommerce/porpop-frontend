@@ -318,11 +318,12 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       const saveData = {
       name: "Imported Product", 
       description: "No description available",
-      user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae", // This MUST be exactly spelled "user_id" 
-      price: 2.99, // Use a specific price from the product
+      user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae",
+      price: 2.99,
       images: [], 
-      image_url: "", 
-      original_aliexpress_id: cleanProductId
+      image_url: "https://ae04.alicdn.com/kf/S315c0b8288ea423fac3099db712bc2449.jpg",
+      original_aliexpress_id: cleanProductId,
+      category_id: "00000000-0000-0000-0000-000000000000" // Add a default UUID for category
     };
       
       console.log("Formatted save data:", saveData);
