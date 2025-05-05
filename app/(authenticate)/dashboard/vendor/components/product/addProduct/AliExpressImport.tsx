@@ -315,21 +315,15 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       // Format the data to match the SaveImportedProductRequest structure
       const saveData = {
         name: importedData.data?.productInfoComponent?.subject || 
-        importedData.data?.displayTitle || 
-        "Imported Product",
-      description: importedData.data?.productDescriptionComponent?.description || 
-               importedData.data?.description || 
-               "No description available",
+          "Imported Product",
+        description: importedData.data?.productDescriptionComponent?.description || 
+          "No description available",
       user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae",
       price: parseFloat(importedData.data?.priceComponent?.originalPrice || 
-                    importedData.data?.price || 
-                    "0"),
-      images: importedData.data?.imageComponent?.imagePathList || 
-          importedData.data?.productImages || 
-          [],
-      image_url: importedData.data?.imageComponent?.mainImagePath || 
-             importedData.data?.imgUrl || 
-             "",
+              importedData.data?.priceComponent?.formattedPrice || 
+                  "0"),
+      images: importedData.data?.imageComponent?.imagePathList || [],
+      image_url: importedData.data?.imageComponent?.mainImagePath || "",
       original_aliexpress_id: cleanProductId
     };
       
