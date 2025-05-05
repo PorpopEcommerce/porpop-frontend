@@ -289,7 +289,7 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
       const cleanProductId = extractProductId(product.productId);
       console.log("Using clean product ID for import:", cleanProductId);
       
-      const importUrl = `${baseApiUrl}/imports/aliexpress/import?id=${encodeURIComponent(cleanProductId)}`;
+      const importUrl = `${baseApiUrl}/imports/aliexpress/import?productId=${encodeURIComponent(cleanProductId)}`;
       console.log("Import URL:", importUrl);
       
       const response = await fetch(importUrl, {
