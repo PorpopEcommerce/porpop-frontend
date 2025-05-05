@@ -100,6 +100,12 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     return '';
   };
 
+  // Helper function to get proxied image URL
+  const getProxiedImageUrl = (url?: string): string => {
+    if (!url) return '';
+    return `${baseApiUrl}/imports/aliexpress/proxy-image?url=${encodeURIComponent(url)}`;
+  };
+
   // Fetch imported products with improved error logging
   const fetchImportedProducts = async () => {
     setLoading(true);
@@ -345,29 +351,6 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
     setEditingProduct(product);
   };
 
-  // Image error handler
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const target = e.target as HTMLImageElement;
-    const originalSrc = target.src;
-    
-    console.log("Image failed to load:", originalSrc);
-    
-    if (originalSrc.startsWith('https:')) {
-      // Try with http protocol instead
-      console.log("Trying with http protocol...");
-      target.src = originalSrc.replace('https:', 'http:');
-    } else if (!originalSrc.startsWith('http')) {
-      // No protocol specified, add https
-      console.log("Adding https protocol...");
-      target.src = 'https:' + originalSrc;
-    } else {
-      // Set a fallback image
-      console.log("Using fallback image");
-      target.src = 'https://via.placeholder.com/400x300?text=No+Image';
-      target.onerror = null; // Prevent infinite error loop
-    }
-  };
-
   return (
     <div className="relative py-20 flex items-center justify-center">
       <button
@@ -426,12 +409,26 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                 >
                   <div className="flex flex-col gap-3 items-center w-full">
                     {(product.imgUrl || product.imageURL) && (
-                      <img
-                        src={product.imgUrl || product.imageURL}
-                        alt={product.displayTitle || product.name}
-                        className="w-full h-48 object-cover"
-                        onError={handleImageError}
-                      />
+                      <div className="w-full h-48 flex items-center justify-center bg-gray-800">
+                        <img
+                          src={getProxiedImageUrl(product.imgUrl || product.imageURL)}
+                          alt={product.displayTitle || product.name || "Product"}
+                          className="max-w-full max-h-48 object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            console.log("Proxy image failed to load:", target.src);
+                            
+                            // Show a colored div as fallback
+                            const parent = target.parentElement;
+                            if (parent) {
+                              const placeholder = document.createElement('div');
+                              placeholder.className = 'w-full h-full flex items-center justify-center bg-gray-700 text-white text-center p-2';
+                              placeholder.textContent = 'Product Image';
+                              parent.replaceChild(placeholder, target);
+                            }
+                          }}
+                        />
+                      </div>
                     )}
                     <div className="p-3 text-center">
                       <span className="text-center">
@@ -469,12 +466,26 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
                 >
                   <div className="flex flex-col gap-3 items-center w-full">
                     {(product.imgUrl || product.imageURL) && (
-                      <img
-                        src={product.imgUrl || product.imageURL}
-                        alt={product.displayTitle || product.name}
-                        className="w-full h-48 object-cover"
-                        onError={handleImageError}
-                      />
+                      <div className="w-full h-48 flex items-center justify-center bg-gray-800">
+                        <img
+                          src={getProxiedImageUrl(product.imgUrl || product.imageURL)}
+                          alt={product.displayTitle || product.name || "Product"}
+                          className="max-w-full max-h-48 object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            console.log("Proxy image failed to load:", target.src);
+                            
+                            // Show a colored div as fallback
+                            const parent = target.parentElement;
+                            if (parent) {
+                              const placeholder = document.createElement('div');
+                              placeholder.className = 'w-full h-full flex items-center justify-center bg-gray-700 text-white text-center p-2';
+                              placeholder.textContent = 'Product Image';
+                              parent.replaceChild(placeholder, target);
+                            }
+                          }}
+                        />
+                      </div>
                     )}
                     <div className="p-3 text-left w-full">
                       <h4 className="font-bold">
