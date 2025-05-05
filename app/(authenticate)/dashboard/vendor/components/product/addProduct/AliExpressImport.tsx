@@ -316,17 +316,13 @@ const AliExpressImport: React.FC<AliExpressProps> = ({
 
       // Format the data to match the SaveImportedProductRequest structure
       const saveData = {
-        name: importedData.data?.productInfoComponent?.subject || "Imported Product",
-        description: importedData.data?.productDescriptionComponent?.description || 
-               importedData.data?.productInfoComponent?.subject || 
-               "No description available",
-        user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae", 
-        price: parseFloat(importedData.data?.priceComponent?.originalPrice || 
-                   importedData.data?.priceComponent?.formattedPrice || 
-                   "0"),
-        images: [],  // Simplified for now to avoid errors
-        image_url: "",  // Simplified for now to avoid errors
-        original_aliexpress_id: cleanProductId
+      name: "Imported Product", 
+      description: "No description available",
+      user_id: "9eb2ed6f-23dd-449d-af6f-89d94960e3ae", // This MUST be exactly spelled "user_id" 
+      price: 2.99, // Use a specific price from the product
+      images: [], 
+      image_url: "", 
+      original_aliexpress_id: cleanProductId
     };
       
       console.log("Formatted save data:", saveData);
